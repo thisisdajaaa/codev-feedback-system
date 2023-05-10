@@ -15,7 +15,7 @@
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "prepare": "husky install && chmod ug+x .husky/*",
-    "storybook": "BROWSER=none start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chromatic": "npx chromatic --project-token=53493d9912a7"
   },
