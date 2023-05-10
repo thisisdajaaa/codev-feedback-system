@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap");
+@import url("https://cdn.statically.io/gist/mfd/f3d96ec7f0e8f034cc22ea73b3797b59/raw/fad2f254369fb54250260077a4c87391a6280c52/gotham.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tw-color-primary-50: 239 241 242;
+  --tw-color-primary-100: 162 168 173;
+  --tw-color-primary-200: 137 140 143;
+  --tw-color-primary-300: 109 114 117;
+  --tw-color-primary-400: 105 107 111;
+  --tw-color-primary-500: 61 58 59;
+  --tw-color-primary-600: 39 36 37;
+  --tw-color-primary-700: 33 34 35;
+  --color-primary-50: rgb(var(--tw-color-primary-50)); /* #EFF1F2 */
+  --color-primary-100: rgb(var(--tw-color-primary-100)); /* #A2A8AD */
+  --color-primary-200: rgb(var(--tw-color-primary-200)); /* #898C8F */
+  --color-primary-300: rgb(var(--tw-color-primary-300)); /* #6D7275 */
+  --color-primary-400: rgb(var(--tw-color-primary-400)); /* #696C6F */
+  --color-primary-500: rgb(var(--tw-color-primary-500)); /* #3D3A3B */
+  --color-primary-600: rgb(var(--tw-color-primary-600)); /* #272425 */
+  --color-primary-700: rgb(var(--tw-color-primary-700)); /* #212223 */
+}
