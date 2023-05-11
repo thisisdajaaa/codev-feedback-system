@@ -3,14 +3,13 @@
 ## Table of Contents
 
 - [Technologies](#technologies)
-- [Getting Started](#getting-started)
+- [Prerequisites](#prerequisites)
 - [Commit Changes](#commit-changes)
 - [Project Structure](#project-structure)
 - [Storybook](#project-structure)
 - [Sample Environment File](#sample-environment-file)
 - [Code Scaffolding](#code-scaffolding)
 - [Naming Convention](#naming-convention)
-- [Deployment](#deployment)
 - [Testing](#testing)
 
 ## Technologies
@@ -24,17 +23,72 @@
 - [Storybook](https://storybook.js.org/)
 - [Redux Toolkit](https://redux-toolkit.js.org/)
 
-## Getting Started
+## Prerequisites
+
+### Docker
+
+Docker is a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow developers to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package.
+
+To install Docker, you can follow the instructions on the Docker's official website:
+- For Windows and MacOS: [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
+- For Ubuntu: [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+
+### Node.js and NVM
+
+This project requires Node.js to run. It's recommended to install Node.js using NVM (Node Version Manager) which allows you to easily install, update and switch between different Node.js versions.
+
+To install NVM, follow the instructions on the [NVM GitHub page](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+Once NVM is installed, you can install Node.js. This project uses Node.js version 16.15.0. To install this version and use it, run the following commands:
 
 ```bash
-# Install dependencies for the host
-yarn install
+nvm install 16.15.0
+nvm use 16.15.0
+```
 
-# Install git hooks
-yarn prepare
+### MongoDB Compass
+MongoDB Compass is a GUI for MongoDB. It allows you to visually explore your data, run ad hoc queries, interact with your data with full CRUD functionality, view and optimize your query performance, and more.
 
-# Start the application
-yarn dev
+To install MongoDB Compass, follow the instructions on the MongoDB Compass documentation.
+
+### Environment Setup
+This project uses environment variables for configuration. These variables are loaded from a .env file in the project root.
+
+You can create a .env file by copying the provided .env.example file:
+
+```bash
+cp .env.example .env
+```
+
+Next, open the .env file and set the values for your environment:
+
+```bash
+NEXT_PUBLIC_SHOW_LOGGER=false
+NEXT_AUTH_SECRET=codev-feedback-system
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+MONGODB_URI=mongodb://root:root@mongo:27017/codev-feedback-system?retryWrites=true&w=majority
+MONGO_INITDB_ROOT_USERNAME=root
+MONGO_INITDB_ROOT_PASSWORD=root
+```
+
+### Running the Project with Docker
+This project is configured to run in a Docker container. To start the application, use Docker Compose:
+
+```bash
+docker-compose up
+```
+This will start the application and MongoDB in separate containers. The application will be available at http://localhost:3000, and MongoDB at mongodb://root:root@mongo:27017, just copy this url in mongodb compass to connect to the mongodb server.
+
+Remember to stop the containers when you're done:
+
+```bash
+docker-compose down
+```
+
+The containers' data will be persisted in Docker volumes. To remove the data, you can remove the volumes:
+```bash
+docker volume rm codev-feedback-system_mongodbdata
 ```
 
 ## Commit Changes
