@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
-import { IUser, ROLES } from "./types";
+import { ROLES } from "./config";
+import type { IUser } from "./types";
 
 export const UserSchema = new Schema<IUser>(
   {

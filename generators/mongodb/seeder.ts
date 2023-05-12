@@ -10,13 +10,10 @@ const basePath = path.join(__dirname, "../../");
 
 dotenv.config({ path: basePath + "/.env" });
 
-// Connect to DB
-
 // Read JSON files
 const users = JSON.parse(
   readFileSync(`${basePath}/public/fixtures/users.json`, "utf-8")
 );
-
 
 // Import into DB
 const importData = async () => {
