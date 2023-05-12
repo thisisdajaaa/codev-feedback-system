@@ -78,7 +78,7 @@ This project is configured to run in a Docker container. To start the applicatio
 ```bash
 docker-compose up
 ```
-This will start the application and MongoDB in separate containers. The application will be available at http://localhost:3000, and MongoDB at mongodb://root:root@mongo:27017, just copy this url in mongodb compass to connect to the mongodb server.
+This will start the application and MongoDB in separate containers. The application will be available at http://localhost:3000, and MongoDB at mongodb://root:root@localhost:27017, just copy this url in mongodb compass to connect to the mongodb server.
 
 Remember to stop the containers when you're done:
 
