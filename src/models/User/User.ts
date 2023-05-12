@@ -16,7 +16,7 @@ export const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: [ROLES.ADMIN, ROLES.SURVEYOR],
+      enum: [ROLES.ADMIN, ROLES.SURVEYOR, ROLES.SURVEYEE],
       required: true,
     },
   },
