@@ -9,6 +9,8 @@ services:
       - mongo
     environment:
       - MONGODB_URI=${MONGODB_URI}
+    env_file:
+      - .env
   mongo:
     image: mongo
     ports:
@@ -16,6 +18,8 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - mongodbdata:/data/db
 volumes:
