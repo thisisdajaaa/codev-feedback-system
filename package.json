@@ -17,7 +17,8 @@
     "prepare": "husky install && chmod ug+x .husky/*",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "chromatic": "npx chromatic --project-token=53493d9912a7"
+    "data:import": "ts-node --project tsconfig.seeder.json generators/mongodb/seeder.ts -i",
+    "data:delete": "ts-node --project tsconfig.seeder.json generators/mongodb/seeder.ts -d"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^1.1.1",
