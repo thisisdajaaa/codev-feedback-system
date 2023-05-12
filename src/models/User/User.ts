@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-import type { IUser } from "./types";
+import { IUser, ROLES } from "./types";
 
 export const UserSchema = new Schema<IUser>(
   {
@@ -19,6 +19,8 @@ export const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
+      enum: [ROLES.ADMIN, ROLES.SURVEYOR],
+      required: true,
     },
   },
   {
