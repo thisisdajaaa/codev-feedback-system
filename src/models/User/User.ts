@@ -14,6 +14,10 @@ export const UserSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: [ROLES.ADMIN, ROLES.SURVEYOR, ROLES.SURVEYEE],

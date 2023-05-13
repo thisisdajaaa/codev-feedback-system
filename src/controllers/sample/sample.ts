@@ -3,6 +3,8 @@ import { NextHandler } from "next-connect";
 
 import ErrorHandler from "@/utils/errorHandler";
 
+import { StatusCodes } from "@/constants/statusCode";
+
 import type { ApiResponse } from "@/types";
 
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
@@ -19,10 +21,13 @@ export const sampleMethod = catchAsyncErrors(
 
     if (!customerId)
       return next(
-        new ErrorHandler(SAMPLE_MESSAGES.ERROR.CUSTOMER_NOT_FOUND, 404)
+        new ErrorHandler(
+          SAMPLE_MESSAGES.ERROR.CUSTOMER_NOT_FOUND,
+          StatusCodes.NOT_FOUND
+        )
       );
 
-    res.status(200).json({
+    res.status(StatusCodes.OK).json({
       success: true,
       message: SAMPLE_MESSAGES.SUCCESS.CUSTOMER_DETAILS,
     });
