@@ -9,6 +9,8 @@ services:
       - mongo
     environment:
       - MONGODB_URI=${MONGODB_DOCKER_URI}
+    env_file:
+      - .env
   mongo:
     image: mongo
     ports:
