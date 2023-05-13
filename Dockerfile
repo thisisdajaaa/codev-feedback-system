@@ -25,9 +25,6 @@ RUN sed -i '/"scripts": {/a \ \ "prepare": "husky install && chmod ug+x .husky/*
 # Copy all other files
 COPY . .
 
-# Build the NextJS app
-RUN yarn build
-
 # Expose the listening port
 EXPOSE 3000
 

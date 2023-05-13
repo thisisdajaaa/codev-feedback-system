@@ -11,6 +11,9 @@ services:
       - MONGODB_URI=${MONGODB_DOCKER_URI}
     env_file:
       - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
   mongo:
     image: mongo
     ports:
