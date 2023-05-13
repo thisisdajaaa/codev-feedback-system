@@ -72,7 +72,7 @@ const LoginPage: NextPage = () => {
                 required
                 onChange={handleChange("accountNum")}
                 className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Account numberss"
+                placeholder="Account number"
               />
             </div>
 
