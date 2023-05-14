@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nextConnect from "next-connect";
 
-import { sampleMethod } from "@/controllers/sample";
-
 import type { ApiResponse } from "@/types";
 
+import { SampleController } from "@/features/sample";
+import { isAuthenticatedUser } from "@/middlewares/auth";
 import { onError } from "@/middlewares/errors";
 
 const handler = nextConnect<
@@ -12,6 +12,8 @@ const handler = nextConnect<
   NextApiResponse<ApiResponse<unknown>>
 >({ onError });
 
-handler.get(sampleMethod);
+const { handleSampleMethod } = SampleController();
+
+handler.use(isAuthenticatedUser).get(handleSampleMethod);
 
 export default handler;

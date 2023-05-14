@@ -3,6 +3,9 @@ export const AUTH_MESSAGES = {
     EMAIL_ALREADY_EXISTS: "Email already exists!",
     USER_NOT_FOUND: "User not found!",
     ALREADY_VERIFIED: "User is already verified!",
+    UNAUTHORIZED: "Login first to access this resource!",
+    INSUFFICIENT_PERMISSION_LEVEL:
+      "You need to have the right permission level to access this resource!",
   },
   SUCCESS: {
     VERIFICATION_EMAIL_SENT: "Email sent to:",

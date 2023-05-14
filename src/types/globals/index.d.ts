@@ -1,23 +1,24 @@
 import "next";
 import "next-auth";
 
+import type { IUser } from "@/models/User/types";
+
+type GoogleAuthUser = {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+};
+
 declare module "next" {
   interface NextApiRequest extends NextApiRequest {
-    user: {
-      id: string;
-    };
+    user: IUser;
   }
 }
 
 declare module "next-auth" {
-  interface User extends AuthUser {
-    id: string;
-  }
-
   interface Session {
-    user: {
-      id: string;
-    };
+    user: GoogleAuthUser;
   }
 }
 
