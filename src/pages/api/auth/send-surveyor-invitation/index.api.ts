@@ -7,8 +7,8 @@ import type { ApiResponse } from "@/types";
 
 import { AuthController } from "@/features/auth/authController";
 import type { ISendSurveyorInvitationRequest } from "@/features/auth/types";
-import { isAuthenticatedUser } from "@/middlewares/auth";
 import { onError } from "@/middlewares/errors";
+import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { roleAtLeast } from "@/middlewares/roleAtLeast";
 

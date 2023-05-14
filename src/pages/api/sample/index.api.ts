@@ -4,8 +4,8 @@ import nextConnect from "next-connect";
 import type { ApiResponse } from "@/types";
 
 import { SampleController } from "@/features/sample";
-import { isAuthenticatedUser } from "@/middlewares/auth";
 import { onError } from "@/middlewares/errors";
+import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 
 const handler = nextConnect<
   NextApiRequest,
