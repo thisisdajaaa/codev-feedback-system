@@ -5,7 +5,7 @@ import ErrorHandler from "@/utils/errorHandler";
 import { StatusCodes } from "@/constants/statusCode";
 
 import User from "@/models/User";
-import { IUser } from "@/models/User/types";
+import type { IUser } from "@/models/User/types";
 
 import { AUTH_MESSAGES } from "@/features/auth/config";
 
