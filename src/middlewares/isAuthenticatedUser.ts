@@ -10,9 +10,12 @@ import type { IUser } from "@/models/User/types";
 import { AUTH_MESSAGES } from "@/features/auth/config";
 
 import { catchAsyncErrors } from "./catchAsyncErrors";
+import { mongoConnect } from "./mongodb";
 
 export const isAuthenticatedUser = catchAsyncErrors(async (req, _res, next) => {
   const session = await getSession({ req });
+
+  await mongoConnect();
 
   if (!session)
     return next(

@@ -1,9 +1,13 @@
 import { NextApiRequest } from "next";
 
+export type SurveyorDetail = {
+  email: string;
+  department: string;
+};
+
 export interface ISendSurveyorInvitationRequest extends NextApiRequest {
   body: {
-    email: string;
-    department: string;
+    surveyorDetails: SurveyorDetail[];
   };
 }
 

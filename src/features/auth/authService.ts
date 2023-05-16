@@ -14,41 +14,60 @@ import type {
   IAcceptSurveyorInvitationRequest,
   ISendSurveyorInvitationRequest,
   PickedUserDetails,
+  SurveyorDetail,
 } from "./types";
 
 export const AuthService = () => {
+  const filteredNewUsers = async (usersDetails: SurveyorDetail[]) => {
+    const userEmails = usersDetails.map((user) => user.email);
+
+    const existingUsers = (await User.find({
+      email: { $in: userEmails },
+      role: ROLES.SURVEYOR,
+    })) as IUser[];
+
+    const existingEmails = existingUsers.map((user) => user.email);
+
+    return usersDetails.filter((user) => !existingEmails.includes(user.email));
+  };
+
   const sendSurveyorVerification = async (
     req: ISendSurveyorInvitationRequest
   ) => {
-    const { email, department } = req.body;
+    const { surveyorDetails } = req.body;
 
-    const user = (await User.findOne({ email })) as IUser | null;
+    const newSurveyorDetails = await filteredNewUsers(surveyorDetails);
 
-    if (user) {
+    if (!newSurveyorDetails.length)
       throw new ErrorHandler(
         AUTH_MESSAGES.ERROR.EMAIL_ALREADY_EXISTS,
         StatusCodes.CONFLICT
       );
-    }
 
-    const newUser: Pick<IUser, PickedUserDetails> = {
-      email,
-      department,
-      isVerified: false,
-      role: ROLES.SURVEYOR,
-    };
+    newSurveyorDetails.forEach(async ({ email, department }) => {
+      const newUser: Pick<IUser, PickedUserDetails> = {
+        email,
+        department,
+        isVerified: false,
+        role: ROLES.SURVEYOR,
+      };
 
-    const { id } = (await User.create(newUser)) as IUser;
+      const { id } = (await User.create(newUser)) as IUser;
 
-    const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation?id=${id}`;
+      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation?id=${id}`;
 
-    await sendEmail({
-      email,
-      subject: `${department} - ${AUTH_MESSAGES.INFO.VERIFICATION_SUBJECT}`,
-      html: SurveyorVerification(invitationURL),
+      await sendEmail({
+        email,
+        subject: `${department} - ${AUTH_MESSAGES.INFO.VERIFICATION_SUBJECT}`,
+        html: SurveyorVerification(invitationURL),
+      });
     });
 
-    return `${AUTH_MESSAGES.SUCCESS.VERIFICATION_EMAIL_SENT} ${email}`;
+    const surveyorEmails = newSurveyorDetails
+      .map(({ email }) => email)
+      .join(", ");
+
+    return `${AUTH_MESSAGES.SUCCESS.VERIFICATION_EMAIL_SENT} ${surveyorEmails}`;
   };
 
   const acceptSurveyorVerification = async (
