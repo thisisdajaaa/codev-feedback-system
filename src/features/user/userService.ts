@@ -10,7 +10,7 @@ import { roleList, ROLES } from "@/models/User/config";
 import type { IUser } from "@/models/User/types";
 
 import { USER_MESSAGES } from "./config";
-import { UserResponse } from "./types";
+import type { UserResponse } from "./types";
 
 export const UserService = () => {
   const getUsers = async (req: NextApiRequest) => {

@@ -8,7 +8,7 @@ import { ApiResponse } from "@/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 import { USER_MESSAGES } from "./config";
-import { UserResponse } from "./types";
+import type { UserResponse } from "./types";
 import { UserService } from "./userService";
 
 export const UserController = () => {
