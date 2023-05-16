@@ -1,4 +1,4 @@
-import { IUser } from "@/models/User/types";
+import type { IUser } from "@/models/User/types";
 
 import type { PickedUserDetails } from "@/features/auth/types";
 
