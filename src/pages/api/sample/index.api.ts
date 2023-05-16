@@ -5,7 +5,6 @@ import type { ApiResponse } from "@/types";
 
 import { SampleController } from "@/features/sample";
 import { onError } from "@/middlewares/errors";
-import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 
 const handler = nextConnect<
   NextApiRequest,
@@ -14,6 +13,6 @@ const handler = nextConnect<
 
 const { handleSampleMethod } = SampleController();
 
-handler.use(isAuthenticatedUser).get(handleSampleMethod);
+handler.get(handleSampleMethod);
 
 export default handler;
