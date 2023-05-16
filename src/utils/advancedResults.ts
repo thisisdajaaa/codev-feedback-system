@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 
 import type { Pagination, Populate } from "@/types";
 
-export const advancedResults = async <T>(
+export const advancedResults = async <T, K>(
   model: Model<T>,
   req: NextApiRequest,
   populate?: Populate
@@ -86,6 +86,6 @@ export const advancedResults = async <T>(
   return {
     count: results.length,
     pagination,
-    data: results,
+    data: results as K,
   };
 };
