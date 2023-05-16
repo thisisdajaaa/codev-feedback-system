@@ -1,5 +1,7 @@
+import { StatusCodes } from "@/constants/statusCode";
+
 class ErrorHandler extends Error {
-  statusCode = 500;
+  statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
 
   constructor(message: string, statusCode: number) {
     super(message);

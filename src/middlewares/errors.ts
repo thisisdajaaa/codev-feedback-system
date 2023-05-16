@@ -6,6 +6,8 @@ import {
 
 import ErrorHandler from "@/utils/errorHandler";
 
+import { StatusCodes } from "@/constants/statusCode";
+
 export const onError: NextConnectErrorHandler<
   NextApiRequest,
   NextApiResponse
@@ -15,7 +17,7 @@ export const onError: NextConnectErrorHandler<
   res: NextApiResponse,
   _next: NextHandler
 ) => {
-  err.statusCode = err.statusCode || 500;
+  err.statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
 
   let error = { ...err };
 
@@ -23,7 +25,7 @@ export const onError: NextConnectErrorHandler<
 
   if (err.name === "CastError") {
     const message = "Resource not found";
-    error = new ErrorHandler(message, 400);
+    error = new ErrorHandler(message, StatusCodes.BAD_REQUEST);
   }
 
   res.status(error.statusCode).json({

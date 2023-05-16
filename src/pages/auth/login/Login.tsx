@@ -1,12 +1,10 @@
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import logger from "@/utils/logger";
 
 import Button from "@/components/Button";
-
-import { getSampleMethodAPI } from "@/services/sample";
 
 import type { UserForm } from "./types";
 
@@ -17,27 +15,13 @@ const LoginPage: NextPage = () => {
     password: "",
   });
 
-  const handleLoad = useCallback(async () => {
-    const { success, message } = await getSampleMethodAPI();
-
-    if (success) logger(message);
-  }, []);
-
-  useEffect(() => {
-    handleLoad();
-  }, [handleLoad]);
-
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event
   ) => {
     // validate your userinfo
     event.preventDefault();
 
-    const res = await signIn("credentials", {
-      email: userInfo.email,
-      password: userInfo.password,
-      redirect: false,
-    });
+    const res = await signIn("google");
 
     logger(res);
   };
@@ -69,7 +53,6 @@ const LoginPage: NextPage = () => {
                 name="account-number"
                 type="number"
                 value={userInfo.accountNum}
-                required
                 onChange={handleChange("accountNum")}
                 className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 placeholder="Account number"

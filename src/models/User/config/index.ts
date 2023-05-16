@@ -3,3 +3,9 @@ export enum ROLES {
   SURVEYOR = "SURVEYOR",
   SURVEYEE = "SURVEYEE",
 }
+
+export const ROLE_HIERARCHY = {
+  [ROLES.ADMIN]: 3,
+  [ROLES.SURVEYOR]: 2,
+  [ROLES.SURVEYEE]: 1,
+};

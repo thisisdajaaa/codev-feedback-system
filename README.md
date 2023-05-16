@@ -75,6 +75,18 @@ MONGODB_URI=mongodb://root:root@localhost:27017/codev-feedback-system?authSource
 
 MONGO_INITDB_ROOT_USERNAME=root
 MONGO_INITDB_ROOT_PASSWORD=root
+
+GOOGLE_CLIENT_ID=589144237254-5qu9tndfb4m194ks1tov8mq5d3es4q9r.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+SMPT_HOST=smpt.gmail.com
+SMTP_SERVICE=gmail
+SMTP_PORT=465
+SMTP_USER=your_email
+SMTP_PASSWORD=your_gmail_app_password
+SMTP_ADMIN_EMAIL=your_email
+SMTP_FROM=Codev Feedback System
+SMTP_FROM_EMAIL=your_email
 ```
 
 ### Running the Project with Docker

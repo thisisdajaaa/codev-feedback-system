@@ -1,34 +1,11 @@
-import NextAuth, { type NextAuthOptions, type User } from "next-auth";
-import CredentialProvider from "next-auth/providers/credentials";
-
-const mockUserData: User[] = [
-  {
-    id: "1",
-    accountNum: "1234",
-    email: "test@test.com",
-    name: "Test User",
-  },
-];
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    CredentialProvider({
-      name: "credentials",
-      credentials: {
-        accountNum: { label: "Account number", type: "text" },
-        email: { label: "Email address", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      authorize: (credentials) => {
-        // database look up
-        const user = mockUserData.find(
-          (user) => credentials && user.email === credentials["email"]
-        );
-
-        if (!user) return null;
-
-        return user;
-      },
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
 
@@ -39,18 +16,18 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    jwt: ({ token, user }) => {
+    jwt: async ({ token, user }) => {
       if (user) token.id = user.id;
       return token;
     },
-    session: ({ session, token }) => {
+    session: async ({ session, token }) => {
       if (token) session.id = token.id;
       return session;
     },
   },
 
   pages: {
-    signIn: "auth/login",
+    signIn: "/auth/login",
   },
 };
 
