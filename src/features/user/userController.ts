@@ -3,7 +3,7 @@ import { NextHandler } from "next-connect";
 
 import { StatusCodes } from "@/constants/statusCode";
 
-import { ApiResponse } from "@/types";
+import type { ApiResponse } from "@/types";
 
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
