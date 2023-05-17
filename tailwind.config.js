@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 const withOpacityValue = (variable) => {
   return ({ opacityValue }) => {
@@ -15,6 +16,10 @@ const withOpacityValue = (variable) => {
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    screens: {
+      xs: "320px",
+      ...defaultTheme.screens,
+    },
     extend: {
       fontFamily: {
         primary: ["Gotham", ...fontFamily.sans],
