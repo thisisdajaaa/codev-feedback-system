@@ -1,0 +1,197 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Codev Feedback Systems API",
+    "description": "This API is designed to facilitate feedback and communication in the Codev ecosystem."
+  },
+  "servers": [
+    {
+      "url": "http://{HOSTNAME}:{PORT}/",
+      "description": "Local Environment Base URL.",
+      "variables": {
+        "HOSTNAME": {
+          "default": "localhost"
+        },
+        "PORT": {
+          "default": "3000"
+        }
+      }
+    },
+    {
+      "url": "https://development****.com/",
+      "description": "Development Environment Base URL."
+    },
+    {
+      "url": "https://test***.com/",
+      "description": "Test Environment Base URL."
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Authentication operations"
+    },
+    {
+      "name": "users",
+      "description": "User operations"
+    }
+  ],
+  "paths": {
+    "/api/auth/accept-user-invitation": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Accept user invitation",
+        "operationId": "acceptUserInvitation",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "body",
+            "required": true,
+            "description": "ID of the user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/auth/send-surveyor-invitation": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Send surveyor invitation",
+        "operationId": "sendSurveyorInvitation",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "surveyorDetails": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "department": {
+                        "type": "string",
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "409": {
+            "description": "Conflict - All of the emails already exists"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Get all users",
+        "operationId": "users",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email of the user to filter by. For example: email=test@codev.com",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Role of the user to filter by. For example: role=ADMIN",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Fields to include in the response. For example: email,role",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Fields to sort by. For example: -createdAt,email",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for paginated results",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of results per page",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "isVerified": {
+          "type": "boolean"
+        },
+        "department": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
