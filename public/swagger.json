@@ -5,7 +5,28 @@
     "title": "Codev Feedback Systems API",
     "description": "This API is designed to facilitate feedback and communication in the Codev ecosystem."
   },
-  "host": "localhost:3000",
+  "servers": [
+    {
+      "url": "http://{HOSTNAME}:{PORT}/",
+      "description": "Local Environment Base URL.",
+      "variables": {
+        "HOSTNAME": {
+          "default": "localhost"
+        },
+        "PORT": {
+          "default": "3000"
+        }
+      }
+    },
+    {
+      "url": "https://development****.com/",
+      "description": "Development Environment Base URL."
+    },
+    {
+      "url": "https://test***.com/",
+      "description": "Test Environment Base URL."
+    }
+  ],
   "tags": [
     {
       "name": "auth",
