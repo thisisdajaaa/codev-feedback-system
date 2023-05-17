@@ -12,7 +12,7 @@ import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { roleAtLeast } from "@/middlewares/roleAtLeast";
-import { validateBody } from "@/middlewares/validateSchema";
+import { validateBody } from "@/middlewares/validateBody";
 
 const handler = nextConnect<
   IAcceptSurveyorInvitationRequest,
