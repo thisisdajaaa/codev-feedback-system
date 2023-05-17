@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
 import { QUESTION_TYPES } from "@/models/Template/config";
-import { UserSchema } from "@/models/User/User";
 
 import type { IQuestion, ITemplate } from "./types";
 
@@ -49,19 +48,13 @@ export const TemplateSchema = new Schema<ITemplate>(
       required: true,
     },
     createdBy: {
-      type: UserSchema,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     updatedBy: {
-      type: UserSchema,
-      required: true,
-    },
-    createdDate: {
-      type: String,
-      required: true,
-    },
-    updatedDate: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

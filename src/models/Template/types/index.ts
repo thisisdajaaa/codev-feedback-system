@@ -1,6 +1,4 @@
-import { Document } from "mongoose";
-
-import { IUser } from "@/models/User/types";
+import mongoose, { Document } from "mongoose";
 
 export interface IQuestion extends Document {
   title: string;
@@ -14,8 +12,6 @@ export interface ITemplate extends Document {
   description: string;
   department: string;
   questions: IQuestion[];
-  createdBy: IUser;
-  updatedBy: IUser;
-  createdDate: string;
-  updatedDate: string;
+  createdBy: mongoose.Schema.Types.ObjectId;
+  updatedBy: mongoose.Schema.Types.ObjectId;
 }
