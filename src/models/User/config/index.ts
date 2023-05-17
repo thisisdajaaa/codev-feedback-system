@@ -4,7 +4,7 @@ export enum ROLES {
   SURVEYEE = "SURVEYEE",
 }
 
-export const roleList = [ROLES.ADMIN, ROLES.SURVEYOR, ROLES.SURVEYEE];
+export const roleList = Object.values(ROLES);
 
 export const ROLE_HIERARCHY = {
   [ROLES.ADMIN]: 3,
