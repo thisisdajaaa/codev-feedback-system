@@ -32,7 +32,7 @@ const LoginPage: NextPage = () => {
 
             <button
               onClick={async () => await signIn("google")}
-              className="w-full rounded-3xl bg-[#3B82F6] py-2 px-6 text-white"
+              className="w-full rounded-3xl bg-[#3B82F6] py-2 px-6 text-white xs:mb-6"
             >
               Sign in via Google
             </button>
