@@ -6,15 +6,20 @@ import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
+import type { ValidationRequestOptions } from "@/types";
+
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
-export const validateBody = (schema: yup.AnyObjectSchema) =>
+export const validate = (
+  part: ValidationRequestOptions,
+  schema: yup.AnyObjectSchema
+) =>
   catchAsyncErrors(async (req, _res: NextApiResponse, next: NextHandler) => {
     try {
       await schema
         .strict(true)
         .noUnknown()
-        .validate(req.body, { abortEarly: false });
+        .validate(req[part], { abortEarly: false });
 
       next();
     } catch (error) {

@@ -12,7 +12,6 @@ export const UserSchema = new Schema<IUser>(
     },
     department: {
       type: String,
-      required: true,
     },
     isVerified: {
       type: Boolean,

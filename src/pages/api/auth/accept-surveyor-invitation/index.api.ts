@@ -7,12 +7,12 @@ import type { ApiResponse } from "@/types";
 
 import { AuthController } from "@/features/auth/authController";
 import type { IAcceptSurveyorInvitationRequest } from "@/features/auth/types";
-import { acceptSurveyorVerificationSchema } from "@/features/auth/validations/acceptSurveyorVerificationSchema";
+import { acceptSurveyorVerificationBodySchema } from "@/features/auth/validations/acceptSurveyorVerificationBodySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { roleAtLeast } from "@/middlewares/roleAtLeast";
-import { validateBody } from "@/middlewares/validateBody";
+import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   IAcceptSurveyorInvitationRequest,
@@ -24,7 +24,7 @@ const { handleAcceptSurveyorVerification } = AuthController();
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.ADMIN))
-  .use(validateBody(acceptSurveyorVerificationSchema))
+  .use(validate("body", acceptSurveyorVerificationBodySchema))
   .post(mongoHandler(handleAcceptSurveyorVerification));
 
 export default handler;

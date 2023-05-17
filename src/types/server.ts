@@ -40,3 +40,5 @@ export type Populate = {
   path: string;
   select?: string;
 };
+
+export type ValidationRequestOptions = "body" | "query";

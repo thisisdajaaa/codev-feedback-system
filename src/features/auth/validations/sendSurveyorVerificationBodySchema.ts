@@ -11,10 +11,10 @@ const surveyorDetailSchema = yup.object().shape({
     .lowercase()
     .matches(emailRegex, AUTH_MESSAGES.ERROR.INVALID_EMAIL)
     .required(),
-  department: yup.string().trim().required(),
+  department: yup.string().trim(),
 });
 
-const sendSurveyorVerificationSchema = yup.object().shape({
+const sendSurveyorVerificationBodySchema = yup.object().shape({
   surveyorDetails: yup
     .array()
     .of(surveyorDetailSchema.noUnknown())
@@ -22,4 +22,4 @@ const sendSurveyorVerificationSchema = yup.object().shape({
     .min(1),
 });
 
-export { sendSurveyorVerificationSchema };
+export { sendSurveyorVerificationBodySchema };
