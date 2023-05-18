@@ -1,6 +1,18 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
+import User from "@/models/User";
+import { ROLES } from "@/models/User/config";
+import type { IUser } from "@/models/User/types";
+
+import type { PickedUserDetails } from "@/features/auth/types";
+import { mongoConnect } from "@/middlewares/mongodb";
+
+const getDbUser = async (email: string): Promise<IUser | null> => {
+  await mongoConnect();
+  return (await User.findOne({ email: email })) as IUser | null;
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -16,12 +28,43 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
+    signIn: async ({ user }) => {
+      if (user.email?.endsWith("codev.com")) {
+        const email = user.email;
+        let dbUser = await getDbUser(email);
+
+        if (!dbUser) {
+          const newUser: Pick<IUser, PickedUserDetails> = {
+            email,
+            isVerified: false,
+            role: ROLES.SURVEYEE,
+          };
+
+          dbUser = await User.create(newUser);
+        }
+
+        user.role = dbUser?.role;
+
+        return true;
+      }
+
+      //Access denied
+      return false;
+    },
     jwt: async ({ token, user }) => {
-      if (user) token.id = user.id;
-      return token;
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+
+      return Promise.resolve(token);
     },
     session: async ({ session, token }) => {
-      if (token) session.id = token.id;
+      if (token) {
+        session.id = token.id;
+        session.user.role = token.role as string;
+      }
+
       return session;
     },
   },

@@ -8,6 +8,7 @@ type GoogleAuthUser = {
   name: string;
   email: string;
   image: string;
+  role: string;
 };
 
 declare module "next" {
