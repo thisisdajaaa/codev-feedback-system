@@ -4,7 +4,7 @@ import SurveyCoverage from "@/models/SurveyCoverage";
 
 export const SurveyCoverageService = () => {
 
-  const saveSurveyCoverage = async (req: NextApiRequest) => {
+  const createSurveyCoverage = async (req: NextApiRequest) => {
     const { coverage } = req.body;
 
     const newCoverage: ISurveyCoverage = {
@@ -14,5 +14,5 @@ export const SurveyCoverageService = () => {
     return await SurveyCoverage.create(newCoverage);
   };
 
-  return { saveSurveyCoverage };
+  return { createSurveyCoverage };
 };
