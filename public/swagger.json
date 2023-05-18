@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.2",
   "info": {
     "version": "1.0.0",
     "title": "Codev Feedback Systems API",
@@ -35,25 +35,37 @@
     {
       "name": "users",
       "description": "User operations"
+    },
+    {
+      "name": "questionnaire",
+      "description": "Questionnaire operations"
     }
   ],
   "paths": {
     "/api/auth/accept-user-invitation": {
       "post": {
-        "tags": ["auth"],
+        "tags": [
+          "auth"
+        ],
         "summary": "Accept user invitation",
         "operationId": "acceptUserInvitation",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "body",
-            "required": true,
-            "description": "ID of the user",
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userId"
+                ]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Successful operation"
@@ -69,14 +81,159 @@
     },
     "/api/auth/send-surveyor-invitation": {
       "post": {
-        "tags": ["auth"],
+        "tags": [
+          "auth"
+        ],
         "summary": "Send surveyor invitation",
         "operationId": "sendSurveyorInvitation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "surveyorDetails": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "department": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "email",
+                        "department"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "surveyorDetails"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "409": {
+            "description": "Conflict - All of the emails already exist"
+          }
+        }
+      }
+    },
+    "/api/questionnaire": {
+      "post": {
+        "tags": [
+          "questionnaire"
+        ],
+        "summary": "Create questionnaire",
+        "operationId": "createQuestionnaire",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/createQuestionnaireBody"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get all users",
+        "operationId": "getUsers",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
+            "name": "email",
+            "in": "query",
+            "description": "Email of the user to filter by. For example: email=test@codev.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Role of the user to filter by. For example: role=ADMIN",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Fields to include in the response. For example: email,role",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Fields to sort by. For example: -createdAt,email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for paginated results",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of results per page",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "sendSurveyorInvitationBody": {
+        "content": {
+          "application/json": {
             "schema": {
               "type": "object",
               "properties": {
@@ -86,110 +243,130 @@
                     "type": "object",
                     "properties": {
                       "email": {
-                        "type": "string",
-                        "required": true
+                        "type": "string"
                       },
                       "department": {
-                        "type": "string",
-                        "required": true
+                        "type": "string"
                       }
-                    }
+                    },
+                    "required": [
+                      "email",
+                      "department"
+                    ]
                   }
                 }
-              }
+              },
+              "required": [
+                "surveyorDetails"
+              ]
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "409": {
-            "description": "Conflict - All of the emails already exists"
-          }
         }
+      },
+      "createQuestionnaireBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "coverage": {
+                  "$ref": "#/components/schemas/SurveyCoverage"
+                },
+                "template": {
+                  "$ref": "#/components/schemas/Template"
+                }
+              },
+              "required": [
+                "coverage",
+                "template"
+              ]
+            }
+          }
+        },
+        "required": true
       }
     },
-    "/api/users": {
-      "get": {
-        "tags": ["users"],
-        "summary": "Get all users",
-        "operationId": "users",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "query",
-            "description": "Email of the user to filter by. For example: email=test@codev.com",
-            "required": false,
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "email": {
             "type": "string"
           },
-          {
-            "name": "role",
-            "in": "query",
-            "description": "Role of the user to filter by. For example: role=ADMIN",
-            "required": false,
+          "isVerified": {
+            "type": "boolean"
+          },
+          "department": {
             "type": "string"
           },
-          {
-            "name": "select",
-            "in": "query",
-            "description": "Fields to include in the response. For example: email,role",
-            "required": false,
+          "role": {
             "type": "string"
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Fields to sort by. For example: -createdAt,email",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number for paginated results",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Maximum number of results per page",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
           }
         }
-      }
-    }
-  },
-  "definitions": {
-    "User": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "isVerified": {
-          "type": "boolean"
-        },
-        "department": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
+      },
+      "SurveyCoverage": {
+        "type": "object",
+        "properties": {
+          "dateFrom": {
+            "type": "string"
+          },
+          "dateTo": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "string"
+          }
+        }
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DROPDOWN",
+              "TEXTAREA",
+              "TEXTINPUT",
+              "CHECKBOX",
+              "RADIOBUTTON"
+            ]
+          },
+          "options": {
+            "type": "string"
+          },
+          "isRequired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Template": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string",
+            "enum": [
+              "IT",
+              "HR",
+              "FINANCE",
+              "RECRUITMENT",
+              "OPERATIONS"
+            ]
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            }
+          }
         }
       }
     }
