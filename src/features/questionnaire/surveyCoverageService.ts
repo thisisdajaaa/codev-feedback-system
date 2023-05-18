@@ -8,7 +8,7 @@ export const SurveyCoverageService = () => {
     const { coverage } = req.body;
 
     const newCoverage: ISurveyCoverage = {
-      ...coverage
+      ...coverage,
     };
 
     return await SurveyCoverage.create(newCoverage);

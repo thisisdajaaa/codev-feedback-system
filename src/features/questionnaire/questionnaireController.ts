@@ -1,7 +1,6 @@
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse } from "@/types";
-import { UserResponse } from "@/features/user/types";
 import { NextHandler } from "next-connect";
 import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageService";
 import { TemplateService } from "@/features/questionnaire/templateService";
