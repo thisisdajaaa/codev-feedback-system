@@ -9,7 +9,7 @@ const LoginPage: NextPage = () => {
       <div className="flex w-full max-w-screen-lg bg-white xs:flex-col-reverse md:flex-row ">
         <div className="relative xs:h-[27.813rem] sm:w-full md:h-[44.375rem] md:w-1/2">
           <Image
-            src="/assets/login-img.png"
+            src="/assets/login-img.jpg"
             alt="lady with a laptop"
             layout="fill"
             objectFit="cover"
