@@ -17,7 +17,7 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     screens: {
-      xs: "320px",
+      xs: "20rem",
       ...defaultTheme.screens,
     },
     extend: {
@@ -27,20 +27,9 @@ module.exports = {
         tertiary: ["Open Sans", ...fontFamily.sans],
       },
       colors: {
-        primary: {
-          // Customize it on globals.css :root
-          50: withOpacityValue("--tw-color-primary-50"),
-          100: withOpacityValue("--tw-color-primary-100"),
-          200: withOpacityValue("--tw-color-primary-200"),
-          300: withOpacityValue("--tw-color-primary-300"),
-          400: withOpacityValue("--tw-color-primary-400"),
-          500: withOpacityValue("--tw-color-primary-500"),
-          600: withOpacityValue("--tw-color-primary-600"),
-          700: withOpacityValue("--tw-color-primary-700"),
-          800: withOpacityValue("--tw-color-primary-800"),
-          900: withOpacityValue("--tw-color-primary-900"),
-        },
-        white: "#fff",
+        white: "#FFF",
+        brightGray: withOpacityValue("--tw-color-bright-gray"),
+        blueberry: withOpacityValue("--tw-color-blueberry"),
       },
     },
   },
