@@ -27,26 +27,24 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
 
-  events: {
-    signIn: async ({ user }) => {
-      const email = user.email as string;
-      const dbUser = await getDbUser(email);
-
-      if (dbUser === null) {
-        const newUser: Pick<IUser, PickedUserDetails> = {
-          email,
-          isVerified: false,
-          role: ROLES.SURVEYEE,
-        };
-
-        await User.create(newUser);
-      }
-    },
-  },
-
   callbacks: {
-    signIn: ({ user }) => {
+    signIn: async ({ user }) => {
       if (user.email?.endsWith("codev.com")) {
+        const email = user.email;
+        let dbUser = await getDbUser(email);
+
+        if (!dbUser) {
+          const newUser: Pick<IUser, PickedUserDetails> = {
+            email,
+            isVerified: false,
+            role: ROLES.SURVEYEE,
+          };
+
+          dbUser = await User.create(newUser);
+        }
+
+        user.role = dbUser?.role;
+
         return true;
       }
 
@@ -54,21 +52,19 @@ export const authOptions: NextAuthOptions = {
       return false;
     },
     jwt: async ({ token, user }) => {
-      if (user) token.id = user.id;
-
-      //todo: find a more efficient way. if we can find a way not to hit the db, much better.
-      const email = token.email as string;
-      const dbUser = await getDbUser(email);
-      if (dbUser !== null) {
-        token.role = dbUser.role;
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
       }
-      //end todo
 
       return Promise.resolve(token);
     },
     session: async ({ session, token }) => {
-      if (token) session.id = token.id;
-      session.user.role = token.role as string;
+      if (token) {
+        session.id = token.id;
+        session.user.role = token.role as string;
+      }
+
       return session;
     },
   },
