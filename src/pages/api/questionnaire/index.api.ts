@@ -10,6 +10,8 @@ import { roleAtLeast } from "@/middlewares/roleAtLeast";
 import { QuestionnaireResponse } from "@/features/questionnaire/types";
 import { QuestionnaireController } from "@/features/questionnaire";
 import { ROLES } from "@/models/User/config";
+import { validate } from "@/middlewares/validate";
+import { questionnaireBodySchema } from "@/features/questionnaire/validations/createQuestionnaireBodySchema";
 
 const handler = nextConnect<NextApiRequest,
   NextApiResponse<ApiResponse<QuestionnaireResponse>>>({
@@ -21,7 +23,7 @@ const { handleCreateQuestionnaire } = QuestionnaireController();
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.ADMIN))
-  // .use(TODO VALIDATORS)
+  .use(validate("body", questionnaireBodySchema))
   .post(mongoHandler(handleCreateQuestionnaire));
 
 export default handler;
