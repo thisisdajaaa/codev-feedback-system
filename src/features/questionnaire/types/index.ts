@@ -10,6 +10,7 @@ export type PickedSurveyCoverageDetails =
   | "isActive";
 
 export type PickedTemplateDetails =
+  | "id"
   | "title"
   | "description"
   | "department"
@@ -17,17 +18,24 @@ export type PickedTemplateDetails =
   | "createdBy"
   | "updatedBy";
 
+export type PickedCoverage = Pick<ISurveyCoverage, PickedSurveyCoverageDetails>;
+
+export type PickedTemplate = Pick<ITemplate, PickedTemplateDetails>;
+
+export type PickedCoverageResponse = Omit<PickedCoverage, "templateID">;
+
+export type CreatedQuestionnaireResponse = {
+  coverage: PickedCoverage & { id: string };
+  template: PickedTemplate & { id: string };
+};
+
+export type GetQuestionnaireResponse = PickedCoverageResponse & {
+  template: PickedTemplate;
+} & { id: string };
+
 export interface ICreateQuestionnaireRequest extends NextApiRequest {
   body: {
-    coverage: Omit<
-      Pick<ISurveyCoverage, PickedSurveyCoverageDetails>,
-      "templateID"
-    >;
-    template: Pick<ITemplate, PickedTemplateDetails>;
+    coverage: PickedCoverageResponse;
+    template: PickedTemplate;
   };
 }
-
-export type QuestionnaireResponse = {
-  coverage: Pick<ISurveyCoverage, PickedSurveyCoverageDetails> & { id: string };
-  template: Pick<ITemplate, PickedTemplateDetails> & { id: string };
-};

@@ -63,8 +63,16 @@ export const TemplateSchema = new Schema<ITemplate>(
     timestamps: true,
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
+    versionKey: false,
   }
 );
+
+TemplateSchema.virtual("surveyCoverage", {
+  ref: "SurveyCoverage",
+  localField: "_id",
+  foreignField: "templateID",
+  justOne: true,
+});
 
 const Template =
   mongoose.models?.Template ||

@@ -6,10 +6,7 @@ import { ROLES } from "@/models/User/config";
 import type { ApiResponse } from "@/types";
 
 import { QuestionnaireController } from "@/features/questionnaire";
-import type {
-  ICreateQuestionnaireRequest,
-  QuestionnaireResponse,
-} from "@/features/questionnaire/types";
+import type { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
 import { questionnaireBodySchema } from "@/features/questionnaire/validations/createQuestionnaireBodySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
@@ -19,16 +16,18 @@ import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   ICreateQuestionnaireRequest,
-  NextApiResponse<ApiResponse<QuestionnaireResponse>>
+  NextApiResponse<ApiResponse<any>>
 >({
   onError,
 });
 
-const { handleCreateQuestionnaire } = QuestionnaireController();
+const { handleGetQuestionnaires, handleCreateQuestionnaire } =
+  QuestionnaireController();
 
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.SURVEYOR))
+  .get(mongoHandler(handleGetQuestionnaires))
   .use(validate("body", questionnaireBodySchema))
   .post(mongoHandler(handleCreateQuestionnaire));
 

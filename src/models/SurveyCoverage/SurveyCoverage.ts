@@ -27,6 +27,7 @@ export const SurveyCoverageSchema = new Schema<ISurveyCoverage>(
     timestamps: true,
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
+    versionKey: false,
   }
 );
 

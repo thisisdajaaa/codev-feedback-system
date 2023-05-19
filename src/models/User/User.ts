@@ -27,6 +27,7 @@ export const UserSchema = new Schema<IUser>(
     timestamps: true,
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
+    versionKey: false,
   }
 );
 

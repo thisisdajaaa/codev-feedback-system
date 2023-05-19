@@ -22,9 +22,7 @@ export const UserService = () => {
         StatusCodes.BAD_REQUEST
       );
 
-    const results = await advancedResults<IUser, UserResponse>(User, req);
-
-    return results;
+    return await advancedResults<IUser, UserResponse>(User, req);
   };
 
   return { getUsers };
