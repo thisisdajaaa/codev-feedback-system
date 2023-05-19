@@ -22,7 +22,7 @@ const { handleCreateQuestionnaire } = QuestionnaireController();
 
 handler
   .use(isAuthenticatedUser)
-  .use(roleAtLeast(ROLES.ADMIN))
+  .use(roleAtLeast(ROLES.SURVEYOR))
   .use(validate("body", questionnaireBodySchema))
   .post(mongoHandler(handleCreateQuestionnaire));
 
