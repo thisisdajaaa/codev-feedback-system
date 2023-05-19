@@ -1,20 +1,26 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import nextConnect from "next-connect";
 
-import { ApiResponse } from "@/types";
+import { ROLES } from "@/models/User/config";
 
+import type { ApiResponse } from "@/types";
+
+import { QuestionnaireController } from "@/features/questionnaire";
+import type {
+  ICreateQuestionnaireRequest,
+  QuestionnaireResponse,
+} from "@/features/questionnaire/types";
+import { questionnaireBodySchema } from "@/features/questionnaire/validations/createQuestionnaireBodySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { roleAtLeast } from "@/middlewares/roleAtLeast";
-import { QuestionnaireResponse } from "@/features/questionnaire/types";
-import { QuestionnaireController } from "@/features/questionnaire";
-import { ROLES } from "@/models/User/config";
 import { validate } from "@/middlewares/validate";
-import { questionnaireBodySchema } from "@/features/questionnaire/validations/createQuestionnaireBodySchema";
 
-const handler = nextConnect<NextApiRequest,
-  NextApiResponse<ApiResponse<QuestionnaireResponse>>>({
+const handler = nextConnect<
+  ICreateQuestionnaireRequest,
+  NextApiResponse<ApiResponse<QuestionnaireResponse>>
+>({
   onError,
 });
 

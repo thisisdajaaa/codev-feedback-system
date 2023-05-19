@@ -1,13 +1,18 @@
-import { NextApiRequest } from "next";
-import { ISurveyCoverage } from "@/models/SurveyCoverage/types";
+import mongoose from "mongoose";
+
 import SurveyCoverage from "@/models/SurveyCoverage";
 
-export const SurveyCoverageService = () => {
+import { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
 
-  const createSurveyCoverage = async (req: NextApiRequest) => {
+export const SurveyCoverageService = () => {
+  const createSurveyCoverage = async (
+    req: ICreateQuestionnaireRequest,
+    templateID: mongoose.Schema.Types.ObjectId
+  ) => {
     const { coverage } = req.body;
 
-    const newCoverage: ISurveyCoverage = {
+    const newCoverage = {
+      templateID,
       ...coverage,
     };
 

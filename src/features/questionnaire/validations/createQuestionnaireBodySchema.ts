@@ -1,14 +1,17 @@
-import * as yup from "yup";
 import moment from "moment";
-import { QUESTION_TYPES } from "@/models/Template/config";
-import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
+import * as yup from "yup";
 
+import { QUESTION_TYPES } from "@/models/Template/config";
+
+import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 
 const dateSchema = yup
   .string()
   .required()
-  .test("is-date", QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE, (value) =>
-    moment(value, moment.ISO_8601, true).isValid(),
+  .test(
+    "is-date",
+    QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE,
+    (value) => moment(value, moment.ISO_8601, true).isValid()
   );
 
 const questionSchema = yup.object().shape({
@@ -16,7 +19,10 @@ const questionSchema = yup.object().shape({
   type: yup
     .string()
     .trim()
-    .oneOf(Object.values(QUESTION_TYPES), QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE)
+    .oneOf(
+      Object.values(QUESTION_TYPES),
+      QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE
+    )
     .required(),
   options: yup.string().trim(),
   isRequired: yup.boolean().required(),
@@ -31,9 +37,9 @@ const questionnaireBodySchema = yup.object().shape({
         dateFrom &&
         schema.test(
           "is-after",
-          "dateTo must be later than dateFrom",
-          (value: string) => moment(value).isAfter(moment(dateFrom)),
-        ),
+          QUESTIONNAIRE_MESSAGES.ERROR.INCORRECT_DATE_RANGE,
+          (value: string) => moment(value).isAfter(moment(dateFrom))
+        )
     ),
     isActive: yup.boolean(),
   }),

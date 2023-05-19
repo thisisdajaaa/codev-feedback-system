@@ -12,6 +12,7 @@ export const QuestionSchema = new Schema<IQuestion>(
     },
     type: {
       enum: Object.values(QUESTION_TYPES),
+      type: String,
       required: true,
     },
     options: {

@@ -44,9 +44,7 @@
   "paths": {
     "/api/auth/accept-user-invitation": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Accept user invitation",
         "operationId": "acceptUserInvitation",
         "requestBody": {
@@ -59,9 +57,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "userId"
-                ]
+                "required": ["userId"]
               }
             }
           }
@@ -81,9 +77,7 @@
     },
     "/api/auth/send-surveyor-invitation": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "summary": "Send surveyor invitation",
         "operationId": "sendSurveyorInvitation",
         "requestBody": {
@@ -104,16 +98,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "email",
-                        "department"
-                      ]
+                      "required": ["email", "department"]
                     }
                   }
                 },
-                "required": [
-                  "surveyorDetails"
-                ]
+                "required": ["surveyorDetails"]
               }
             }
           },
@@ -134,9 +123,7 @@
     },
     "/api/questionnaire": {
       "post": {
-        "tags": [
-          "questionnaire"
-        ],
+        "tags": ["questionnaire"],
         "summary": "Create questionnaire",
         "operationId": "createQuestionnaire",
         "requestBody": {
@@ -154,9 +141,7 @@
     },
     "/api/users": {
       "get": {
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "summary": "Get all users",
         "operationId": "getUsers",
         "parameters": [
@@ -249,16 +234,11 @@
                         "type": "string"
                       }
                     },
-                    "required": [
-                      "email",
-                      "department"
-                    ]
+                    "required": ["email", "department"]
                   }
                 }
               },
-              "required": [
-                "surveyorDetails"
-              ]
+              "required": ["surveyorDetails"]
             }
           }
         }
@@ -276,10 +256,7 @@
                   "$ref": "#/components/schemas/Template"
                 }
               },
-              "required": [
-                "coverage",
-                "template"
-              ]
+              "required": ["coverage", "template"]
             }
           }
         },
@@ -353,13 +330,7 @@
           },
           "department": {
             "type": "string",
-            "enum": [
-              "IT",
-              "HR",
-              "FINANCE",
-              "RECRUITMENT",
-              "OPERATIONS"
-            ]
+            "enum": ["IT", "HR", "FINANCE", "RECRUITMENT", "OPERATIONS"]
           },
           "questions": {
             "type": "array",
