@@ -7,12 +7,12 @@ import { StatusCodes } from "@/constants/statusCode";
 
 import Template from "@/models/Template";
 
-import { ApiResponse } from "@/types";
+import type { ApiResponse } from "@/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageService";
 import { TemplateService } from "@/features/questionnaire/templateService";
-import {
+import type {
   CreatedQuestionnaireResponse,
   GetQuestionnaireResponse,
   ICreateQuestionnaireRequest,
