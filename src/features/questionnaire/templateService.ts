@@ -11,6 +11,7 @@ export const TemplateService = () => {
       createdBy: req.user._id,
       updatedBy: req.user._id,
     };
+
     return await Template.create(newTemplate);
   };
 

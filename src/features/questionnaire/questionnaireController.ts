@@ -24,12 +24,15 @@ export const QuestionnaireController = () => {
       res: NextApiResponse<ApiResponse<QuestionnaireResponse>>,
       _next: NextHandler
     ) => {
-      const template = await createTemplate(req);
-      const coverage = await createSurveyCoverage(req, template._id);
+      const createdTemplate = await createTemplate(req);
+      const createdCoverage = await createSurveyCoverage(
+        req,
+        createdTemplate._id
+      );
 
       const data: QuestionnaireResponse = {
-        ...coverage,
-        ...template,
+        coverage: createdCoverage,
+        template: createdTemplate,
       };
 
       return res.status(StatusCodes.OK).json({
