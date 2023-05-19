@@ -1,131 +1,43 @@
 import { NextPage } from "next";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
-import React, { useState } from "react";
-
-import logger from "@/utils/logger";
-
-import Button from "@/components/Button";
-
-import type { UserForm } from "./types";
+import React from "react";
 
 const LoginPage: NextPage = () => {
-  const [userInfo, setUserInfo] = useState<UserForm>({
-    accountNum: "",
-    email: "",
-    password: "",
-  });
-
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
-    event
-  ) => {
-    // validate your userinfo
-    event.preventDefault();
-
-    const res = await signIn("google");
-
-    logger(res);
-  };
-
-  const handleChange =
-    (key: keyof UserForm) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setUserInfo((prev) => ({
-        ...prev,
-        [key]: event.target.value,
-      }));
-    };
-
   return (
-    <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Sign in
-          </h2>
+    <div className="flex min-h-screen items-center justify-center bg-brightGray py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex w-full max-w-screen-lg bg-white xs:flex-col-reverse md:flex-row ">
+        <div className="relative xs:h-[27.813rem] sm:w-full md:h-[44.375rem] md:w-1/2">
+          <Image
+            src="/assets/login-image.svg"
+            alt="lady with a laptop"
+            layout="fill"
+            objectFit="contain"
+          />
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm">
-            <div className="mb-4">
-              <label htmlFor="account-number" className="sr-only">
-                Account number
-              </label>
-              <input
-                id="account-number"
-                name="account-number"
-                type="number"
-                value={userInfo.accountNum}
-                onChange={handleChange("accountNum")}
-                className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Account number"
-              />
-            </div>
 
-            <div className="mb-4">
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                value={userInfo.email}
-                autoComplete="email"
-                required
-                onChange={handleChange("email")}
-                className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
+        <div className="xs:p-6 sm:w-full md:w-1/2 md:p-6 lg:p-16">
+          <div className="mt-16 xs:mt-4">
+            <Image
+              src="/assets/codev-logo.svg"
+              alt="codev logo"
+              width={26}
+              height={26}
+            />
 
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={userInfo.password}
-                onChange={handleChange("password")}
-                autoComplete="current-password"
-                required
-                className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
+            <h1 className="mt-3 text-sm font-normal">Sign in to CoDev</h1>
+            <h2 className="text-xl font-bold xs:mb-[8.625rem] md:mb-[8.688rem]">
+              Feedback System
+            </h2>
+
+            <button
+              onClick={async () => await signIn("google")}
+              className="w-full rounded-3xl bg-blueberry py-2 px-6 text-white xs:mb-6"
+            >
+              Sign in via Google
+            </button>
           </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <Button type="submit" className="w-full justify-center">
-              Sign in
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );
