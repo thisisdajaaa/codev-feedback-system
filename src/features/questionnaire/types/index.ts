@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 
-import { ISurveyCoverage } from "@/models/SurveyCoverage/types";
-import { ITemplate } from "@/models/Template/types";
+import type { ISurveyCoverage } from "@/models/SurveyCoverage/types";
+import type { ITemplate } from "@/models/Template/types";
 
 export type PickedSurveyCoverageDetails =
   | "templateID"
