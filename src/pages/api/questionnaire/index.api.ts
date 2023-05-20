@@ -6,7 +6,11 @@ import { ROLES } from "@/models/User/config";
 import type { ApiResponse } from "@/types";
 
 import { QuestionnaireController } from "@/features/questionnaire";
-import type { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
+import type {
+  CreatedQuestionnaireResponse,
+  GetQuestionnaireResponse,
+  ICreateQuestionnaireRequest,
+} from "@/features/questionnaire/types";
 import { questionnaireBodySchema } from "@/features/questionnaire/validations/createQuestionnaireBodySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
@@ -16,7 +20,9 @@ import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   ICreateQuestionnaireRequest,
-  NextApiResponse<ApiResponse<any>>
+  NextApiResponse<
+    ApiResponse<CreatedQuestionnaireResponse | GetQuestionnaireResponse[]>
+  >
 >({
   onError,
 });

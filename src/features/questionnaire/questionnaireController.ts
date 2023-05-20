@@ -6,6 +6,7 @@ import { advancedResults } from "@/utils/advancedResults";
 import { StatusCodes } from "@/constants/statusCode";
 
 import Template from "@/models/Template";
+import type { ITemplate } from "@/models/Template/types";
 
 import type { ApiResponse } from "@/types";
 
@@ -35,11 +36,10 @@ export const QuestionnaireController = () => {
         { path: "surveyCoverage", select: "dateFrom dateTo isActive" },
       ];
 
-      const { count, pagination, data } = await advancedResults<any, any>(
-        Template,
-        req,
-        populateFields
-      );
+      const { count, pagination, data } = await advancedResults<
+        ITemplate,
+        GetQuestionnaireResponse[]
+      >(Template, req, populateFields);
 
       return res.status(StatusCodes.OK).json({
         success: true,
