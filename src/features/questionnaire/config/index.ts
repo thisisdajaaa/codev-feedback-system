@@ -5,6 +5,7 @@ export const QUESTIONNAIRE_MESSAGES = {
     INVALID_QUESTION_TYPE: "Invalid question type",
   },
   SUCCESS: {
+    ALL: "Successfully retrieve questionnaires!",
     CREATE: "Successfully created questionnaire!",
   },
 };

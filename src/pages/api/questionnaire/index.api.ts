@@ -7,8 +7,9 @@ import type { ApiResponse } from "@/types";
 
 import { QuestionnaireController } from "@/features/questionnaire";
 import type {
+  CreatedQuestionnaireResponse,
+  GetQuestionnaireResponse,
   ICreateQuestionnaireRequest,
-  QuestionnaireResponse,
 } from "@/features/questionnaire/types";
 import { questionnaireBodySchema } from "@/features/questionnaire/validations/createQuestionnaireBodySchema";
 import { onError } from "@/middlewares/errors";
@@ -19,16 +20,20 @@ import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   ICreateQuestionnaireRequest,
-  NextApiResponse<ApiResponse<QuestionnaireResponse>>
+  NextApiResponse<
+    ApiResponse<CreatedQuestionnaireResponse | GetQuestionnaireResponse[]>
+  >
 >({
   onError,
 });
 
-const { handleCreateQuestionnaire } = QuestionnaireController();
+const { handleGetQuestionnaires, handleCreateQuestionnaire } =
+  QuestionnaireController();
 
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.SURVEYOR))
+  .get(mongoHandler(handleGetQuestionnaires))
   .use(validate("body", questionnaireBodySchema))
   .post(mongoHandler(handleCreateQuestionnaire));
 

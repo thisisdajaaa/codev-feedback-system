@@ -6,7 +6,7 @@ import type { Pagination, Populate } from "@/types";
 export const advancedResults = async <T, K>(
   model: Model<T>,
   req: NextApiRequest,
-  populate?: Populate
+  populate?: Populate | Populate[]
 ) => {
   let query;
 
@@ -55,7 +55,13 @@ export const advancedResults = async <T, K>(
   query = query.skip(startIndex).limit(limit);
 
   if (populate) {
-    query = query.populate(populate);
+    if (Array.isArray(populate)) {
+      for (const item of populate) {
+        query = query.populate(item);
+      }
+    } else {
+      query = query.populate(populate);
+    }
   }
 
   // Executing query

@@ -122,6 +122,62 @@
       }
     },
     "/api/questionnaire": {
+      "get": {
+        "tags": ["questionnaire"],
+        "summary": "Get All Questionnaires",
+        "operationId": "getQuestionnaires",
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Fields to include in the response. For example: title, department",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Fields to sort by. For example: -createdAt,email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for paginated results",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of results per page",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/responseBodies/Questionnaire"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["questionnaire"],
         "summary": "Create questionnaire",
@@ -215,6 +271,44 @@
     }
   },
   "components": {
+    "responseBodies": {
+      "Questionnaire": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string",
+            "enum": ["IT", "HR", "FINANCE", "RECRUITMENT", "OPERATIONS"]
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            }
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/User"
+          },
+          "updatedBy": {
+            "$ref": "#/components/schemas/User"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "surveyCoverage": {
+            "$ref": "#/components/schemas/SurveyCoverage"
+          }
+        }
+      }
+    },
     "requestBodies": {
       "sendSurveyorInvitationBody": {
         "content": {
