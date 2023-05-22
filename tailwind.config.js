@@ -19,7 +19,11 @@ module.exports = {
       xs: "20rem",
       ...defaultTheme.screens,
     },
+
     extend: {
+      fontFamily: {
+        sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         white: "#FFF",
         nero: withOpacityValue("--tw-color-nero"),

@@ -16,7 +16,7 @@ const Template: ComponentStory<typeof Button> = (args) => (
   <Button {...args}>Click me</Button>
 );
 
-const ButtonWithIcon: ComponentStory<typeof Button> = () => (
+const WithIconButton: ComponentStory<typeof Button> = () => (
   <Button
     onClick={() => logger("clicked")}
     variant="warning"
@@ -30,5 +30,5 @@ const ButtonWithIcon: ComponentStory<typeof Button> = () => (
 export const Default = Template.bind({});
 Default.args = {};
 
-export const WithIcon = ButtonWithIcon.bind({});
+export const WithIcon = WithIconButton.bind({});
 WithIcon.args = {};

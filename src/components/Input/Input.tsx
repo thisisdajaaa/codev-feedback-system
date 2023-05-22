@@ -9,7 +9,6 @@ import { Typography } from "../Typography";
 const Input: FC<InputProps> = (props) => {
   const {
     disabled = false,
-    hasError = false,
     errorMessage,
     className,
     type,
@@ -57,10 +56,10 @@ const Input: FC<InputProps> = (props) => {
     <>
       <div
         className={clsxm(
-          "flex w-full flex-grow appearance-none items-center",
-          "rounded-[0.25rem] border py-1 text-black",
+          "flex w-full flex-grow appearance-none items-center px-[0.875rem] py-2",
+          "max-h-[38px] rounded-[0.25rem] border text-black",
           "duration-150 focus-within:border-nero focus-within:transition-all sm:text-sm",
-          hasError && "border-red-400",
+          !!errorMessage && "border-red-400",
           disabled && "bg-disable"
         )}
       >
@@ -74,7 +73,8 @@ const Input: FC<InputProps> = (props) => {
             onWheel={handleWheel}
             readOnly={readOnly}
             className={clsxm(
-              "block w-full border-transparent px-[0.875rem] py-2 text-base leading-[1.813rem] text-black focus:border-transparent focus:outline-none focus:ring-0",
+              className,
+              "block w-full border-transparent text-base leading-[1.813rem] text-black focus:border-transparent focus:outline-none focus:ring-0",
               "placeholder-gray-500",
               disabled && "bg-disable"
             )}
@@ -90,7 +90,7 @@ const Input: FC<InputProps> = (props) => {
             onWheel={handleWheel}
             className={clsxm(
               className,
-              "block w-full border-transparent px-[0.875rem] py-2 text-base leading-[1.813rem] text-black focus:border-transparent focus:outline-none focus:ring-0",
+              "block w-full border-transparent text-base leading-[1.813rem] text-black focus:border-transparent focus:outline-none focus:ring-0",
               "placeholder-gray-500",
               disabled && "bg-disable",
               readOnly && "cursor-default"
@@ -100,7 +100,7 @@ const Input: FC<InputProps> = (props) => {
         )}
       </div>
 
-      {hasError && (
+      {!!errorMessage && (
         <Typography
           variant="p"
           size="text-sm"

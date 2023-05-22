@@ -11,7 +11,7 @@ const Typography: FC<PropsWithChildren<TypographyProps>> = (props) => {
     textAlign = "text-left",
     lineHeight = "leading-[0.957rem]",
     className,
-    size,
+    size = "text-base",
     children,
   } = props;
 

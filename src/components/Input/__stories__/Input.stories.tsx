@@ -9,7 +9,23 @@ export default {
   argTypes: {},
 } as ComponentMeta<typeof Input>;
 
-const Template: ComponentStory<typeof Input> = (args) => <Input {...args} />;
+const Template: ComponentStory<typeof Input> = (args) => (
+  <Input placeholder="Enter text" {...args} />
+);
+
+const WithErrorInput: ComponentStory<typeof Input> = () => (
+  <Input placeholder="Enter text" errorMessage="This is an error message" />
+);
+
+const WithMaskInput: ComponentStory<typeof Input> = () => (
+  <Input placeholder="Enter text" mask="99/99" />
+);
 
 export const Default = Template.bind({});
 Default.args = {};
+
+export const WithError = WithErrorInput.bind({});
+WithError.args = {};
+
+export const WithMask = WithMaskInput.bind({});
+WithMask.args = {};
