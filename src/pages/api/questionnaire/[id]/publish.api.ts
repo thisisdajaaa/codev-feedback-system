@@ -16,20 +16,21 @@ import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { roleAtLeast } from "@/middlewares/roleAtLeast";
 
-const handler = nextConnect<ICreateQuestionnaireRequest,
-  NextApiResponse<ApiResponse<CreatedQuestionnaireResponse | GetQuestionnaireResponse[]>>>({
+const handler = nextConnect<
+  ICreateQuestionnaireRequest,
+  NextApiResponse<
+    ApiResponse<CreatedQuestionnaireResponse | GetQuestionnaireResponse[]>
+  >
+>({
   onError,
 });
 
-const { handleGetQuestionnaires, handleCreateQuestionnaire } =
-  QuestionnaireController();
+const { handlePublishQuestionnaire } = QuestionnaireController();
 
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.SURVEYOR))
-  .put(mongoHandler((req, res) => {
-    const { id } = req.query;
-    console.log(`Publishing questionnaire with id: ${id}`);
-  }));
+  // TODO add validation for path param
+  .put(mongoHandler(handlePublishQuestionnaire));
 
 export default handler;

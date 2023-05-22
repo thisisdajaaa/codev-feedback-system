@@ -7,5 +7,6 @@ export const QUESTIONNAIRE_MESSAGES = {
   SUCCESS: {
     ALL: "Successfully retrieve questionnaires!",
     CREATE: "Successfully created questionnaire!",
+    PUBLISH: "Successfully published questionnaire!",
   },
 };

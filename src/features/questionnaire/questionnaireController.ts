@@ -76,5 +76,23 @@ export const QuestionnaireController = () => {
     }
   );
 
-  return { handleGetQuestionnaires, handleCreateQuestionnaire };
+  const handlePublishQuestionnaire = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<unknown>>,
+      _next: NextHandler
+    ) => {
+      // TODO
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.PUBLISH,
+      });
+    }
+  );
+
+  return {
+    handleGetQuestionnaires,
+    handleCreateQuestionnaire,
+    handlePublishQuestionnaire,
+  };
 };
