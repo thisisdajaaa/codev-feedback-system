@@ -5,11 +5,15 @@
 @tailwind utilities;
 
 :root {
+  --tw-color-nero: 39 36 37;
   --tw-color-bright-gray: 234 235 238;
   --tw-color-blueberry: 59 130 246;
+  --tw-color-disable: 223 225 226;
 
   --color-bright-gray: rgb(var(--tw-color-bright-gray)); /* #EAEBEE */
   --color-blueberry: rgb(var(--tw-color-blueberry)); /* #3B82F6  */
+  --color-disable: rgb(var(--tw-color-disable)); /* #DFE1E2 */
+  --color-nero: rgb(var(--tw-color-nero)); /* #272425 */
 }
 
 body {

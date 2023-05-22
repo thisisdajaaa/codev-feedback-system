@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { fontFamily } = require("tailwindcss/defaultTheme");
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 const withOpacityValue = (variable) => {
@@ -21,15 +20,12 @@ module.exports = {
       ...defaultTheme.screens,
     },
     extend: {
-      fontFamily: {
-        primary: ["Gotham", ...fontFamily.sans],
-        secondary: ["Inter", ...fontFamily.sans],
-        tertiary: ["Open Sans", ...fontFamily.sans],
-      },
       colors: {
         white: "#FFF",
+        nero: withOpacityValue("--tw-color-nero"),
         brightGray: withOpacityValue("--tw-color-bright-gray"),
         blueberry: withOpacityValue("--tw-color-blueberry"),
+        disable: withOpacityValue("--tw-color-disable"),
       },
     },
   },
