@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import logger from "@/utils/logger";
 import { useMount } from "@/hooks";
 
-import Navbar from "@/components/Navbar/Navbar";
+import { Navbar } from "@/components/Navbar";
 
 import { getSampleMethodAPI } from "@/api/sample";
 
@@ -24,10 +24,11 @@ const Home: NextPage = () => {
     <>
       <Navbar />
 
-      <div className="grid h-[100vh] place-content-center">
+      <div className="grid h-[100vh] place-content-center bg-black">
         <button
           onClick={() => signOut()}
-          className="rounded-sm bg-gray-500 px-3 py-2 text-white transition-all hover:bg-gray-700">
+          className="rounded-sm bg-gray-500 px-3 py-2 text-white transition-all hover:bg-gray-700"
+        >
           Logout
         </button>
       </div>

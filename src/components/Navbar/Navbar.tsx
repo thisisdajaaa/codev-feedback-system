@@ -1,28 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
-import * as React from "react";
+import { signOut } from "next-auth/react";
+import React, { FC, useState } from "react";
 
 import clsxm from "@/utils/clsxm";
 
-type NavLink = { label: string; url: string };
+import { navLinks } from "./config";
 
-const navLinks: NavLink[] = [
-  {
-    label: "My Profile",
-    url: "#",
-  },
-  {
-    label: "Log Out",
-    url: "#",
-  },
-];
+const Navbar: FC = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-const Navbar = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
+  const handleLogout = async (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    await signOut();
+  };
 
   return (
     <nav className="fixed flex h-[4.5rem] w-full justify-between bg-white px-6">
-      <div className="flex items-center xs:invisible sm:visible md:visible">
+      <div className="flex items-center sm:visible md:visible">
         <Image
           src="/assets/codev-logo.svg"
           width={32}
@@ -33,7 +32,7 @@ const Navbar = () => {
       </div>
 
       <div
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        onClick={() => setIsDropdownOpen((prev) => !prev)}
         className="relative flex cursor-pointer items-center gap-3"
       >
         <Image
@@ -63,14 +62,21 @@ const Navbar = () => {
                 </small>
               </li>
 
-              {navLinks.map((nav, i) => (
+              {navLinks.map((nav, index) => (
                 <li
-                  key={i}
+                  key={index}
                   className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
                 >
                   <Link href={nav.url}>{nav.label}</Link>
                 </li>
               ))}
+
+              <li
+                className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
+                onClick={handleLogout}
+              >
+                <span>Log Out</span>
+              </li>
             </ul>
           </div>
         )}
@@ -79,4 +85,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export { Navbar };
