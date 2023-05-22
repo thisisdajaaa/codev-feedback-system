@@ -24,7 +24,7 @@ const AlertBanner: FC<AlertProps> = (props) => {
         colorScheme[type]
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="mr-5 flex items-center gap-3 break-words">
         <Typography preset="regular">{message}</Typography>
       </div>
 

@@ -60,7 +60,7 @@ const Dropdown: FC<DropdownProps> = ({
         <button
           onClick={toggleDropdown}
           className={clsxm(
-            "flex w-full flex-grow appearance-none items-center justify-between px-[0.875rem] py-2 text-base leading-[1.813rem]",
+            "flex h-[2.5rem] w-full flex-grow appearance-none items-center justify-between px-[0.875rem] py-2 text-base leading-[1.813rem]",
             "rounded-[0.25rem] border text-black",
             "duration-150 focus-within:border-nero focus-within:transition-all sm:text-sm",
             isOpen && "border-nero",
