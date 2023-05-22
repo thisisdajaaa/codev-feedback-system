@@ -1,7 +1,13 @@
 import clsx, { ClassValue } from "clsx";
-import React, { FC, PropsWithChildren, useState } from "react";
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 
-import { useUpdateEffect } from "@/hooks";
+import { useOnClickOutsideElement, useUpdateEffect } from "@/hooks";
 
 import type { ModalProps } from "./types";
 import { Icon } from "../Icon";
@@ -10,6 +16,8 @@ import { Typography } from "../Typography";
 const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
   const { open, handleClose, title, size = "sm", children } = props;
 
+  const ref = useRef<HTMLDivElement | null>(null);
+
   const [scaleClass, setScaleClass] = useState<string>(
     open ? "scale-100" : "scale-0"
   );
@@ -17,6 +25,12 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
   useUpdateEffect(() => {
     setScaleClass(open ? "scale-100" : "scale-0");
   }, [open]);
+
+  const handleClickOutside = useCallback(() => {
+    handleClose();
+  }, [handleClose]);
+
+  useOnClickOutsideElement(ref, handleClickOutside);
 
   const sizes: ClassValue[] = [
     size === "sm" && ["w-1/2"],
@@ -30,6 +44,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
       {open && (
         <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black/50">
           <div
+            ref={ref}
             className={clsx(
               "flex max-h-[90vh] transform flex-col rounded-lg bg-white transition-all duration-300 ease-out",
               scaleClass,
