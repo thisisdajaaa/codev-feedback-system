@@ -30,6 +30,8 @@ module.exports = {
         brightGray: withOpacityValue("--tw-color-bright-gray"),
         blueberry: withOpacityValue("--tw-color-blueberry"),
         disable: withOpacityValue("--tw-color-disable"),
+        lightSilver: withOpacityValue("--tw-color-light-silver"),
+        auroMetalSaurus: withOpacityValue("--tw-color-auro-metal-saurus"),
       },
     },
   },

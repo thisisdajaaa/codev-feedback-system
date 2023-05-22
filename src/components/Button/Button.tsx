@@ -12,7 +12,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     className,
     disabled: isButtonDisabled,
     isLoading,
-    variant = "warning",
+    variant = "primary",
     ...rest
   } = props;
 
@@ -40,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       ref={ref}
       disabled={disabled}
       className={clsxm(
-        "inline-flex items-center gap-[0.531rem] rounded-full px-[0.7rem] py-2 font-secondary font-semibold sm:px-4",
+        "font-secondary inline-flex items-center gap-[0.531rem] rounded-full px-[0.7rem] py-2 font-semibold sm:px-4",
         "focus-visible:ring-primary-500 focus:outline-none focus-visible:ring",
         "shadow-sm",
         "transition-all duration-75",

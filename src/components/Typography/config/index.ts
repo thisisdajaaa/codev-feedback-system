@@ -19,7 +19,7 @@ const typographyPresets: TypographyPresets = [
       color: "text-black",
       size: "text-xl", // 20px
       textAlign: "text-left",
-      className: "font-bold", // 700
+      className: "font-semibold", // 600
       lineHeight: "leading-[1.196rem]", //19.14px
     },
   },

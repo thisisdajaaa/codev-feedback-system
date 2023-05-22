@@ -9,13 +9,43 @@
   --tw-color-bright-gray: 234 235 238;
   --tw-color-blueberry: 59 130 246;
   --tw-color-disable: 223 225 226;
+  --tw-color-light-silver: 209 213 219;
+  --tw-color-auro-metal-saurus: 107 114 128;
 
   --color-bright-gray: rgb(var(--tw-color-bright-gray)); /* #EAEBEE */
   --color-blueberry: rgb(var(--tw-color-blueberry)); /* #3B82F6  */
   --color-disable: rgb(var(--tw-color-disable)); /* #DFE1E2 */
   --color-nero: rgb(var(--tw-color-nero)); /* #272425 */
+  --color-light-silver: rgb(var(--tw-color-light-silver)); /* #D1D5DB */
+  --color-auro-metal-saurus: rgb(
+    var(--tw-color-auro-metal-saurus)
+  ); /* #6B7280 */
 }
 
-body {
-  font-family: "Inter", sans-serif;
+@layer components {
+  body {
+    font-family: "Inter", sans-serif;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar {
+    width: 0.313rem;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-light-silver);
+    border-radius: 0.125rem;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-auro-metal-saurus);
+  }
+
+  .modal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-light-silver) transparent;
+  }
 }
