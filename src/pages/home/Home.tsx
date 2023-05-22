@@ -5,6 +5,8 @@ import { useCallback } from "react";
 import logger from "@/utils/logger";
 import { useMount } from "@/hooks";
 
+import { Button } from "@/components/Button";
+import { Icon } from "@/components/Icon";
 import { Navbar } from "@/components/Navbar";
 
 import { getSampleMethodAPI } from "@/api/sample";
@@ -24,13 +26,15 @@ const Home: NextPage = () => {
     <>
       <Navbar />
 
-      <div className="grid h-[100vh] place-content-center bg-black">
-        <button
+      <div className="grid h-[100vh] place-content-center">
+        <Button
           onClick={() => signOut()}
-          className="rounded-sm bg-gray-500 px-3 py-2 text-white transition-all hover:bg-gray-700"
+          variant="warning"
+          className="xs:px-[0.7rem]"
         >
-          Logout
-        </button>
+          <Icon src="/assets/trash.svg" height={16} width={14} />
+          <span className="hidden sm:inline">Trash</span>
+        </Button>
       </div>
     </>
   );
