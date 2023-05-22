@@ -6,7 +6,7 @@ import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
 const AlertBanner: FC<AlertProps> = (props) => {
-  const { type = "success", message, handleClose, open } = props;
+  const { type = "success", message, className, handleClose, open } = props;
 
   const colorScheme = {
     success: "bg-green-100 text-green-800",
@@ -20,12 +20,17 @@ const AlertBanner: FC<AlertProps> = (props) => {
   return (
     <div
       className={clsx(
-        "relative flex items-center justify-center rounded-md p-4 shadow-md",
-        colorScheme[type]
+        "relative z-0 flex items-center justify-center rounded-md p-4 shadow-md",
+        colorScheme[type],
+        className
       )}
     >
       <div className="mr-5 flex items-center gap-3 break-words">
-        <Typography preset="regular">{message}</Typography>
+        {typeof message === "string" ? (
+          <Typography preset="regular">{message}</Typography>
+        ) : (
+          message
+        )}
       </div>
 
       <button

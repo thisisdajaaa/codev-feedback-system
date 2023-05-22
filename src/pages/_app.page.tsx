@@ -12,6 +12,7 @@ import { GeneratePageTitle } from "@/utils/helpers";
 import { site } from "@/config";
 
 import AuthProvider from "@/components/AuthProvider";
+import { Layout } from "@/components/Layout";
 
 import { persistor, store } from "@/redux/store";
 
@@ -46,7 +47,13 @@ const MyApp: NextPage<NextAppProps> = ({
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <AuthProvider>
-              <Component {...pageProps} />
+              {Component.requireAuth ? (
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              ) : (
+                <Component {...pageProps} />
+              )}
             </AuthProvider>
           </PersistGate>
         </Provider>

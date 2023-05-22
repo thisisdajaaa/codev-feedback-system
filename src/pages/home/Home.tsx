@@ -1,17 +1,20 @@
 import type { NextPage } from "next";
-import { signOut } from "next-auth/react";
-import { useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { useCallback, useState } from "react";
 
 import logger from "@/utils/logger";
+import { withAuth } from "@/utils/withAuth";
 import { useMount } from "@/hooks";
 
-import { Button } from "@/components/Button";
-import { Icon } from "@/components/Icon";
-import { Navbar } from "@/components/Navbar";
+import { AlertBanner } from "@/components/AlertBanner";
+import { Typography } from "@/components/Typography";
 
 import { getSampleMethodAPI } from "@/api/sample";
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
+  const { data } = useSession();
+  const [showAlert, setShowAlert] = useState<boolean>(true);
+
   const handleLoad = useCallback(async () => {
     const { success, message } = await getSampleMethodAPI();
 
@@ -22,22 +25,28 @@ const Home: NextPage = () => {
     handleLoad();
   });
 
-  return (
-    <>
-      <Navbar />
+  const firstName = data?.user?.name?.split(" ")[0];
 
-      <div className="grid h-[100vh] place-content-center">
-        <Button
-          onClick={() => signOut()}
-          variant="warning"
-          className="xs:px-[0.7rem]"
-        >
-          <Icon src="/assets/trash.svg" height={16} width={14} />
-          <span className="hidden sm:inline">Trash</span>
-        </Button>
-      </div>
-    </>
+  const renderAlertMessage = (
+    <div className="flex flex-col gap-1 sm:flex-row">
+      <Typography preset="regular" className="text-center">
+        Hi {firstName}!
+      </Typography>
+      <Typography preset="regular">Welcome to the Feedback System</Typography>
+    </div>
+  );
+
+  return (
+    <div className="sm:px-[2rem]">
+      <AlertBanner
+        open={showAlert}
+        message={renderAlertMessage}
+        type="info"
+        className="mt-2 sm:mt-[18px]"
+        handleClose={() => setShowAlert(false)}
+      />
+    </div>
   );
 };
 
-export default Home;
+export default withAuth(HomePage);
