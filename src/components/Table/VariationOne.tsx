@@ -8,13 +8,12 @@ const VariationOne: FC<VariationTableProps> = (props) => {
   const { title, data, columns } = props;
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:px-6">
+    <div className="mx-auto w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
       <Typography
         variant="h2"
         color="text-gray-600"
         size="text-lg"
-        className="mb-[1.188rem] px-2 font-semibold sm:px-0"
-      >
+        className="mb-[1.188rem] px-2 font-semibold sm:px-0">
         {title}
       </Typography>
 
@@ -24,8 +23,7 @@ const VariationOne: FC<VariationTableProps> = (props) => {
             key={index}
             className={`flex min-h-[4.125rem] items-center justify-between ${
               index % 2 === 0 ? "bg-gray-100" : "bg-white"
-            }`}
-          >
+            }`}>
             {columns.map((column) => {
               const value = row[column.key];
               const typeList = ["string", "number"];
@@ -36,8 +34,7 @@ const VariationOne: FC<VariationTableProps> = (props) => {
                   variant="p"
                   color="text-gray-600"
                   size="text-lg"
-                  className={clsx("px-4", column.style)}
-                >
+                  className={clsx("px-4", column.style)}>
                   {value}
                 </Typography>
               ) : (

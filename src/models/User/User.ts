@@ -22,6 +22,9 @@ export const UserSchema = new Schema<IUser>(
       enum: roleList,
       required: true,
     },
+    image: {
+      type: String,
+    },
   },
   {
     timestamps: true,

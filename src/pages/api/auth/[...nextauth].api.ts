@@ -43,6 +43,10 @@ export const authOptions: NextAuthOptions = {
           dbUser = await User.create(newUser);
         }
 
+        if (!dbUser?.image && user?.image) {
+          await User.updateOne({ email: dbUser?.email }, { image: user.image });
+        }
+
         user.role = dbUser?.role;
 
         return true;
