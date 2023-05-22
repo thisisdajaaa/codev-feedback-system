@@ -12,3 +12,7 @@
   --color-bright-gray: rgb(var(--tw-color-bright-gray)); /* #EAEBEE */
   --color-blueberry: rgb(var(--tw-color-blueberry)); /* #3B82F6  */
 }
+
+body {
+  font-family: "Inter", sans-serif;
+}
