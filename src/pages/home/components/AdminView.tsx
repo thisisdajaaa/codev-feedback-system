@@ -64,8 +64,7 @@ const AdminView: FC = () => {
               variant="p"
               size="text-sm"
               lineHeight="leading-[1.313rem]"
-              color="text-gray-500"
-            >
+              color="text-gray-500">
               {email}
             </Typography>
           </div>
@@ -82,8 +81,7 @@ const AdminView: FC = () => {
             size="text-base"
             lineHeight="leading-[1.5rem]"
             color="text-white"
-            className="hidden font-normal sm:inline"
-          >
+            className="hidden font-normal sm:inline">
             Revoke
           </Typography>
         </Button>
@@ -117,8 +115,7 @@ const AdminView: FC = () => {
       <div className="mt-7 mb-[1.125rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => setShowInvite(true)}
-          className="flex w-full justify-center sm:w-auto"
-        >
+          className="flex w-full justify-center sm:w-auto">
           <div className="text-[1.313rem]">
             <Icon src="/assets/mail.svg" />
           </div>
@@ -129,8 +126,7 @@ const AdminView: FC = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold"
-          >
+            className="font-semibold">
             Invite
           </Typography>
         </Button>
