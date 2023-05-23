@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 
+import clsxm from "@/utils/clsxm";
 import { useOnClickOutsideElement, useUpdateEffect } from "@/hooks";
 
 import type { ModalProps } from "./types";
@@ -14,7 +15,15 @@ import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
 const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
-  const { open, handleClose, title, className, size = "sm", children } = props;
+  const {
+    open,
+    handleClose,
+    title,
+    className,
+    size = "sm",
+    scrollable = true,
+    children,
+  } = props;
 
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -43,7 +52,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
   return (
     <div>
       {open && (
-        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black/50">
+        <div className="fixed top-0 left-0 z-20 flex h-full w-full items-center justify-center bg-black/50">
           <div
             ref={ref}
             className={clsx(
@@ -51,9 +60,8 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               scaleClass,
               sizes,
               className
-            )}
-          >
-            <div className="flex flex-shrink-0 items-center justify-between py-[0.688rem] px-[1.375rem]">
+            )}>
+            <div className="flex flex-shrink-0 items-center justify-between px-[1.375rem] pt-4 pb-[0.688rem]">
               {typeof title === "string" ? (
                 <Typography preset="heading2">{title}</Typography>
               ) : (
@@ -65,7 +73,11 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               </button>
             </div>
 
-            <div className="modal-scrollbar flex-grow overflow-y-auto px-[1.375rem] py-[1.813rem]">
+            <div
+              className={clsxm(
+                "modal-scrollbar flex-grow px-[1.375rem] py-[1.813rem]",
+                scrollable && "overflow-y-auto"
+              )}>
               {children}
             </div>
           </div>

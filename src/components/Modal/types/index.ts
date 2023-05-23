@@ -7,5 +7,6 @@ export type ModalProps = {
   title?: string | ReactNode;
   size?: ModalSizes;
   className?: string;
+  scrollable?: boolean;
   handleClose: () => void;
 };

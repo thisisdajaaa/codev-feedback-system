@@ -82,8 +82,7 @@ const Dropdown: FC<DropdownProps> = ({
             "duration-150 focus-within:border-nero focus-within:transition-all sm:text-sm",
             isOpen && "border-nero",
             !!errorMessage && "border-red-400"
-          )}
-        >
+          )}>
           {formattedSelectedOptions || (
             <Typography variant="span" size="text-base" color="text-gray-500">
               {placeholder}
@@ -99,7 +98,7 @@ const Dropdown: FC<DropdownProps> = ({
         </button>
 
         {isOpen && (
-          <ul className="absolute z-10 mt-2 w-full rounded-[0.25rem] border border-gray-200 bg-white">
+          <ul className="absolute z-30 mt-2 w-full rounded-[0.25rem] border border-gray-200 bg-white">
             {options.map((option, index) => {
               const isSelectedOption = selectedOptions.find(
                 (opt) => opt.value === option.value
@@ -114,8 +113,7 @@ const Dropdown: FC<DropdownProps> = ({
                     "hover:bg-gray-100 active:bg-gray-200",
                     index % 2 === 0 ? "bg-gray-100" : "bg-white",
                     multiSelect && isSelectedOption && "bg-blue-100"
-                  )}
-                >
+                  )}>
                   {multiSelect && (
                     <input
                       type="checkbox"
@@ -139,8 +137,7 @@ const Dropdown: FC<DropdownProps> = ({
           lineHeight="leading-[1.063rem]"
           textAlign="text-left"
           color="text-red-400"
-          className="mt-[0.5rem] font-light"
-        >
+          className="mt-[0.5rem] font-light">
           {errorMessage}
         </Typography>
       )}
