@@ -17,7 +17,7 @@ const Template: ComponentStory<typeof Icon> = () => (
     </Typography>
 
     <div className="flex gap-2">
-      <Icon src="/assets/trash.svg" height={16} width={14} />
+      <Icon src="/assets/trash.svg" />
     </div>
   </div>
 );

@@ -5,5 +5,6 @@ export interface IUser extends Document {
   department?: string;
   role: string;
   image?: string;
+  name?: string;
   isVerified: boolean;
 }

@@ -14,7 +14,9 @@ export default {
 } as ComponentMeta<typeof Dropdown>;
 
 const Template: ComponentStory<typeof Dropdown> = () => {
-  const [selectedOption, setSelectedOption] = useState<Option | Option[]>();
+  const [selectedOption, setSelectedOption] = useState<
+    Option | Option[] | null
+  >(null);
 
   const handleOptionChange = (selectedOptions: Option | Option[]) => {
     setSelectedOption(selectedOptions);
@@ -24,8 +26,8 @@ const Template: ComponentStory<typeof Dropdown> = () => {
     <div>
       <Dropdown
         options={mockDropdownOptions}
+        selectedOption={selectedOption as Option[]}
         placeholder="Select an option"
-        name="dropdown"
         onChange={handleOptionChange}
       />
 
@@ -37,7 +39,9 @@ const Template: ComponentStory<typeof Dropdown> = () => {
 };
 
 const MultiSelectDropdown: ComponentStory<typeof Dropdown> = () => {
-  const [selectedOption, setSelectedOption] = useState<Option | Option[]>();
+  const [selectedOption, setSelectedOption] = useState<
+    Option | Option[] | null
+  >(null);
 
   const handleOptionChange = (selectedOptions: Option | Option[]) => {
     setSelectedOption(selectedOptions);
@@ -47,8 +51,8 @@ const MultiSelectDropdown: ComponentStory<typeof Dropdown> = () => {
     <div>
       <Dropdown
         options={mockDropdownOptions}
+        selectedOption={selectedOption}
         placeholder="Select an option"
-        name="dropdown"
         onChange={handleOptionChange}
         multiSelect
       />
@@ -61,7 +65,9 @@ const MultiSelectDropdown: ComponentStory<typeof Dropdown> = () => {
 };
 
 const WithErrorDropdown: ComponentStory<typeof Dropdown> = () => {
-  const [selectedOption, setSelectedOption] = useState<Option | Option[]>();
+  const [selectedOption, setSelectedOption] = useState<
+    Option | Option[] | null
+  >(null);
 
   const handleOptionChange = (selectedOptions: Option | Option[]) => {
     setSelectedOption(selectedOptions);
@@ -70,9 +76,9 @@ const WithErrorDropdown: ComponentStory<typeof Dropdown> = () => {
   return (
     <div>
       <Dropdown
+        selectedOption={selectedOption}
         options={mockDropdownOptions}
         placeholder="Select an option"
-        name="dropdown"
         onChange={handleOptionChange}
         multiSelect
         errorMessage="This is an error message"

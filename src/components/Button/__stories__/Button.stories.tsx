@@ -22,7 +22,7 @@ const WithIconButton: ComponentStory<typeof Button> = () => (
     variant="warning"
     className="xs:px-[0.7rem]"
   >
-    <Icon src="/assets/trash.svg" height={16} width={14} />
+    <Icon src="/assets/trash.svg" />
     <span className="hidden sm:inline">Trash</span>
   </Button>
 );

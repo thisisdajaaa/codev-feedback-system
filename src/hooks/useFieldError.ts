@@ -9,7 +9,7 @@ const useFieldError = (name: string) => {
     [meta.error, meta.touched]
   );
 
-  return hasError;
+  return { hasError, errorMessage: hasError ? meta.error : "" };
 };
 
 export default useFieldError;

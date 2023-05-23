@@ -14,7 +14,7 @@ import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
 const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
-  const { open, handleClose, title, size = "sm", children } = props;
+  const { open, handleClose, title, className, size = "sm", children } = props;
 
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -33,10 +33,11 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
   useOnClickOutsideElement(ref, handleClickOutside);
 
   const sizes: ClassValue[] = [
-    size === "sm" && ["w-1/2"],
-    size === "md" && ["w-2/3"],
-    size === "lg" && ["w-3/4"],
-    size === "xl" && ["w-[85%]"],
+    size === "xs" && ["xl:w-1/3 md:w-1/2 w-2/3"],
+    size === "sm" && ["md:w-1/2 w-2/3"],
+    size === "md" && ["md:w-2/3 w-3/4"],
+    size === "lg" && ["md:w-3/4 w-[85%]"],
+    size === "xl" && ["md:w-[85%] w-[90%]"],
   ];
 
   return (
@@ -46,9 +47,10 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
           <div
             ref={ref}
             className={clsx(
-              "flex max-h-[90vh] transform flex-col rounded-lg bg-white transition-all duration-300 ease-out",
+              "w-1/ flex max-h-[90vh] transform flex-col rounded-lg bg-white transition-all duration-300 ease-out",
               scaleClass,
-              sizes
+              sizes,
+              className
             )}
           >
             <div className="flex flex-shrink-0 items-center justify-between py-[0.688rem] px-[1.375rem]">
@@ -59,7 +61,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               )}
 
               <button className="ml-auto text-lg" onClick={handleClose}>
-                <Icon src="/assets/close.svg" height={12} width={12} />
+                <Icon src="/assets/close.svg" />
               </button>
             </div>
 

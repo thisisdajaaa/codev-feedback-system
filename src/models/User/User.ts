@@ -25,6 +25,9 @@ export const UserSchema = new Schema<IUser>(
     image: {
       type: String,
     },
+    name: {
+      type: String,
+    },
   },
   {
     timestamps: true,

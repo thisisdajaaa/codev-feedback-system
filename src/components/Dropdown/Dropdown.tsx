@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useRef, useState } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 
 import clsxm from "@/utils/clsxm";
 import { noop } from "@/utils/helpers";
@@ -15,12 +15,29 @@ const Dropdown: FC<DropdownProps> = ({
   onFocus,
   onBlur,
   errorMessage,
+  selectedOption: selectedOptionProp,
   multiSelect = false,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<Option[]>(
+    Array.isArray(selectedOptionProp)
+      ? selectedOptionProp
+      : selectedOptionProp
+      ? [selectedOptionProp]
+      : []
+  );
+
+  useEffect(() => {
+    if (selectedOptionProp) {
+      setSelectedOptions(
+        Array.isArray(selectedOptionProp)
+          ? selectedOptionProp
+          : [selectedOptionProp]
+      );
+    }
+  }, [selectedOptionProp]);
 
   const handleClickOutside = useCallback(() => {
     setIsOpen(false);
@@ -60,7 +77,7 @@ const Dropdown: FC<DropdownProps> = ({
         <button
           onClick={toggleDropdown}
           className={clsxm(
-            "flex h-[2.5rem] w-full flex-grow appearance-none items-center justify-between px-[0.875rem] py-2 text-base leading-[1.813rem]",
+            "flex min-h-[2.5rem] w-full flex-grow appearance-none items-center justify-between px-[0.875rem] py-2 text-base leading-[1.813rem]",
             "rounded-[0.25rem] border text-black",
             "duration-150 focus-within:border-nero focus-within:transition-all sm:text-sm",
             isOpen && "border-nero",
@@ -78,13 +95,11 @@ const Dropdown: FC<DropdownProps> = ({
               isOpen ? "rotate-180" : ""
             )}
             src="/assets/chevron-down.svg"
-            width={12}
-            height={6}
           />
         </button>
 
         {isOpen && (
-          <ul className="absolute mt-2 w-full rounded-[0.25rem] border border-gray-200 bg-white">
+          <ul className="absolute z-10 mt-2 w-full rounded-[0.25rem] border border-gray-200 bg-white">
             {options.map((option, index) => {
               const isSelectedOption = selectedOptions.find(
                 (opt) => opt.value === option.value

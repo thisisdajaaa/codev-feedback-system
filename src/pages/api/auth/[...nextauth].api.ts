@@ -38,14 +38,18 @@ export const authOptions: NextAuthOptions = {
             email,
             isVerified: false,
             role: ROLES.SURVEYEE,
+            name: String(user?.name),
+            image: user?.image || "/assets/avatar-placeholder.svg",
           };
 
           dbUser = await User.create(newUser);
         }
 
-        if (!dbUser?.image && user?.image) {
-          await User.updateOne({ email: dbUser?.email }, { image: user.image });
-        }
+        if ((!dbUser?.image && user?.image) || (!dbUser?.name && user?.name))
+          await User.updateOne(
+            { email: dbUser?.email },
+            { image: user.image, name: user.name }
+          );
 
         user.role = dbUser?.role;
 

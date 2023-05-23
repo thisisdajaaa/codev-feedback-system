@@ -5,8 +5,8 @@ export type Option = {
 
 export type DropdownProps = {
   options: Option[];
+  selectedOption: Option | Option[] | null;
   placeholder: string;
-  name: string;
   errorMessage?: string;
   onChange: (selected: Option[] | Option) => void;
   onBlur?: () => void;

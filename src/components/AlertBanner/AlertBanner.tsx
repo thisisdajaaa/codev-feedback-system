@@ -37,7 +37,7 @@ const AlertBanner: FC<AlertProps> = (props) => {
         className="absolute right-4 top-1/2 -translate-y-1/2 transform text-lg"
         onClick={handleClose}
       >
-        <Icon src="/assets/close.svg" height={12} width={12} />
+        <Icon src="/assets/close.svg" />
       </button>
     </div>
   );
