@@ -17,33 +17,43 @@ const VariationOne: FC<VariationTableProps> = (props) => {
         {title}
       </Typography>
 
-      <div className="divide-y divide-gray-200 border">
-        {data.map((row, index) => (
-          <div
-            key={index}
-            className={`flex min-h-[4.125rem] items-center justify-between ${
-              index % 2 === 0 ? "bg-gray-100" : "bg-white"
-            }`}>
-            {columns.map((column) => {
-              const value = row[column.key];
-              const typeList = ["string", "number"];
+      {data.length === 0 ? (
+        <Typography
+          variant="p"
+          color="text-gray-600"
+          size="text-base"
+          className="px-2 font-semibold sm:px-0">
+          No data available
+        </Typography>
+      ) : (
+        <div className="divide-y divide-gray-200 border">
+          {data.map((row, index) => (
+            <div
+              key={index}
+              className={`flex min-h-[4.125rem] items-center justify-between ${
+                index % 2 === 0 ? "bg-gray-100" : "bg-white"
+              }`}>
+              {columns.map((column) => {
+                const value = row[column.key];
+                const typeList = ["string", "number"];
 
-              return typeList.includes(typeof value) ? (
-                <Typography
-                  key={column.key}
-                  variant="p"
-                  color="text-gray-600"
-                  size="text-lg"
-                  className={clsx("px-4", column.style)}>
-                  {value}
-                </Typography>
-              ) : (
-                <Fragment key={column.key}>{value}</Fragment>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+                return typeList.includes(typeof value) ? (
+                  <Typography
+                    key={column.key}
+                    variant="p"
+                    color="text-gray-600"
+                    size="text-lg"
+                    className={clsx("px-4", column.style)}>
+                    {value}
+                  </Typography>
+                ) : (
+                  <Fragment key={column.key}>{value}</Fragment>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
