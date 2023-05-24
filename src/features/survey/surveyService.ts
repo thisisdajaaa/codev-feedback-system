@@ -1,5 +1,3 @@
-
-
 import Survey from "@/models/Survey";
 import { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import SurveyCoverage from "@/models/SurveyCoverage";
@@ -18,19 +16,6 @@ export const SurveyService = () => {
     const survey = (await Survey.findOne({coverageID: coverageId, answeredBy: userId})) as ISurvey | null ;
     const template = (await Template.findById(coverage?.templateID)) as ITemplate | null;
 
-    const result = {
-      coverageID: coverageId,
-      answeredBy: userId,
-      surveyAnswers: template?.questions.map(x => {
-        const surveyAnswer = survey?.surveyAnswers.find(a => a.questionId.toString() === x._id.toString());
-        return { 
-          questionId: x._id,
-          title: x.title, 
-          type: x.type, 
-          answer: surveyAnswer?.answer,
-          comment: surveyAnswer?.comment
-        };}),
-    }
     const data:IGetSurveyResponse = {
       coverageID:coverageId, 
       answeredBy: (survey?.answeredBy || userId),
@@ -67,6 +52,7 @@ export const SurveyService = () => {
       }else{
         survey.surveyAnswers.push({questionId: req.questionId, answer: req.answer, comment: req.comment} as ISurveyAnswer);
       }
+      survey.dateSubmitted = (new Date()).toISOString();
       await survey.save();
     }
    return survey;

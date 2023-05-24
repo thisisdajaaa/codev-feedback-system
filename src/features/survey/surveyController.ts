@@ -30,7 +30,7 @@ export const SurveyController = () => {
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        createdSurvey,
+        data: createdSurvey,
         message: SURVEY_MESSAGES.SUCCESS.CREATE,
       });
     }
