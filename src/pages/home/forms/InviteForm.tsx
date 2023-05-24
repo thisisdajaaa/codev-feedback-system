@@ -64,10 +64,9 @@ const InviteForm: FC<InviteFormProps> = ({
     <Modal
       open={open}
       handleClose={handleClose}
-      size="lg"
+      size="sm"
       scrollable={false}
-      className="min-h-[25rem]"
-    >
+      className="min-h-[25rem]">
       <FormikContext.Provider value={formikBag}>
         <AlertBanner
           open={!!serverErrorMesage}
