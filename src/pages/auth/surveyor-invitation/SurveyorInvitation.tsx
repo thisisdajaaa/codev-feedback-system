@@ -12,7 +12,7 @@ import { Loading } from "@/components/Loading";
 import { Typography } from "@/components/Typography";
 
 import { acceptSurveyorInvitationAPI } from "@/api/auth";
-import type { IAcceptSurveyorInvitationRequest } from "@/features/auth/types";
+import type { ICommonSurveyorRequest } from "@/features/auth/types";
 
 const SurveyorInvitation: NextPage = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const SurveyorInvitation: NextPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleAcceptVerification = useCallback(async () => {
-    const request: IAcceptSurveyorInvitationRequest["body"] = {
+    const request: ICommonSurveyorRequest["body"] = {
       userId: String(id),
     };
 

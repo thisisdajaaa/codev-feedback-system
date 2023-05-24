@@ -1,4 +1,4 @@
-import { NextApiResponse } from "next";
+import type { NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
 import { StatusCodes } from "@/constants/statusCode";
@@ -10,7 +10,7 @@ import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 import { AuthService } from "./authService";
 import { AUTH_MESSAGES } from "./config";
 import type {
-  IAcceptSurveyorInvitationRequest,
+  ICommonSurveyorRequest,
   ISendSurveyorInvitationRequest,
 } from "./types";
 
@@ -35,7 +35,7 @@ export const AuthController = () => {
 
   const handleAcceptSurveyorVerification = catchAsyncErrors(
     async (
-      req: IAcceptSurveyorInvitationRequest,
+      req: ICommonSurveyorRequest,
       res: NextApiResponse<ApiResponse<string>>,
       _next: NextHandler
     ) => {

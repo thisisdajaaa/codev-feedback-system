@@ -5,12 +5,10 @@ import type { TableProps } from "./types";
 import { VariationOne } from "./VariationOne";
 
 const Table: FC<TableProps> = (props) => {
-  const { variation = Variations.Primary, columns, data, title } = props;
+  const { variation = Variations.Primary, ...rest } = props;
 
   const variations = {
-    [Variations.Primary]: (
-      <VariationOne title={title} columns={columns} data={data} />
-    ),
+    [Variations.Primary]: <VariationOne {...rest} />,
   };
 
   return variations[variation] || <Fragment />;

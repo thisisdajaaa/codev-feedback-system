@@ -16,6 +16,7 @@ export type TableColumn = {
 
 export type VariationTableProps = {
   title: string;
+  isLoading?: boolean;
   data: TableRow[];
   columns: TableColumn[];
 };

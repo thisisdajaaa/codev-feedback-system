@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { FC, useCallback, useMemo, useState } from "react";
 
-import logger from "@/utils/logger";
 import { useMount } from "@/hooks";
 
 import { AlertBanner } from "@/components/AlertBanner";
@@ -11,7 +10,8 @@ import { Icon } from "@/components/Icon";
 import { Table } from "@/components/Table";
 import { Typography } from "@/components/Typography";
 
-import { getSurveyorsAPI } from "@/api/users";
+import { getSurveyorsAPI, revokeSurveyorAPI } from "@/api/users";
+import { ICommonSurveyorRequest } from "@/features/auth/types";
 import type { SingleUserResponse, UserResponse } from "@/features/user/types";
 
 import { InviteForm } from "../forms/InviteForm";
@@ -21,11 +21,16 @@ const AdminView: FC = () => {
   const [users, setUsers] = useState<UserResponse>([]);
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [showInvite, setShowInvite] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleLoad = useCallback(async () => {
+    setIsLoading(true);
+
     const { success, data: response } = await getSurveyorsAPI();
 
     if (success) setUsers(response as UserResponse);
+
+    setIsLoading(false);
   }, []);
 
   useMount(() => {
@@ -41,6 +46,19 @@ const AdminView: FC = () => {
       </Typography>
       <Typography preset="regular">Welcome to the Feedback System</Typography>
     </div>
+  );
+
+  const handleRevoke = useCallback(
+    async (userId: string) => {
+      const request: ICommonSurveyorRequest["body"] = {
+        userId,
+      };
+
+      const { success } = await revokeSurveyorAPI(request);
+
+      if (success) handleLoad();
+    },
+    [handleLoad]
   );
 
   const { tableColumns, tableData } = useMemo(() => {
@@ -64,7 +82,8 @@ const AdminView: FC = () => {
               variant="p"
               size="text-sm"
               lineHeight="leading-[1.313rem]"
-              color="text-gray-500">
+              color="text-gray-500"
+            >
               {email}
             </Typography>
           </div>
@@ -72,25 +91,28 @@ const AdminView: FC = () => {
       );
     };
 
-    const renderBtnRevoke = () => (
-      <div className="px-[1.125rem]">
-        <Button onClick={() => logger("clicked")} variant="warning">
-          <Icon src="/assets/trash.svg" />
-          <Typography
-            variant="p"
-            size="text-base"
-            lineHeight="leading-[1.5rem]"
-            color="text-white"
-            className="hidden font-normal sm:inline">
-            Revoke
-          </Typography>
-        </Button>
-      </div>
-    );
+    const renderBtnRevoke = (userId: string) => {
+      return (
+        <div className="px-[1.125rem]">
+          <Button onClick={() => handleRevoke(userId)} variant="warning">
+            <Icon src="/assets/trash.svg" />
+            <Typography
+              variant="p"
+              size="text-base"
+              lineHeight="leading-[1.5rem]"
+              color="text-white"
+              className="hidden font-normal sm:inline"
+            >
+              Revoke
+            </Typography>
+          </Button>
+        </div>
+      );
+    };
 
     const tableData = users.map((user) => ({
       surveyor: renderSurveyor(user),
-      btnRevoke: renderBtnRevoke(),
+      btnRevoke: renderBtnRevoke(user.id),
     }));
 
     const tableColumns = [
@@ -99,7 +121,7 @@ const AdminView: FC = () => {
     ];
 
     return { tableData, tableColumns };
-  }, [users]);
+  }, [handleRevoke, users]);
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
@@ -115,7 +137,8 @@ const AdminView: FC = () => {
       <div className="mt-7 mb-[1.125rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => setShowInvite(true)}
-          className="flex w-full justify-center sm:w-auto">
+          className="flex w-full justify-center sm:w-auto"
+        >
           <div className="text-[1.313rem]">
             <Icon src="/assets/mail.svg" />
           </div>
@@ -126,7 +149,8 @@ const AdminView: FC = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold">
+            className="font-semibold"
+          >
             Invite
           </Typography>
         </Button>
@@ -143,6 +167,7 @@ const AdminView: FC = () => {
           title="Manage Surveyors"
           data={tableData}
           columns={tableColumns}
+          isLoading={isLoading}
         />
       </div>
     </div>

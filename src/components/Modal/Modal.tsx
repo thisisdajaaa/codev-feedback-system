@@ -42,11 +42,11 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
   useOnClickOutsideElement(ref, handleClickOutside);
 
   const sizes: ClassValue[] = [
-    size === "xs" && ["xl:w-1/3 md:w-1/2 w-2/3"],
-    size === "sm" && ["md:w-1/2 w-2/3"],
-    size === "md" && ["md:w-2/3 w-3/4"],
-    size === "lg" && ["md:w-3/4 w-[85%]"],
-    size === "xl" && ["md:w-[85%] w-[90%]"],
+    size === "xs" && ["xl:w-1/3 md:w-1/2 w-full"],
+    size === "sm" && ["md:w-1/2 w-full"],
+    size === "md" && ["md:w-2/3 w-full"],
+    size === "lg" && ["md:w-3/4 w-full"],
+    size === "xl" && ["md:w-[85%] w-full"],
   ];
 
   return (
@@ -60,7 +60,8 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               scaleClass,
               sizes,
               className
-            )}>
+            )}
+          >
             <div className="flex flex-shrink-0 items-center justify-between px-[1.375rem] pt-4 pb-[0.688rem]">
               {typeof title === "string" ? (
                 <Typography preset="heading2">{title}</Typography>
@@ -77,7 +78,8 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               className={clsxm(
                 "modal-scrollbar flex-grow px-[1.375rem] py-[1.813rem]",
                 scrollable && "overflow-y-auto"
-              )}>
+              )}
+            >
               {children}
             </div>
           </div>

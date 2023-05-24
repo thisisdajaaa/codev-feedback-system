@@ -1,4 +1,4 @@
-import { NextApiRequest } from "next";
+import type { NextApiRequest } from "next";
 
 import type { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 import type { ITemplate } from "@/models/Template/types";

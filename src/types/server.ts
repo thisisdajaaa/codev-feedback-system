@@ -1,4 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { Model } from "mongoose";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
 import ErrorHandler from "@/utils/errorHandler";
@@ -42,3 +43,10 @@ export type Populate = {
 };
 
 export type ValidationRequestOptions = "body" | "query";
+
+export type AdvancedResultsOptions<T> = {
+  model: Model<T>;
+  req: NextApiRequest;
+  strict?: boolean;
+  populate?: Populate | Populate[];
+};

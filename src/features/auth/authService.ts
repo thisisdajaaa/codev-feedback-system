@@ -11,19 +11,21 @@ import { SurveyorVerification } from "@/templates/SurveyorVerification";
 
 import { AUTH_MESSAGES } from "./config";
 import type {
-  IAcceptSurveyorInvitationRequest,
+  ICommonSurveyorRequest,
   ISendSurveyorInvitationRequest,
   PickedUserDetails,
   SurveyorDetail,
 } from "./types";
 
 export const AuthService = () => {
-  const filteredNewUsers = async (usersDetails: SurveyorDetail[]) => {
+  const filteredNewUsers = async (
+    usersDetails: SurveyorDetail[]
+  ): Promise<SurveyorDetail[]> => {
     const userEmails = usersDetails.map((user) => user.email);
 
     const existingUsers = (await User.find({
       email: { $in: userEmails },
-      $or: [{ role: ROLES.SURVEYOR }, { role: ROLES.ADMIN }],
+      $or: [{ role: ROLES.ADMIN }, { role: ROLES.SURVEYOR }],
     })) as IUser[];
 
     const existingEmails = existingUsers.map((user) => user.email);
@@ -52,9 +54,21 @@ export const AuthService = () => {
         role: ROLES.SURVEYOR,
       };
 
-      const { id } = (await User.create(newUser)) as IUser;
+      const foundUser = (await User.findOne({ email })) as IUser | null;
 
-      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation/${id}`;
+      let userId: string;
+
+      if (foundUser && foundUser.role === ROLES.SURVEYEE) {
+        foundUser.role = ROLES.SURVEYOR;
+        userId = foundUser.id;
+
+        await foundUser.save();
+      } else {
+        const { id } = (await User.create(newUser)) as IUser;
+        userId = id;
+      }
+
+      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation/${userId}`;
 
       await sendEmail({
         email,
@@ -71,7 +85,7 @@ export const AuthService = () => {
   };
 
   const acceptSurveyorVerification = async (
-    req: IAcceptSurveyorInvitationRequest
+    req: ICommonSurveyorRequest
   ): Promise<string> => {
     const { userId } = req.body;
 
