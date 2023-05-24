@@ -20,12 +20,8 @@ export const TemplateService = () => {
     ):Promise<boolean> => {
       let found = false;
       try{
-        const template = await Template.findOne({_id: templateId}) as ITemplate;
-        console.log('template ::', template);
-        //found = (template && template.questions.some(x => x._id === questionId));
-        //const q = template.questions.some(x => x.id === questionId);
-        //console.log('q ::', q);
-        found = (template && template.questions.some(x => x.id === questionId));
+        const template = (await Template.findOne({_id: templateId})) as ITemplate;
+        found = (template && template?.questions.some(x => x.id === questionId));
       }catch{
         found = false;
       }

@@ -6,8 +6,16 @@ import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { validate } from "@/middlewares/validate";
+import { CreatedSurveyResponse, ICreateSurveyRequest } from "@/features/survey/types";
+import { NextApiResponse } from "next";
+import { ApiResponse } from "@/types";
 
-const handler = nextConnect({
+const handler = nextConnect<
+  ICreateSurveyRequest,
+  NextApiResponse<
+    ApiResponse<CreatedSurveyResponse>
+  >
+>({
   onError,
 });
 

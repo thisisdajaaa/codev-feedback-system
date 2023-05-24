@@ -1,4 +1,6 @@
-import type { ISurvey } from "@/models/Survey/types";
+import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
+import { IQuestion } from "@/models/Template/types";
+import { NextApiRequest } from "next";
 
 export type PickedSurveyDetails =
   | "coverageID"
@@ -12,7 +14,16 @@ export type PickedSurveyDetails =
     survey: PickedSurvey & { id: string };
   };
 
-  export interface ICreateSurveyRequest {
+  export interface IViewSurveAnswer extends Pick<IQuestion, 
+    "title" | "type" | "options" | "isRequired">, Pick<ISurveyAnswer, 
+    "questionId" | "answer" | "comment">{
+  }
+  export interface IGetSurveyResponse extends Pick<ISurvey, 
+    "coverageID" | "answeredBy" >{
+    surveyAnswers: IViewSurveAnswer[]
+  };
+
+  export interface ICreateSurveyRequest extends NextApiRequest {
     coverageId: string,
     userId: string,
     questionId: string,
@@ -20,7 +31,7 @@ export type PickedSurveyDetails =
     comment?: string
   }
 
-  export interface IGetSurveyRequest{
+  export interface IGetSurveyRequest extends NextApiRequest {
     coverageId: string,
     userId: string
   }

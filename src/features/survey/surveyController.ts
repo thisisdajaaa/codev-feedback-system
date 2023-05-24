@@ -6,11 +6,13 @@ import { StatusCodes } from "@/constants/statusCode";
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
+  CreatedSurveyResponse,
   ICreateSurveyRequest,
   IGetSurveyRequest,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
+import { ApiResponse } from "@/types";
 
 export const SurveyController = () => {
   const { createSurvey, getSurvey } = SurveyService();
@@ -46,10 +48,10 @@ export const SurveyController = () => {
       const param = {coverageId, userId} as IGetSurveyRequest;
 
       if (await isExistSurveyCoverage(coverageId as string)){
-        const result = await getSurvey(param);
+        const data = await getSurvey(param);
         return res.status(StatusCodes.OK).json({
           success: true,
-          result,
+          data,
           message: SURVEY_MESSAGES.SUCCESS.ALL,
         });
       }else{

@@ -7,11 +7,11 @@ import { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 import Template from "@/models/Template";
 import { ITemplate } from "@/models/Template/types";
 
-import type { ICreateSurveyRequest, IGetSurveyRequest } from "@/features/survey/types";
+import type { ICreateSurveyRequest, IGetSurveyRequest, IGetSurveyResponse, IViewSurveAnswer } from "@/features/survey/types";
 
 
 export const SurveyService = () => {
-  const getSurvey = async (req: IGetSurveyRequest) => {
+  const getSurvey = async (req: IGetSurveyRequest): Promise<IGetSurveyResponse> => {
     const { coverageId, userId } = req;
 
     const coverage = (await SurveyCoverage.findById(coverageId)) as ISurveyCoverage | null;
@@ -31,8 +31,21 @@ export const SurveyService = () => {
           comment: surveyAnswer?.comment
         };}),
     }
-
-    return result;
+    const data:IGetSurveyResponse = {
+      coverageID:coverageId, 
+      answeredBy: (survey?.answeredBy || userId),
+      surveyAnswers: template!.questions.map(x => {
+        const surveyAnswer = survey?.surveyAnswers.find(a => a.questionId.toString() === x._id.toString());
+        return { 
+          questionId: x._id,
+          title: x.title, 
+          type: x.type, 
+          options: x.options,
+          answer: surveyAnswer?.answer,
+          comment: surveyAnswer?.comment
+        } as IViewSurveAnswer;})
+    };
+    return data;
   };
 
   const createSurvey = async (req: ICreateSurveyRequest) => {

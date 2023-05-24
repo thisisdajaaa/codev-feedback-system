@@ -7,8 +7,8 @@ export interface ISurveyAnswer extends Document {
   }
 
 export interface ISurvey extends Document {
-  coverageID: mongoose.Schema.Types.ObjectId;
-  answeredBy: mongoose.Schema.Types.ObjectId;
+  coverageID: mongoose.Schema.Types.ObjectId | string;
+  answeredBy: mongoose.Schema.Types.ObjectId | string;
   surveyAnswers: ISurveyAnswer[];
   dateSubmitted: string;
   isAnonymous: boolean;
