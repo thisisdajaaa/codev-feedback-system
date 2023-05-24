@@ -25,7 +25,7 @@ export const AuthService = () => {
 
     const existingUsers = (await User.find({
       email: { $in: userEmails },
-      $or: [{ role: ROLES.SURVEYOR }, { role: ROLES.ADMIN }],
+      $or: [{ role: ROLES.ADMIN }, { role: ROLES.SURVEYOR }],
     })) as IUser[];
 
     const existingEmails = existingUsers.map((user) => user.email);
@@ -54,9 +54,21 @@ export const AuthService = () => {
         role: ROLES.SURVEYOR,
       };
 
-      const { id } = (await User.create(newUser)) as IUser;
+      const foundUser = (await User.findOne({ email })) as IUser | null;
 
-      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation/${id}`;
+      let userId: string;
+
+      if (foundUser && foundUser.role === ROLES.SURVEYEE) {
+        foundUser.role = ROLES.SURVEYOR;
+        userId = foundUser.id;
+
+        await foundUser.save();
+      } else {
+        const { id } = (await User.create(newUser)) as IUser;
+        userId = id;
+      }
+
+      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation/${userId}`;
 
       await sendEmail({
         email,
