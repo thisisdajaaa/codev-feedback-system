@@ -8,7 +8,7 @@ import { whitelistPaths } from "@/config";
 
 import { AUTH_PAGE_URL } from "@/constants/pageUrl";
 
-import Loading from "../Loading";
+import { Loading } from "../Loading";
 
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const { status, data: session } = useSession();

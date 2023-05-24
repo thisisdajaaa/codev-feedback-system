@@ -1,39 +1,21 @@
 import type { NextPage } from "next";
-import { signOut } from "next-auth/react";
-import { useCallback } from "react";
+import { Fragment, useMemo } from "react";
 
-import logger from "@/utils/logger";
-import { useMount } from "@/hooks";
+import { withAuth } from "@/utils/withAuth";
+import { useUserRole } from "@/hooks";
 
-import { Navbar } from "@/components/Navbar";
+import { AdminView } from "./components/AdminView";
 
-import { getSampleMethodAPI } from "@/api/sample";
+const HomePage: NextPage = () => {
+  const { isAdmin } = useUserRole();
 
-const Home: NextPage = () => {
-  const handleLoad = useCallback(async () => {
-    const { success, message } = await getSampleMethodAPI();
+  const renderView = useMemo(() => {
+    if (isAdmin) return <AdminView />;
 
-    if (success) logger(message);
-  }, []);
+    return <Fragment />;
+  }, [isAdmin]);
 
-  useMount(() => {
-    handleLoad();
-  });
-
-  return (
-    <>
-      <Navbar />
-
-      <div className="grid h-[100vh] place-content-center bg-black">
-        <button
-          onClick={() => signOut()}
-          className="rounded-sm bg-gray-500 px-3 py-2 text-white transition-all hover:bg-gray-700"
-        >
-          Logout
-        </button>
-      </div>
-    </>
-  );
+  return <Fragment>{renderView}</Fragment>;
 };
 
-export default Home;
+export default withAuth(HomePage);

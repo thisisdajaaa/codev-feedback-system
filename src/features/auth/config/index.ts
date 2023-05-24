@@ -1,6 +1,6 @@
 export const AUTH_MESSAGES = {
   ERROR: {
-    EMAIL_ALREADY_EXISTS: "All of the emails already exists!",
+    EMAIL_ALREADY_EXISTS: "The email already exists!",
     USER_NOT_FOUND: "User not found!",
     ALREADY_VERIFIED: "User is already verified!",
     UNAUTHORIZED: "Login first to access this resource!",

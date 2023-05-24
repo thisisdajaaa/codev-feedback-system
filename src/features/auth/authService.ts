@@ -23,7 +23,7 @@ export const AuthService = () => {
 
     const existingUsers = (await User.find({
       email: { $in: userEmails },
-      role: ROLES.SURVEYOR,
+      $or: [{ role: ROLES.SURVEYOR }, { role: ROLES.ADMIN }],
     })) as IUser[];
 
     const existingEmails = existingUsers.map((user) => user.email);

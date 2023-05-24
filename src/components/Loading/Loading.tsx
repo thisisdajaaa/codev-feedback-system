@@ -5,7 +5,7 @@ import clsxm from "@/utils/clsxm";
 
 import type { LoadingProps } from "./types";
 
-export const Loading: FC<LoadingProps> = (props) => {
+const Loading: FC<LoadingProps> = (props) => {
   const {
     fullscreen = true,
     size = 45,
@@ -14,18 +14,16 @@ export const Loading: FC<LoadingProps> = (props) => {
   } = props;
 
   return (
-    <>
-      <div
-        className={clsxm(
-          fullscreen ? "flex items-center justify-center" : "",
-          height
-        )}
-        data-testid="loading"
-      >
-        <ImSpinner2 className="animate-spin" size={size} color={color} />
-      </div>
-    </>
+    <div
+      className={clsxm(
+        fullscreen && "flex items-center justify-center",
+        height
+      )}
+      data-testid="loading"
+    >
+      <ImSpinner2 className="animate-spin" size={size} color={color} />
+    </div>
   );
 };
 
-export default Loading;
+export { Loading };

@@ -17,4 +17,10 @@ export interface IAcceptSurveyorInvitationRequest extends NextApiRequest {
   };
 }
 
-export type PickedUserDetails = "email" | "isVerified" | "department" | "role";
+export type PickedUserDetails =
+  | "email"
+  | "isVerified"
+  | "department"
+  | "role"
+  | "image"
+  | "name";

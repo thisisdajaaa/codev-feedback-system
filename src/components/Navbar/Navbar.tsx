@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import React, { FC, useState } from "react";
 
 import clsxm from "@/utils/clsxm";
@@ -8,6 +8,7 @@ import clsxm from "@/utils/clsxm";
 import { navLinks } from "./config";
 
 const Navbar: FC = () => {
+  const { data } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const handleLogout = async (
@@ -20,7 +21,7 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="fixed flex h-[4.5rem] w-full justify-between bg-white px-6">
+    <nav className="fixed z-10 flex h-[4.5rem] w-full justify-between bg-white px-6">
       <div className="flex items-center sm:visible md:visible">
         <Image
           src="/assets/codev-logo.svg"
@@ -36,11 +37,13 @@ const Navbar: FC = () => {
         className="relative flex cursor-pointer items-center gap-3"
       >
         <Image
-          src="/assets/avatar-placeholder.svg"
+          src={data?.user.image || "/assets/avatar-placeholder.svg"}
           width={28}
           height={28}
-          alt="avatar placeholder"
+          className="rounded-full"
+          alt="avatar"
         />
+
         <Image
           className={clsxm(
             "ease 300ms transition",
@@ -53,12 +56,12 @@ const Navbar: FC = () => {
         />
 
         {isDropdownOpen && (
-          <div className="absolute top-[4.5rem] -right-6 bg-white">
+          <div className="absolute top-[4.5rem] -right-6 z-20 border bg-white">
             <ul className="min-w-[13.5rem]">
               <li className="bg-gray-100 p-4">
-                <Link href="#">John Doe</Link>
+                <Link href="#">{data?.user.name}</Link>
                 <small className="block text-ellipsis whitespace-nowrap text-xs text-gray-500">
-                  signed in as johndoe@email.com
+                  signed in as {data?.user.email}
                 </small>
               </li>
 
