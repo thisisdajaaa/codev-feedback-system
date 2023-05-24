@@ -7,6 +7,7 @@ type TailwindTextSizes =
   | "text-base"
   | "text-lg"
   | "text-xl"
+  | "text-2xl"
   | "text-[1.625rem]";
 
 type TypographyFieldsType = {
