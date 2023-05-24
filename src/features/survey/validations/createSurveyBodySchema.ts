@@ -2,16 +2,6 @@ import * as yup from "yup";
 
 import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageService";
 
-
-// const dateSchema = yup
-//   .string()
-//   .required()
-//   .test(
-//     "is-date",
-//     QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE,
-//     (value) => moment(value, moment.ISO_8601, true).isValid()
-//   );
-
 const { isExistSurveyCoverage, isTitleExistInSurveyCoverage } = SurveyCoverageService();
 
 const questionSchema = yup.object().shape({
