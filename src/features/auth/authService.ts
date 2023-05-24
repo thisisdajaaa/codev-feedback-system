@@ -33,7 +33,7 @@ export const AuthService = () => {
 
   const sendSurveyorVerification = async (
     req: ISendSurveyorInvitationRequest
-  ) => {
+  ): Promise<string> => {
     const { surveyorDetails } = req.body;
 
     const newSurveyorDetails = await filteredNewUsers(surveyorDetails);
@@ -54,7 +54,7 @@ export const AuthService = () => {
 
       const { id } = (await User.create(newUser)) as IUser;
 
-      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation?id=${id}`;
+      const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation/${id}`;
 
       await sendEmail({
         email,
@@ -72,7 +72,7 @@ export const AuthService = () => {
 
   const acceptSurveyorVerification = async (
     req: IAcceptSurveyorInvitationRequest
-  ) => {
+  ): Promise<string> => {
     const { userId } = req.body;
 
     const user = (await User.findOne({ _id: userId })) as IUser | null;
@@ -95,7 +95,7 @@ export const AuthService = () => {
 
     await user.save();
 
-    return AUTH_MESSAGES.SUCCESS.VERIFIED_EMAIL;
+    return user.email;
   };
 
   return {

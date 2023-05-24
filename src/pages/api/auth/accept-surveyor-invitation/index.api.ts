@@ -1,29 +1,23 @@
 import { NextApiResponse } from "next";
 import nextConnect from "next-connect";
 
-import { ROLES } from "@/models/User/config";
-
 import type { ApiResponse } from "@/types";
 
 import { AuthController } from "@/features/auth/authController";
 import type { IAcceptSurveyorInvitationRequest } from "@/features/auth/types";
 import { acceptSurveyorVerificationBodySchema } from "@/features/auth/validations/acceptSurveyorVerificationBodySchema";
 import { onError } from "@/middlewares/errors";
-import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
-import { roleAtLeast } from "@/middlewares/roleAtLeast";
 import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   IAcceptSurveyorInvitationRequest,
-  NextApiResponse<ApiResponse<unknown>>
+  NextApiResponse<ApiResponse<string>>
 >({ onError });
 
 const { handleAcceptSurveyorVerification } = AuthController();
 
 handler
-  .use(isAuthenticatedUser)
-  .use(roleAtLeast(ROLES.ADMIN))
   .use(validate("body", acceptSurveyorVerificationBodySchema))
   .post(mongoHandler(handleAcceptSurveyorVerification));
 

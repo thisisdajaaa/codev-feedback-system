@@ -8,6 +8,7 @@ import type { ApiResponse } from "@/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 import { AuthService } from "./authService";
+import { AUTH_MESSAGES } from "./config";
 import type {
   IAcceptSurveyorInvitationRequest,
   ISendSurveyorInvitationRequest,
@@ -35,14 +36,15 @@ export const AuthController = () => {
   const handleAcceptSurveyorVerification = catchAsyncErrors(
     async (
       req: IAcceptSurveyorInvitationRequest,
-      res: NextApiResponse<ApiResponse<unknown>>,
+      res: NextApiResponse<ApiResponse<string>>,
       _next: NextHandler
     ) => {
-      const message = await acceptSurveyorVerification(req);
+      const email = await acceptSurveyorVerification(req);
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        message,
+        data: email,
+        message: AUTH_MESSAGES.SUCCESS.VERIFIED_EMAIL,
       });
     }
   );
