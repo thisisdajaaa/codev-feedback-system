@@ -1,20 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
-import { advancedResults } from "@/utils/advancedResults";
-
 import { StatusCodes } from "@/constants/statusCode";
-
-import Survey from "@/models/Survey";
-import type { ISurvey } from "@/models/Survey/types";
-
-import type { ApiResponse } from "@/types";
 
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
-
 import type {
-  CreatedSurveyResponse,
   ICreateSurveyRequest,
   IGetSurveyRequest,
 } from "@/features/survey/types";

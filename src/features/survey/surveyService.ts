@@ -1,14 +1,14 @@
-import Survey from "@/models/Survey";
 
-import type { ICreateSurveyRequest, IGetSurveyRequest, PickedSurvey } from "@/features/survey/types";
-import { advancedResults } from "@/utils/advancedResults";
+
+import Survey from "@/models/Survey";
 import { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import SurveyCoverage from "@/models/SurveyCoverage";
 import { ISurveyCoverage } from "@/models/SurveyCoverage/types";
-import { ITemplate } from "@/models/Template/types";
-import { GetQuestionnaireResponse } from "../questionnaire/types";
 import Template from "@/models/Template";
-import { NextApiRequest } from "next";
+import { ITemplate } from "@/models/Template/types";
+
+import type { ICreateSurveyRequest, IGetSurveyRequest } from "@/features/survey/types";
+
 
 export const SurveyService = () => {
   const getSurvey = async (req: IGetSurveyRequest) => {

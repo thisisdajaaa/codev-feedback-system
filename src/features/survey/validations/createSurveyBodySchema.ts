@@ -1,8 +1,7 @@
-import moment from "moment";
 import * as yup from "yup";
+
 import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageService";
 
-import { SURVEY_MESSAGES } from "@/features/survey/config";
 
 // const dateSchema = yup
 //   .string()
@@ -50,4 +49,4 @@ const createSurveyValidator = yup.object().shape({
   comment: yup.string()
 });
 
-export { getSurveyValidator, createSurveyValidator };
+export { createSurveyValidator,getSurveyValidator };

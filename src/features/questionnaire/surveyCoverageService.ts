@@ -3,9 +3,8 @@ import mongoose from "mongoose";
 import SurveyCoverage from "@/models/SurveyCoverage";
 
 import { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
-import loadConfig from "next/dist/server/config";
+
 import { TemplateService } from "./templateService";
-import { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 
 export const SurveyCoverageService = () => {
   const createSurveyCoverage = async (

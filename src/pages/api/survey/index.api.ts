@@ -1,7 +1,6 @@
 import nextConnect from "next-connect";
 
 import { SurveyController } from "@/features/survey";
-
 import { createSurveyValidator } from "@/features/survey/validations/createSurveyBodySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
