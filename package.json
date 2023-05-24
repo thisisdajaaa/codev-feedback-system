@@ -21,24 +21,19 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "data:import": "ts-node --project tsconfig.seeder.json generators/mongodb/seeder.ts -i",
-    "data:delete": "ts-node --project tsconfig.seeder.json generators/mongodb/seeder.ts -d"
+    "data:delete": "ts-node --project tsconfig.seeder.json generators/mongodb/seeder.ts -d",
+    "chromatic": "npx chromatic --project-token=chpt_6261ffd2542a664"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^1.1.1",
-    "@progress/kendo-react-pdf": "^5.9.0",
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^0.27.2",
-    "axios-oauth-1.0a": "^0.3.6",
     "bcryptjs": "^2.4.3",
     "clsx": "^1.2.1",
     "crpyto": "^0.0.1-security",
     "dotenv": "^16.0.3",
     "express-validator": "^6.14.2",
     "formik": "^2.2.9",
-    "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.5.28",
-    "jwt-decode": "^3.1.2",
-    "jwt-simple": "^0.5.6",
     "moment": "^2.29.4",
     "mongoose": "^6.6.5",
     "next": "12.3.1",
@@ -49,7 +44,6 @@
     "nodemailer": "^6.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-dropzone": "^14.2.3",
     "react-icons": "^4.4.0",
     "react-input-mask": "^2.0.4",
     "react-redux": "^8.0.4",
@@ -58,7 +52,6 @@
     "redux-persist": "^6.0.0",
     "swagger-ui-react": "^4.18.3",
     "tailwind-merge": "^1.6.0",
-    "tailwind-scrollbar-hide": "^1.1.7",
     "xlsx": "^0.18.5",
     "yup": "^0.32.11"
   },
@@ -91,6 +84,7 @@
     "@typescript-eslint/parser": "^5.38.0",
     "autoprefixer": "^10.4.12",
     "babel-loader": "^8.2.5",
+    "chromatic": "^6.17.4",
     "eslint": "8.24.0",
     "eslint-config-next": "12.3.1",
     "eslint-config-prettier": "^8.5.0",
@@ -123,5 +117,7 @@
     "**/*.{json,css,scss,md}": [
       "prettier -w"
     ]
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "sample-project@0.1.0"
 }

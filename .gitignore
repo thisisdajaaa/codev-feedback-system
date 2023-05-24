@@ -42,3 +42,5 @@ storybook-static
 .vscode
 
 .idea
+
+build-storybook.log

@@ -21,8 +21,8 @@ const Template: ComponentStory<typeof Modal> = () => {
         open={isOpen}
         handleClose={() => setIsOpen(false)}
       >
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt omnis
-        accusamus magni alias velit quam vitae tempore, qui distinctio
+        Lorem ipsum, asd dolor sit amet consectetur adipisicing elit. Nesciunt
+        omnis accusamus magni alias velit quam vitae tempore, qui distinctio
         temporibus doloremque porro hic voluptas cum molestiae quidem? Illum aut
         dignissimos soluta id quaerat similique sit rerum, doloremque unde
         architecto expedita eveniet omnis temporibus reprehenderit facere at
