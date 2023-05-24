@@ -1,13 +1,29 @@
-import { Model } from "mongoose";
-import { NextApiRequest } from "next";
+import { Schema } from "mongoose";
 
-import type { Pagination, Populate } from "@/types";
+import type { AdvancedResultsOptions, Pagination } from "@/types";
+
+const checkPathInSchema = (schema: Schema, path: string): boolean => {
+  const pathParts = path.split(".");
+  let currentSchema = schema;
+
+  for (const part of pathParts) {
+    if (currentSchema.pathType(part) === "adhocOrUndefined") {
+      return false;
+    }
+
+    if (currentSchema.path(part).schema) {
+      currentSchema = currentSchema.path(part).schema;
+    }
+  }
+
+  return true;
+};
 
 export const advancedResults = async <T, K>(
-  model: Model<T>,
-  req: NextApiRequest,
-  populate?: Populate | Populate[]
+  options: AdvancedResultsOptions<T>
 ) => {
+  const { model, req, strict = true, populate } = options;
+
   let query;
 
   // Copy req.query
@@ -28,8 +44,28 @@ export const advancedResults = async <T, K>(
     (match) => `$${match}`
   );
 
+  const parsedQuery = JSON.parse(queryStr);
+
+  for (const key in parsedQuery) {
+    if (!checkPathInSchema(model.schema, key)) {
+      return {
+        count: 0,
+        pagination: {},
+        data: [],
+      };
+    }
+  }
+
+  if (!strict) {
+    for (const key in parsedQuery) {
+      if (typeof parsedQuery[key] === "string") {
+        parsedQuery[key] = { $regex: parsedQuery[key], $options: "i" };
+      }
+    }
+  }
+
   // Finding resource
-  query = model.find(JSON.parse(queryStr));
+  query = model.find(parsedQuery);
 
   // Select Fields
   if (req.query.select) {

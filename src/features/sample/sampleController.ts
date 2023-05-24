@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
 import ErrorHandler from "@/utils/errorHandler";

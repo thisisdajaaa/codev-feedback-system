@@ -1,4 +1,4 @@
-import { NextApiRequest } from "next";
+import type { NextApiRequest } from "next";
 
 export type SurveyorDetail = {
   email: string;
@@ -11,7 +11,7 @@ export interface ISendSurveyorInvitationRequest extends NextApiRequest {
   };
 }
 
-export interface IAcceptSurveyorInvitationRequest extends NextApiRequest {
+export interface ICommonSurveyorRequest extends NextApiRequest {
   body: {
     userId: string;
   };

@@ -1,9 +1,14 @@
 import Template from "@/models/Template";
 
-import type { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
+import type {
+  CreatedQuestionnaireResponse,
+  ICreateQuestionnaireRequest,
+} from "@/features/questionnaire/types";
 
 export const TemplateService = () => {
-  const createTemplate = async (req: ICreateQuestionnaireRequest) => {
+  const createTemplate = async (
+    req: ICreateQuestionnaireRequest
+  ): Promise<CreatedQuestionnaireResponse["template"]> => {
     const { template } = req.body;
 
     const newTemplate = {

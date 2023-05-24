@@ -11,14 +11,16 @@ import { SurveyorVerification } from "@/templates/SurveyorVerification";
 
 import { AUTH_MESSAGES } from "./config";
 import type {
-  IAcceptSurveyorInvitationRequest,
+  ICommonSurveyorRequest,
   ISendSurveyorInvitationRequest,
   PickedUserDetails,
   SurveyorDetail,
 } from "./types";
 
 export const AuthService = () => {
-  const filteredNewUsers = async (usersDetails: SurveyorDetail[]) => {
+  const filteredNewUsers = async (
+    usersDetails: SurveyorDetail[]
+  ): Promise<SurveyorDetail[]> => {
     const userEmails = usersDetails.map((user) => user.email);
 
     const existingUsers = (await User.find({
@@ -71,7 +73,7 @@ export const AuthService = () => {
   };
 
   const acceptSurveyorVerification = async (
-    req: IAcceptSurveyorInvitationRequest
+    req: ICommonSurveyorRequest
   ): Promise<string> => {
     const { userId } = req.body;
 

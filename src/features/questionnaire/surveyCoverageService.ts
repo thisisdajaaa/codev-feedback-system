@@ -2,13 +2,16 @@ import mongoose from "mongoose";
 
 import SurveyCoverage from "@/models/SurveyCoverage";
 
-import { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
+import type {
+  CreatedQuestionnaireResponse,
+  ICreateQuestionnaireRequest,
+} from "@/features/questionnaire/types";
 
 export const SurveyCoverageService = () => {
   const createSurveyCoverage = async (
     req: ICreateQuestionnaireRequest,
     templateID: mongoose.Schema.Types.ObjectId
-  ) => {
+  ): Promise<CreatedQuestionnaireResponse["coverage"]> => {
     const { coverage } = req.body;
 
     const newCoverage = {

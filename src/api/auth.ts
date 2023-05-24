@@ -3,7 +3,7 @@ import { onParseResponse } from "@/utils/helpers";
 import type { ApiResponse } from "@/types";
 
 import type {
-  IAcceptSurveyorInvitationRequest,
+  ICommonSurveyorRequest,
   ISendSurveyorInvitationRequest,
 } from "@/features/auth/types";
 
@@ -20,7 +20,7 @@ export const sendSurveyorInvitationAPI = async (
 };
 
 export const acceptSurveyorInvitationAPI = async (
-  data: IAcceptSurveyorInvitationRequest["body"]
+  data: ICommonSurveyorRequest["body"]
 ): Promise<ApiResponse<string>> => {
   const response = await onParseResponse<string>({
     method: "post",

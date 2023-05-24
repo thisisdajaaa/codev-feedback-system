@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
 import { advancedResults } from "@/utils/advancedResults";
@@ -8,7 +8,7 @@ import { StatusCodes } from "@/constants/statusCode";
 import Template from "@/models/Template";
 import type { ITemplate } from "@/models/Template/types";
 
-import type { ApiResponse } from "@/types";
+import type { AdvancedResultsOptions, ApiResponse } from "@/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageService";
@@ -36,10 +36,17 @@ export const QuestionnaireController = () => {
         { path: "surveyCoverage", select: "dateFrom dateTo isActive" },
       ];
 
+      const options: AdvancedResultsOptions<ITemplate> = {
+        model: Template,
+        req,
+        strict: false,
+        populate: populateFields,
+      };
+
       const { count, pagination, data } = await advancedResults<
         ITemplate,
         GetQuestionnaireResponse[]
-      >(Template, req, populateFields);
+      >(options);
 
       return res.status(StatusCodes.OK).json({
         success: true,
@@ -60,7 +67,7 @@ export const QuestionnaireController = () => {
       const createdTemplate = await createTemplate(req);
       const createdCoverage = await createSurveyCoverage(
         req,
-        createdTemplate._id
+        createdTemplate.id
       );
 
       const data: CreatedQuestionnaireResponse = {
