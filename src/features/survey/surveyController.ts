@@ -10,9 +10,11 @@ import type {
   IGetSurveyRequest,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
+import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
 
 export const SurveyController = () => {
   const { createSurvey, getSurvey } = SurveyService();
+  const { isExistSurveyCoverage } = SurveyCoverageService();
 
   const handleCreateSurvey = catchAsyncErrors(
     async (
@@ -42,12 +44,20 @@ export const SurveyController = () => {
       const {coverageId} = req.query;
       const userId = req.user._id;
       const param = {coverageId, userId} as IGetSurveyRequest;
-      const result = await getSurvey(param);
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        result,
-        message: SURVEY_MESSAGES.SUCCESS.ALL,
+
+      if (await isExistSurveyCoverage(coverageId as string)){
+        const result = await getSurvey(param);
+        return res.status(StatusCodes.OK).json({
+          success: true,
+          result,
+          message: SURVEY_MESSAGES.SUCCESS.ALL,
+        });
+      }else{
+        return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
       });
+      }
+      
     }
   );
 

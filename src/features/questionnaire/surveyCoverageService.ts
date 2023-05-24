@@ -32,14 +32,14 @@ export const SurveyCoverageService = () => {
     return result;
   };
 
-  const isTitleExistInSurveyCoverage = async (coverageId: string, title: string
+  const isTitleExistInSurveyCoverage = async (coverageId: string, questionId: string
   ):Promise<boolean> => {
     let found:boolean;
     try{
       const {templateID} = await SurveyCoverage.findOne({_id: coverageId}).lean().exec();
       if (templateID){
         const {isTitleExistInTemplate} = TemplateService();
-        found = await isTitleExistInTemplate(templateID as string, title);
+        found = await isTitleExistInTemplate(templateID as string, questionId);
       }else{
         found = false;
       }

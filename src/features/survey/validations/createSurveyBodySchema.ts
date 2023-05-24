@@ -35,12 +35,12 @@ const getSurveyValidator = yup.object().shape({
 
 const createSurveyValidator = yup.object().shape({
   coverageId: coverageIdValidator,
-  title: yup.string().required().test(
+  questionId: yup.string().required().test(
     {
         name: 'question',
-        message: 'question does not exist',
-        test: function(title) {
-            const result:Promise<boolean> = isTitleExistInSurveyCoverage(this.parent.coverageId as string, title as string);
+        message: '${path} does not exist',
+        test: function(id) {
+            const result:Promise<boolean> = isTitleExistInSurveyCoverage(this.parent.coverageId as string, id as string);
             return result;
         },
     }

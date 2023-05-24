@@ -16,12 +16,16 @@ export const TemplateService = () => {
     return await Template.create(newTemplate);
   };
 
-  const isTitleExistInTemplate = async (templateId: string, title: string
+  const isTitleExistInTemplate = async (templateId: string, questionId: string
     ):Promise<boolean> => {
       let found = false;
       try{
-        const template:ITemplate = await Template.findOne({_id: templateId}).lean().exec();
-        found = (template && template.questions.some(x => x.title === title));
+        const template = await Template.findOne({_id: templateId}) as ITemplate;
+        console.log('template ::', template);
+        //found = (template && template.questions.some(x => x._id === questionId));
+        //const q = template.questions.some(x => x.id === questionId);
+        //console.log('q ::', q);
+        found = (template && template.questions.some(x => x.id === questionId));
       }catch{
         found = false;
       }

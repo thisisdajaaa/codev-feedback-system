@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 
 export interface ISurveyAnswer extends Document {
-    title: string;
+    questionId: mongoose.Schema.Types.ObjectId | string;
     answer: string;
     comment?: string;
   }

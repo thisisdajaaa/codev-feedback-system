@@ -15,7 +15,7 @@ export type PickedSurveyDetails =
   export interface ICreateSurveyRequest {
     coverageId: string,
     userId: string,
-    title: string,
+    questionId: string,
     answer: string,
     comment?: string
   }

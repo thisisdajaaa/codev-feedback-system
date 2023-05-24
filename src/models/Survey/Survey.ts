@@ -4,8 +4,8 @@ import type { ISurvey, ISurveyAnswer } from "./types";
 
 export const SurveyAnswerSchema = new Schema<ISurveyAnswer>(
   {
-    title: {
-      type: String,
+    questionId: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     answer: {

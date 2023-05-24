@@ -14,47 +14,47 @@ export const SurveyService = () => {
   const getSurvey = async (req: IGetSurveyRequest) => {
     const { coverageId, userId } = req;
 
-    const coverage: ISurveyCoverage = await SurveyCoverage.findById(coverageId).lean().exec();
-    const survey: ISurvey = await Survey.findOne({coverageID: coverageId, answeredBy: userId}).lean().exec();
-    const template: ITemplate = await Template.findById(coverage.templateID).lean().exec();
+    const coverage = (await SurveyCoverage.findById(coverageId)) as ISurveyCoverage | null;
+    const survey = (await Survey.findOne({coverageID: coverageId, answeredBy: userId})) as ISurvey | null ;
+    const template = (await Template.findById(coverage?.templateID)) as ITemplate | null;
 
     const result = {
       coverageID: coverageId,
       answeredBy: userId,
-      surveyAnswers: template.questions.map(x => {
-        const surveyAnswer = survey.surveyAnswers.find(a => a.title === x.title);
+      surveyAnswers: template?.questions.map(x => {
+        const surveyAnswer = survey?.surveyAnswers.find(a => a.questionId.toString() === x._id.toString());
         return { 
+          questionId: x._id,
           title: x.title, 
           type: x.type, 
-          asnwer: surveyAnswer?.answer,
+          answer: surveyAnswer?.answer,
           comment: surveyAnswer?.comment
         };}),
     }
 
-    //todo: we will populate the answers using Survey collection
-   return result;
+    return result;
   };
 
   const createSurvey = async (req: ICreateSurveyRequest) => {
-    let survey:ISurvey = await Survey.findOne({coverageID: req.coverageId, answeredBy: req.userId}).exec();
+    let survey = (await Survey.findOne({coverageID: req.coverageId, answeredBy: req.userId})) as ISurvey | null;
 
     if (!survey){
       const newSurvey = {
         coverageID: req.coverageId,
         answeredBy: req.userId,
-        surveyAnswers: [{title:req.title, answer: req.answer, comment: req.comment}],
+        surveyAnswers: [{questionId:req.questionId, answer: req.answer, comment: req.comment}],
         dateSubmitted: (new Date()).toISOString()
       };
       survey = await Survey.create(newSurvey);
     }else{
-      const item = survey.surveyAnswers.find(x => x.title === req.title);
+      const item = survey.surveyAnswers.find(x => x.questionId.toString() === req.questionId);
       if (item){
         item.answer = req.answer;
         item.comment = req.comment;
       }else{
-        survey.surveyAnswers.push({title:req.title, answer: req.answer, comment: req.comment} as ISurveyAnswer);
+        survey.surveyAnswers.push({questionId: req.questionId, answer: req.answer, comment: req.comment} as ISurveyAnswer);
       }
-      survey.save();
+      await survey.save();
     }
    return survey;
   };
