@@ -4,10 +4,6 @@ import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageSe
 
 const { isExistSurveyCoverage, isTitleExistInSurveyCoverage } = SurveyCoverageService();
 
-const questionSchema = yup.object().shape({
-  title: yup.string().required()
-});
-
 const coverageIdValidator = yup
 .string()
 .required()
@@ -18,10 +14,6 @@ const coverageIdValidator = yup
         test: (id) => isExistSurveyCoverage(id as string),
     }
 );
-
-const getSurveyValidator = yup.object().shape({
-  coverageId: coverageIdValidator
-});
 
 const createSurveyValidator = yup.object().shape({
   coverageId: coverageIdValidator,
@@ -39,4 +31,4 @@ const createSurveyValidator = yup.object().shape({
   comment: yup.string()
 });
 
-export { createSurveyValidator,getSurveyValidator };
+export { createSurveyValidator };
