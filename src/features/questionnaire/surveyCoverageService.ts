@@ -25,7 +25,7 @@ export const SurveyCoverageService = () => {
   ):Promise<boolean> => {
     let result:boolean;
     try{
-      result = await SurveyCoverage.findOne({_id: coverageId}).lean().exec();
+      result = await SurveyCoverage.findOne({_id: coverageId}).lean();
     }catch{
       result = false;
     }
@@ -36,7 +36,7 @@ export const SurveyCoverageService = () => {
   ):Promise<boolean> => {
     let found:boolean;
     try{
-      const {templateID} = await SurveyCoverage.findOne({_id: coverageId}).lean().exec();
+      const {templateID} = await SurveyCoverage.findOne({_id: coverageId}).lean();
       if (templateID){
         const {isTitleExistInTemplate} = TemplateService();
         found = await isTitleExistInTemplate(templateID as string, questionId);
