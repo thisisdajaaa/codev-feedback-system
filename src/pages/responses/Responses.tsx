@@ -4,8 +4,8 @@ import React, { Fragment } from "react";
 import { withAuth } from "@/utils/withAuth";
 
 import { AlertBanner } from "@/components/AlertBanner";
-import { SurveyCard } from "@/components/Card";
-import { surveyList } from "@/components/Card/config";
+import { SurveyCard } from "@/components/SurveyCard";
+import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
 
 const ResponsesPage = () => {
