@@ -4,9 +4,6 @@ import { Fragment, useMemo } from "react";
 import { withAuth } from "@/utils/withAuth";
 import { useUserRole } from "@/hooks";
 
-import { Card } from "@/components/Card";
-import { surveyList } from "@/components/Card/config";
-
 import { AdminView } from "./components/AdminView";
 
 const HomePage: NextPage = () => {
@@ -18,16 +15,7 @@ const HomePage: NextPage = () => {
     return <Fragment />;
   }, [isAdmin]);
 
-  return (
-    <Fragment>
-      {renderView}
-      {surveyList.map((survey, i) => (
-        <Fragment key={i}>
-          <Card {...survey} />
-        </Fragment>
-      ))}
-    </Fragment>
-  );
+  return <Fragment>{renderView}</Fragment>;
 };
 
 export default withAuth(HomePage);
