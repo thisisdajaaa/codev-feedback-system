@@ -4,6 +4,7 @@ import React, { Fragment } from "react";
 import { withAuth } from "@/utils/withAuth";
 
 import { AlertBanner } from "@/components/AlertBanner";
+import { Pagination } from "@/components/Pagination";
 import { SurveyCard } from "@/components/SurveyCard";
 import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
@@ -51,6 +52,8 @@ const ResponsesPage = () => {
             </Fragment>
           ))}
         </div>
+
+        <Pagination />
       </div>
     </div>
   );
