@@ -22,7 +22,7 @@ const checkPathInSchema = (schema: Schema, path: string): boolean => {
 export const advancedResults = async <T, K>(
   options: AdvancedResultsOptions<T>
 ) => {
-  const { model, req, strict = true, populate } = options;
+  const { model, req, strict = true, populate, discardQueryList } = options;
 
   let query;
 
@@ -30,7 +30,13 @@ export const advancedResults = async <T, K>(
   const reqQuery = { ...req.query };
 
   // Fields to exclude
-  const removeFields = ["select", "sort", "page", "limit"];
+  const removeFields = [
+    "select",
+    "sort",
+    "page",
+    "limit",
+    ...(discardQueryList || []),
+  ];
 
   // Loop over removeFields and delete them from reqQuery
   removeFields.forEach((param) => delete reqQuery[param]);
@@ -128,6 +134,6 @@ export const advancedResults = async <T, K>(
   return {
     count: results.length,
     pagination,
-    data: results as K,
+    data: results as unknown as K,
   };
 };

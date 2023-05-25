@@ -6,24 +6,19 @@ import { StatusCodes } from "@/constants/statusCode";
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
-  CreatedSurveyResponse,
   ICreateSurveyRequest,
   IGetSurveyRequest,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
+
 import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
-import { ApiResponse } from "@/types";
 
 export const SurveyController = () => {
   const { createSurvey, getSurvey } = SurveyService();
   const { isExistSurveyCoverage } = SurveyCoverageService();
 
   const handleCreateSurvey = catchAsyncErrors(
-    async (
-      req: NextApiRequest,
-      res: NextApiResponse,
-      _next: NextHandler
-    ) => {
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
       const createReq = req.body as ICreateSurveyRequest;
       createReq.userId = req.user._id;
       const createdSurvey = await createSurvey(createReq);
@@ -37,29 +32,27 @@ export const SurveyController = () => {
   );
 
   const handleGetSurvey = catchAsyncErrors(
-    async (
-      req: NextApiRequest,
-      res: NextApiResponse,
-      _next: NextHandler
-    ) => {
-
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
       const { coverageId, question } = req.query;
       const userId = req.user._id;
-      const param = {coverageId, userId, title:question} as IGetSurveyRequest;
+      const param = {
+        coverageId,
+        userId,
+        title: question,
+      } as IGetSurveyRequest;
 
-      if (await isExistSurveyCoverage(coverageId as string)){
+      if (await isExistSurveyCoverage(coverageId as string)) {
         const data = await getSurvey(param);
         return res.status(StatusCodes.OK).json({
           success: true,
           data,
           message: SURVEY_MESSAGES.SUCCESS.ALL,
         });
-      }else{
+      } else {
         return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-      });
+          success: false,
+        });
       }
-      
     }
   );
 
