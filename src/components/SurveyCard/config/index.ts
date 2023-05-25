@@ -20,7 +20,7 @@ export const surveyList: SurveyProps[] = [
     totalRespondents: 100,
   },
   {
-    surveyStatus: "Finished",
+    surveyStatus: "Closed",
     surveyName: "Working Environment Survey",
     description: "A survey for working environment",
     startDate: new Date(),

@@ -19,7 +19,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
 
   const isSurveyActive = surveyStatus.toUpperCase() === "ACTIVE";
   const isSurveyDraft = surveyStatus.toUpperCase() === "DRAFT";
-  const isSurveyFinished = surveyStatus.toUpperCase() === "FINISHED";
+  const isSurveyClosed = surveyStatus.toUpperCase() === "CLOSED";
 
   const surveyStatusPercentage = Math.floor(responses * totalRespondents) / 100;
 
@@ -31,16 +31,18 @@ const SurveyCard: FC<SurveyProps> = (props) => {
       className={clsxm(
         "relative mb-8 w-1/3 min-w-full overflow-hidden rounded-[1rem] border-[0.063rem] border-solid border-gray-500 p-3 pl-[1.688rem] before:absolute before:left-0 before:top-0 before:h-full before:w-[0.75rem] before:content-['']",
         isSurveyActive && "before:bg-blue-500",
-        isSurveyDraft && "before:bg-gray-500",
-        isSurveyFinished && "before:bg-green-500"
+        isSurveyDraft &&
+          "before:border-r-[0.063rem] before:border-gray-500 before:bg-white",
+        isSurveyClosed && "before:bg-gray-500"
       )}
     >
       <div
         className={clsxm(
-          "absolute top-0 right-0 min-w-[5rem] py-2 px-3 text-center text-white",
+          "absolute -top-1 -right-1 min-w-[5rem] py-2.5 px-3.5 text-center text-white",
           isSurveyActive && "bg-blue-500",
-          isSurveyDraft && "bg-gray-500",
-          isSurveyFinished && "bg-green-500"
+          isSurveyDraft &&
+            "border-[0.063rem] border-gray-500 bg-white text-gray-500",
+          isSurveyClosed && "bg-gray-500"
         )}
       >
         {surveyStatus}
@@ -67,7 +69,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
       <div
         className={clsxm(
           "mt-[2.688rem] flex justify-between",
-          isSurveyFinished && "justify-end"
+          isSurveyClosed && "justify-end"
         )}
       >
         {isSurveyActive && (
@@ -94,7 +96,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
 
         <Button variant="primary" className={surveyCardBtnClassNames}>
           <span className="inline-block w-full text-center text-sm font-normal">
-            {isSurveyActive || isSurveyFinished ? "Responses" : "Edit"}
+            {isSurveyActive || isSurveyClosed ? "Responses" : "Edit"}
           </span>
         </Button>
       </div>
