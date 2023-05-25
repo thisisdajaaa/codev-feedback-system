@@ -10,7 +10,7 @@ import type { ICreateSurveyRequest, IGetSurveyRequest, IGetSurveyResponse, IView
 
 export const SurveyService = () => {
   const getSurvey = async (req: IGetSurveyRequest): Promise<IGetSurveyResponse> => {
-    const { coverageId, userId } = req;
+    const { coverageId, userId, title } = req;
 
     const coverage = (await SurveyCoverage.findById(coverageId)) as ISurveyCoverage | null;
     const survey = (await Survey.findOne({coverageID: coverageId, answeredBy: userId})) as ISurvey | null ;
@@ -19,7 +19,7 @@ export const SurveyService = () => {
     const data:IGetSurveyResponse = {
       coverageID:coverageId, 
       answeredBy: (survey?.answeredBy || userId),
-      surveyAnswers: template!.questions.map(x => {
+      surveyAnswers: template!.questions.filter(f => f.title.toLowerCase().includes(title?.toLowerCase()) || !title).map(x => {
         const surveyAnswer = survey?.surveyAnswers.find(a => a.questionId.toString() === x._id.toString());
         return { 
           questionId: x._id,

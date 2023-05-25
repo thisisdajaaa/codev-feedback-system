@@ -33,5 +33,6 @@ export type PickedSurveyDetails =
 
   export interface IGetSurveyRequest extends NextApiRequest {
     coverageId: string,
-    userId: string
+    userId: string,
+    title: string
   }

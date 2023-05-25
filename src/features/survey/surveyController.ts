@@ -43,9 +43,9 @@ export const SurveyController = () => {
       _next: NextHandler
     ) => {
 
-      const {coverageId} = req.query;
+      const { coverageId, question } = req.query;
       const userId = req.user._id;
-      const param = {coverageId, userId} as IGetSurveyRequest;
+      const param = {coverageId, userId, title:question} as IGetSurveyRequest;
 
       if (await isExistSurveyCoverage(coverageId as string)){
         const data = await getSurvey(param);
