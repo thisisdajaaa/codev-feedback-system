@@ -24,7 +24,6 @@ export const QuestionSchema = new Schema<IQuestion>(
     },
   },
   {
-    _id: false,
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
   }
