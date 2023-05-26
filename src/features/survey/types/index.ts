@@ -1,37 +1,38 @@
+import { NextApiRequest } from "next";
+
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import { IQuestion } from "@/models/Template/types";
-import { NextApiRequest } from "next";
 
 export type PickedSurveyDetails =
   | "coverageID"
   | "answeredBy"
   | "surveyAnswers"
-  | "dateSubmitted"
+  | "dateSubmitted";
 
-  export type PickedSurvey = Pick<ISurvey, PickedSurveyDetails>;
+export type PickedSurvey = Pick<ISurvey, PickedSurveyDetails>;
 
-  export type CreatedSurveyResponse = {
-    survey: PickedSurvey & { id: string };
-  };
+export type CreatedSurveyResponse = {
+  survey: PickedSurvey & { id: string };
+};
 
-  export interface IViewSurveAnswer extends Pick<IQuestion, 
-    "title" | "type" | "options" | "isRequired">, Pick<ISurveyAnswer, 
-    "questionId" | "answer" | "comment">{
-  }
-  export interface IGetSurveyResponse extends Pick<ISurvey, 
-    "coverageID" | "answeredBy" >{
-    surveyAnswers: IViewSurveAnswer[]
-  };
+export interface IViewSurveAnswer
+  extends Pick<IQuestion, "title" | "type" | "options" | "isRequired">,
+    Pick<ISurveyAnswer, "questionId" | "answer" | "comment"> {}
+export interface IGetSurveyResponse
+  extends Pick<ISurvey, "coverageID" | "answeredBy"> {
+  surveyAnswers: IViewSurveAnswer[];
+}
 
-  export interface ICreateSurveyRequest extends NextApiRequest {
-    coverageId: string,
-    userId: string,
-    questionId: string,
-    answer: string,
-    comment?: string
-  }
+export interface ICreateSurveyRequest extends NextApiRequest {
+  coverageId: string;
+  userId: string;
+  questionId: string;
+  answer: string;
+  comment?: string;
+}
 
-  export interface IGetSurveyRequest extends NextApiRequest {
-    coverageId: string,
-    userId: string
-  }
+export interface IGetSurveyRequest extends NextApiRequest {
+  coverageId: string;
+  userId: string;
+  title: string;
+}

@@ -49,4 +49,5 @@ export type AdvancedResultsOptions<T> = {
   req: NextApiRequest;
   strict?: boolean;
   populate?: Populate | Populate[];
+  discardQueryList?:string[]; //this contains our discard list of query params
 };

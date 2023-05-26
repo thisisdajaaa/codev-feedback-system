@@ -41,12 +41,25 @@ export const QuestionnaireController = () => {
         req,
         strict: false,
         populate: populateFields,
+        discardQueryList: ["question"]
       };
 
       const { count, pagination, data } = await advancedResults<
         ITemplate,
         GetQuestionnaireResponse[]
       >(options);
+
+      //Let's filter out question if question query is available.
+      const {question} = req.query;
+      if(question){
+        data.forEach(x => {
+          const datum = x as any;
+          const {questions} = x as any;
+  
+          const items: any[] = Array.isArray(questions) ? questions : [questions];
+          datum.questions = items.filter(q => q.title.toLowerCase().includes(question.toString().toLowerCase()));
+        });
+      }
 
       return res.status(StatusCodes.OK).json({
         success: true,
