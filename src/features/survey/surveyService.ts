@@ -11,6 +11,7 @@ import type {
   IGetSurveyResponse,
   IViewSurveAnswer,
 } from "@/features/survey/types";
+import { QuestionType } from "@/constants/questionType";
 
 export const SurveyService = () => {
   const getSurvey = async (
@@ -44,7 +45,14 @@ export const SurveyService = () => {
             questionId: x._id,
             title: x.title,
             type: x.type,
-            options: x.options,
+            options:
+              QuestionType[x.type]?.options.length > 0
+                ? JSON.stringify(
+                    QuestionType[x.type].options
+                      .sort((a, b) => a.sortOrder - b.sortOrder)
+                      .map((x) => x.name)
+                  )
+                : x.options,
             answer: surveyAnswer?.answer,
             comment: surveyAnswer?.comment,
           };
