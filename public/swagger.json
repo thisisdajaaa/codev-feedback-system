@@ -39,6 +39,10 @@
     {
       "name": "questionnaire",
       "description": "Questionnaire operations"
+    },
+    {
+      "name": "survery",
+      "description": "Survey operations"
     }
   ],
   "paths": {
@@ -268,6 +272,62 @@
           }
         }
       }
+    },
+    "/api/survey": {
+      "get": {
+        "tags": ["survey"],
+        "summary": "Get all survey",
+        "operationId": "getSurveys",
+        "parameters": [
+          {
+            "name": "coverageId",
+            "in": "query",
+            "description": "ID of the SurveyCoverage item",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "question",
+            "in": "query",
+            "description": "The question or part of it that you want to query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "object": {
+                    "$ref": "#/components/responseBodies/Survey"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["survey"],
+        "summary": "Create survey",
+        "operationId": "createSurvey",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/createSurveyBody"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -305,6 +365,17 @@
           },
           "surveyCoverage": {
             "$ref": "#/components/schemas/SurveyCoverage"
+          }
+        }
+      },
+      "Survey": {
+        "type": "object",
+        "properties": {
+          "coverageID": {
+            "type": "string"
+          },
+          "answeredBy": {
+            "type": "string"
           }
         }
       }
@@ -355,6 +426,28 @@
           }
         },
         "required": true
+      },
+      "createSurveyBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "coverageId": {
+                  "type": "string"
+                },
+                "questionId": {
+                  "type": "string"
+                },
+                "answer": {
+                  "type": "string"
+                }
+              },
+              "required": ["coverageId", "questionId", "answer"]
+            }
+          }
+        },
+        "required": true
       }
     },
     "schemas": {
@@ -397,12 +490,22 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "DROPDOWN",
-              "TEXTAREA",
-              "TEXTINPUT",
-              "CHECKBOX",
-              "RADIOBUTTON"
+            "oneOf": [
+              "Rating",
+              "Satisfaction-Scale",
+              "Likelihood-Scale",
+              "Concern-Scale",
+              "Agreement-Scale",
+              "Frequency-Scale",
+              "Awareness-Scale",
+              "Familiarity-Scale",
+              "Quality-Scale",
+              "Importance-Scale",
+              "Age-Range",
+              "Custom-Single",
+              "Custom-Multiple",
+              "Text-Input",
+              "Text-Area"
             ]
           },
           "options": {
@@ -431,6 +534,40 @@
             "items": {
               "$ref": "#/components/schemas/Question"
             }
+          }
+        }
+      },
+      "SurveyAnswer": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          }
+        }
+      },
+      "Survey": {
+        "type": "object",
+        "properties": {
+          "coverageID": {
+            "type": "string"
+          },
+          "answeredBy": {
+            "type": "string"
+          },
+          "suerveyAnswers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurveyAnswer"
+            }
+          },
+          "dateSubmitted": {
+            "type": "date"
+          },
+          "isAnonymous": {
+            "type": "boolean"
           }
         }
       }

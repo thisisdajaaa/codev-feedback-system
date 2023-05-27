@@ -1,3 +1,5 @@
+import { QuestionType } from "@/constants/questionType";
+
 import Survey from "@/models/Survey";
 import { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import SurveyCoverage from "@/models/SurveyCoverage";
@@ -11,7 +13,6 @@ import type {
   IGetSurveyResponse,
   IViewSurveAnswer,
 } from "@/features/survey/types";
-import { QuestionType } from "@/constants/questionType";
 
 export const SurveyService = () => {
   const getSurvey = async (
