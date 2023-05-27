@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from "react";
 
 import clsxm from "@/utils/clsxm";
@@ -36,13 +35,16 @@ const Pagination = ({
 
   const lastPage = paginationRange?.[paginationRange.length - 1];
 
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === lastPage;
+
   return (
     <div className="flex items-center justify-between">
       <div>
         <p className="text-[1.25rem] text-gray-500">
-          Showing <span className="font-medium">{currentPage}</span> to{" "}
-          <span className="font-medium">{totalCount}</span> of{" "}
-          <span className="font-medium">{totalCount}</span> results
+          Showing <span className="font-medium">{totalCount}</span> to{" "}
+          <span className="font-medium">{pageSize}</span> of{" "}
+          <span className="font-medium">{pageSize}</span> results
         </p>
       </div>
 
@@ -51,16 +53,16 @@ const Pagination = ({
           <button
             type="button"
             onClick={onPreviousPage}
-            disabled={currentPage === 1}
-            className="relative inline-flex items-center rounded-l-md px-3 py-2 text-gray-500 ring-1 ring-inset ring-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            disabled={isFirstPage}
+            className={clsxm(
+              "relative inline-flex min-w-[2.5rem] items-center rounded-l-md border-y-[1px] border-x-[1px] border-gray-500 px-3 py-2 font-bold text-gray-500",
+              isFirstPage
+                ? "cursor-not-allowed"
+                : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            )}
           >
             <span className="sr-only">Previous</span>
-            <Image
-              src="/assets/chevron-left.svg"
-              width={13}
-              height={27}
-              alt="chevron left icon"
-            />
+            <span className={isFirstPage ? "text-gray-300" : ""}>&lt;</span>
           </button>
         </li>
 
@@ -104,16 +106,16 @@ const Pagination = ({
           <button
             type="button"
             onClick={onNextPage}
-            disabled={currentPage === lastPage}
-            className="relative inline-flex items-center rounded-r-md px-3 py-2 text-gray-500 ring-1 ring-inset ring-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            disabled={isLastPage}
+            className={clsxm(
+              "relative inline-flex min-w-[2.5rem] items-center rounded-r-md border-y-[1px] border-x-[1px] border-gray-500 px-3 py-2 font-bold text-gray-500",
+              isLastPage
+                ? "cursor-not-allowed"
+                : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            )}
           >
             <span className="sr-only">Next</span>
-            <Image
-              src="/assets/chevron-right.svg"
-              width={13}
-              height={27}
-              alt="chevron right icon"
-            />
+            <span className={isLastPage ? "text-gray-300" : ""}>&gt;</span>
           </button>
         </li>
       </ul>
