@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 
 import { withAuth } from "@/utils/withAuth";
 
@@ -9,9 +9,12 @@ import { SurveyCard } from "@/components/SurveyCard";
 import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
 
+const PageSize = 10;
+
 const ResponsesPage = () => {
   const { data } = useSession();
-  const [showAlert, setShowAlert] = React.useState<boolean>(true);
+  const [showAlert, setShowAlert] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const firstName = data?.user?.name?.split(" ")[0];
 
@@ -23,6 +26,18 @@ const ResponsesPage = () => {
       <Typography preset="regular">Welcome to the Feedback System</Typography>
     </div>
   );
+
+  const currentSurveyData = useMemo(() => {
+    /* 
+      PageSize is to be with how many cards we want to display per page;
+      value is only temporary to show UI and functionalities of pagination component
+    */
+
+    const firstPageIndex = (currentPage - 1) * PageSize;
+    const lastPageIndex = firstPageIndex + PageSize;
+
+    return surveyList.slice(firstPageIndex, lastPageIndex);
+  }, [currentPage]);
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
@@ -46,14 +61,21 @@ const ResponsesPage = () => {
         </Typography>
 
         <div className="gap-8 xs:columns-1 md:columns-2 lg:columns-3">
-          {surveyList.map((survey, i) => (
+          {currentSurveyData.map((survey, i) => (
             <Fragment key={i}>
               <SurveyCard {...survey} />
             </Fragment>
           ))}
         </div>
 
-        <Pagination />
+        <Pagination
+          currentPage={currentPage}
+          // totalCount to be also replaced with surveyList.length
+          totalCount={100}
+          // pageSize is determined on how many you want to display
+          pageSize={PageSize}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );
