@@ -22,7 +22,7 @@ const Navbar: FC = () => {
 
   return (
     <nav className="fixed z-10 flex h-[4.5rem] w-full justify-between bg-white px-6">
-      <div className="flex items-center sm:visible md:visible">
+      <div className="flex items-center xs:invisible sm:visible md:visible">
         <Image
           src="/assets/codev-logo.svg"
           width={32}
