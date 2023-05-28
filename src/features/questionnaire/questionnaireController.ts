@@ -33,7 +33,7 @@ export const QuestionnaireController = () => {
       const populateFields = [
         { path: "createdBy", select: "name email" },
         { path: "updatedBy", select: "name email" },
-        { path: "surveyCoverage", select: "dateFrom dateTo isActive" },
+        { path: "surveyCoverage", select: "dateFrom dateTo status" },
       ];
 
       const options: AdvancedResultsOptions<ITemplate> = {
@@ -41,7 +41,7 @@ export const QuestionnaireController = () => {
         req,
         strict: false,
         populate: populateFields,
-        discardQueryList: ["question"]
+        discardQueryList: ["question"],
       };
 
       const { count, pagination, data } = await advancedResults<
@@ -50,14 +50,18 @@ export const QuestionnaireController = () => {
       >(options);
 
       //Let's filter out question if question query is available.
-      const {question} = req.query;
-      if(question){
-        data.forEach(x => {
+      const { question } = req.query;
+      if (question) {
+        data.forEach((x) => {
           const datum = x as any;
-          const {questions} = x as any;
-  
-          const items: any[] = Array.isArray(questions) ? questions : [questions];
-          datum.questions = items.filter(q => q.title.toLowerCase().includes(question.toString().toLowerCase()));
+          const { questions } = x as any;
+
+          const items: any[] = Array.isArray(questions)
+            ? questions
+            : [questions];
+          datum.questions = items.filter((q) =>
+            q.title.toLowerCase().includes(question.toString().toLowerCase())
+          );
         });
       }
 

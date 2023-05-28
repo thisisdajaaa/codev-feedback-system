@@ -39,7 +39,6 @@ const questionnaireBodySchema = yup.object().shape({
           (value: string) => moment(value).isAfter(moment(dateFrom))
         )
     ),
-    isActive: yup.boolean(),
   }),
 
   template: yup.object().shape({

@@ -10,10 +10,13 @@ import type {
   CreatedSurveyResponse,
   IAnswerSurveyRequest,
 } from "@/features/survey/types";
+import { answerSurveyBodySchema } from "@/features/survey/validations/answerSurveyBodySchema";
+import { answerSurveyQuerySchema } from "@/features/survey/validations/answerSurveyQuerySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
 import { roleAtLeast } from "@/middlewares/roleAtLeast";
+import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   IAnswerSurveyRequest,
@@ -22,11 +25,14 @@ const handler = nextConnect<
   onError,
 });
 
-const { handleGetSurveys } = SurveyController();
+const { handleGetSurveyByCoverageId, handleAnswerSurvey } = SurveyController();
 
 handler
   .use(isAuthenticatedUser)
-  .use(roleAtLeast(ROLES.SURVEYOR))
-  .get(mongoHandler(handleGetSurveys));
+  .use(roleAtLeast(ROLES.SURVEYEE))
+  .use(validate("query", answerSurveyQuerySchema))
+  .get(mongoHandler(handleGetSurveyByCoverageId))
+  .use(validate("body", answerSurveyBodySchema))
+  .put(mongoHandler(handleAnswerSurvey));
 
 export default handler;

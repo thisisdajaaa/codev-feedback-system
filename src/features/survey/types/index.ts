@@ -23,16 +23,18 @@ export interface IGetSurveyResponse
   surveyAnswers: IViewSurveAnswer[];
 }
 
-export interface ICreateSurveyRequest extends NextApiRequest {
-  coverageId: string;
-  userId: string;
-  questionId: string;
-  answer: string;
-  comment?: string;
+export interface IAnswerSurveyRequest extends NextApiRequest {
+  body: {
+    questionId: string;
+    answer: string;
+    comment?: string;
+  };
 }
 
 export interface IGetSurveyRequest extends NextApiRequest {
-  coverageId: string;
-  userId: string;
-  title: string;
+  body: {
+    coverageId: string;
+    userId: string;
+    title: string;
+  };
 }

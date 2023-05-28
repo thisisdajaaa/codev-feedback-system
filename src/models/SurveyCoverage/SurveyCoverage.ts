@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 import type { ISurveyCoverage } from "./types";
+import { SurveyStatus, surveyStatusList } from "../Survey/config";
 
 export const SurveyCoverageSchema = new Schema<ISurveyCoverage>(
   {
@@ -17,9 +18,10 @@ export const SurveyCoverageSchema = new Schema<ISurveyCoverage>(
       type: String,
       required: true,
     },
-    isActive: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      enum: surveyStatusList,
+      default: SurveyStatus.DRAFT,
       required: true,
     },
   },

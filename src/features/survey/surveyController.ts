@@ -3,10 +3,12 @@ import { NextHandler } from "next-connect";
 
 import { StatusCodes } from "@/constants/statusCode";
 
+import { ApiResponse } from "@/types";
+
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
-  ICreateSurveyRequest,
+  IAnswerSurveyRequest,
   IGetSurveyRequest,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
@@ -14,24 +16,26 @@ import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
 
 export const SurveyController = () => {
-  const { createSurvey, getSurvey } = SurveyService();
+  const { answerSurvey, getSurveyByCoverageId, getSurveys } = SurveyService();
   const { isExistSurveyCoverage } = SurveyCoverageService();
 
-  const handleCreateSurvey = catchAsyncErrors(
-    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
-      const createReq = req.body as ICreateSurveyRequest;
-      createReq.userId = req.user._id;
-      const createdSurvey = await createSurvey(createReq);
+  const handleAnswerSurvey = catchAsyncErrors(
+    async (
+      req: IAnswerSurveyRequest,
+      res: NextApiResponse,
+      _next: NextHandler
+    ) => {
+      const answeredSurvey = await answerSurvey(req);
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        data: createdSurvey,
+        data: answeredSurvey,
         message: SURVEY_MESSAGES.SUCCESS.CREATE,
       });
     }
   );
 
-  const handleGetSurvey = catchAsyncErrors(
+  const handleGetSurveyByCoverageId = catchAsyncErrors(
     async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
       const { coverageId, question } = req.query;
       const userId = req.user._id;
@@ -39,10 +43,11 @@ export const SurveyController = () => {
         coverageId,
         userId,
         title: question,
-      } as IGetSurveyRequest;
+      } as IGetSurveyRequest["body"];
 
       if (await isExistSurveyCoverage(coverageId as string)) {
-        const data = await getSurvey(param);
+        const data = await getSurveyByCoverageId(param);
+
         return res.status(StatusCodes.OK).json({
           success: true,
           data,
@@ -56,5 +61,23 @@ export const SurveyController = () => {
     }
   );
 
-  return { handleCreateSurvey, handleGetSurvey };
+  const handleGetSurveys = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<any>>,
+      _next: NextHandler
+    ) => {
+      const { count, pagination, data } = await getSurveys(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        count,
+        pagination,
+        data,
+        message: SURVEY_MESSAGES.SUCCESS.ALL,
+      });
+    }
+  );
+
+  return { handleAnswerSurvey, handleGetSurveyByCoverageId, handleGetSurveys };
 };

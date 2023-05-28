@@ -24,33 +24,42 @@ export const SurveyCoverageService = () => {
     return await SurveyCoverage.create(newCoverage);
   };
 
-  const isExistSurveyCoverage = async (coverageId: string
-  ):Promise<boolean> => {
-    let result:boolean;
-    try{
-      result = await SurveyCoverage.findOne({_id: coverageId}).lean();
-    }catch{
+  const isExistSurveyCoverage = async (
+    coverageId: string
+  ): Promise<boolean> => {
+    let result: boolean;
+    try {
+      result = await SurveyCoverage.findOne({ _id: coverageId }).lean();
+    } catch {
       result = false;
     }
     return result;
   };
 
-  const isTitleExistInSurveyCoverage = async (coverageId: string, questionId: string
-  ):Promise<boolean> => {
-    let found:boolean;
-    try{
-      const {templateID} = await SurveyCoverage.findOne({_id: coverageId}).lean();
-      if (templateID){
-        const {isTitleExistInTemplate} = TemplateService();
+  const isTitleExistInSurveyCoverage = async (
+    coverageId: string,
+    questionId: string
+  ): Promise<boolean> => {
+    let found: boolean;
+    try {
+      const { templateID } = await SurveyCoverage.findOne({
+        _id: coverageId,
+      }).lean();
+      if (templateID) {
+        const { isTitleExistInTemplate } = TemplateService();
         found = await isTitleExistInTemplate(templateID as string, questionId);
-      }else{
+      } else {
         found = false;
       }
-    }catch{
+    } catch {
       found = false;
     }
     return found;
   };
 
-  return { createSurveyCoverage, isExistSurveyCoverage, isTitleExistInSurveyCoverage };
+  return {
+    createSurveyCoverage,
+    isExistSurveyCoverage,
+    isTitleExistInSurveyCoverage,
+  };
 };

@@ -477,7 +477,7 @@
           "dateTo": {
             "type": "string"
           },
-          "isActive": {
+          "status": {
             "type": "string"
           }
         }

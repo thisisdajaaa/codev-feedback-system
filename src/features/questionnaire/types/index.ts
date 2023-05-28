@@ -7,7 +7,7 @@ export type PickedSurveyCoverageDetails =
   | "templateID"
   | "dateFrom"
   | "dateTo"
-  | "isActive";
+  | "status";
 
 export type PickedTemplateDetails =
   | "id"

@@ -1,22 +1,35 @@
+import type { NextApiRequest } from "next/types";
+
+import { advancedResults } from "@/utils/advancedResults";
+import ErrorHandler from "@/utils/errorHandler";
+
 import { QuestionType } from "@/constants/questionType";
+import { StatusCodes } from "@/constants/statusCode";
 
 import Survey from "@/models/Survey";
-import { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
+import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import SurveyCoverage from "@/models/SurveyCoverage";
-import { ISurveyCoverage } from "@/models/SurveyCoverage/types";
+import type { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 import Template from "@/models/Template";
-import { ITemplate } from "@/models/Template/types";
+import type { ITemplate } from "@/models/Template/types";
+
+import type { AdvancedResultsOptions } from "@/types";
 
 import type {
-  ICreateSurveyRequest,
+  IAnswerSurveyRequest,
   IGetSurveyRequest,
   IGetSurveyResponse,
   IViewSurveAnswer,
 } from "@/features/survey/types";
 
+import { SURVEY_MESSAGES } from "./config";
+import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
+
 export const SurveyService = () => {
-  const getSurvey = async (
-    req: IGetSurveyRequest
+  const { isTitleExistInSurveyCoverage } = SurveyCoverageService();
+
+  const getSurveyByCoverageId = async (
+    req: IGetSurveyRequest["body"]
   ): Promise<IGetSurveyResponse> => {
     const { coverageId, userId, title } = req;
 
@@ -62,45 +75,79 @@ export const SurveyService = () => {
     return data;
   };
 
-  const createSurvey = async (req: ICreateSurveyRequest) => {
+  const answerSurvey = async (req: IAnswerSurveyRequest) => {
+    const { coverageId } = req.query;
+
+    const { answer, questionId, comment } = req.body;
+
+    const userId = req.user.id;
+
     let survey = (await Survey.findOne({
-      coverageID: req.coverageId,
-      answeredBy: req.userId,
+      coverageID: coverageId,
+      answeredBy: userId,
     })) as ISurvey | null;
+
+    const isTitleExist = await isTitleExistInSurveyCoverage(
+      String(coverageId),
+      questionId
+    );
+
+    if (!isTitleExist)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.QUESTION_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
 
     if (!survey) {
       const newSurvey = {
-        coverageID: req.coverageId,
-        answeredBy: req.userId,
+        coverageID: coverageId,
+        answeredBy: userId,
         surveyAnswers: [
           {
-            questionId: req.questionId,
-            answer: req.answer,
-            comment: req.comment,
+            questionId,
+            answer,
+            comment,
           },
         ],
         dateSubmitted: new Date().toISOString(),
       };
+
       survey = await Survey.create(newSurvey);
     } else {
       const item = survey.surveyAnswers.find(
-        (x) => x.questionId.toString() === req.questionId
+        (x) => x.questionId.toString() === questionId
       );
+
       if (item) {
-        item.answer = req.answer;
-        item.comment = req.comment;
+        item.answer = answer;
+        item.comment = comment;
       } else {
         survey.surveyAnswers.push({
-          questionId: req.questionId,
-          answer: req.answer,
-          comment: req.comment,
+          questionId,
+          answer,
+          comment,
         } as ISurveyAnswer);
       }
+
       survey.dateSubmitted = new Date().toISOString();
       await survey.save();
     }
+
     return survey;
   };
 
-  return { createSurvey, getSurvey };
+  const getSurveys = async (req: NextApiRequest) => {
+    const populateFields = [{ path: "answeredBy", select: "name email" }];
+
+    const options: AdvancedResultsOptions<ISurvey> = {
+      model: Survey,
+      req,
+      strict: false,
+      populate: populateFields,
+    };
+
+    return await advancedResults<ISurvey, any[]>(options);
+  };
+
+  return { answerSurvey, getSurveyByCoverageId, getSurveys };
 };
