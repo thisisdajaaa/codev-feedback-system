@@ -1,7 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 
-import { QUESTION_TYPES } from "@/models/Template/config";
-
 import type { IQuestion, ITemplate } from "./types";
 
 export const QuestionSchema = new Schema<IQuestion>(
@@ -11,7 +9,6 @@ export const QuestionSchema = new Schema<IQuestion>(
       required: true,
     },
     type: {
-      enum: Object.values(QUESTION_TYPES),
       type: String,
       required: true,
     },

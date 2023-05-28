@@ -1,3 +1,5 @@
+import { QuestionType } from "@/constants/questionType";
+
 import Survey from "@/models/Survey";
 import { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import SurveyCoverage from "@/models/SurveyCoverage";
@@ -44,7 +46,14 @@ export const SurveyService = () => {
             questionId: x._id,
             title: x.title,
             type: x.type,
-            options: x.options,
+            options:
+              QuestionType[x.type]?.options.length > 0
+                ? JSON.stringify(
+                    QuestionType[x.type].options
+                      .sort((a, b) => a.sortOrder - b.sortOrder)
+                      .map((x) => x.name)
+                  )
+                : x.options,
             answer: surveyAnswer?.answer,
             comment: surveyAnswer?.comment,
           };

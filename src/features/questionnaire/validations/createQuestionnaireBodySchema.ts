@@ -1,17 +1,15 @@
 import moment from "moment";
 import * as yup from "yup";
 
-import { QUESTION_TYPES } from "@/models/Template/config";
+import { QuestionType } from "@/constants/questionType";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 
 const dateSchema = yup
   .string()
   .required()
-  .test(
-    "is-date",
-    QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE,
-    (value) => moment(value, moment.ISO_8601, true).isValid()
+  .test("is-date", QUESTIONNAIRE_MESSAGES.ERROR.INVALID_DATE_FORMAT, (value) =>
+    moment(value, moment.ISO_8601, true).isValid()
   );
 
 const questionSchema = yup.object().shape({
@@ -20,7 +18,7 @@ const questionSchema = yup.object().shape({
     .string()
     .trim()
     .oneOf(
-      Object.values(QUESTION_TYPES),
+      Object.keys(QuestionType),
       QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE
     )
     .required(),
