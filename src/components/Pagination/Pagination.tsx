@@ -2,7 +2,7 @@ import React from "react";
 
 import clsxm from "@/utils/clsxm";
 
-import { DOTS } from "./hooks/usePagination";
+import { DOTS } from "./config";
 import { usePagination } from "./hooks/usePagination";
 
 const Pagination = ({
@@ -59,8 +59,7 @@ const Pagination = ({
               isFirstPage
                 ? "cursor-not-allowed"
                 : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            )}
-          >
+            )}>
             <span className="sr-only">Previous</span>
             <span className={isFirstPage ? "text-gray-300" : ""}>&lt;</span>
           </button>
@@ -72,8 +71,7 @@ const Pagination = ({
               <button
                 key={i}
                 type="button"
-                className="relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-              >
+                className="relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                 <li className="w-full text-center">&#8230;</li>
               </button>
             );
@@ -88,14 +86,12 @@ const Pagination = ({
                 "relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0",
                 currentPage === pageNumber && "bg-gray-50",
                 pageNumber === lastPage && "border-r-0"
-              )}
-            >
+              )}>
               <li
                 className={clsxm(
                   "w-full text-center",
                   currentPage === pageNumber ? "text-blue-500" : ""
-                )}
-              >
+                )}>
                 {pageNumber}
               </li>
             </button>
@@ -112,8 +108,7 @@ const Pagination = ({
               isLastPage
                 ? "cursor-not-allowed"
                 : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            )}
-          >
+            )}>
             <span className="sr-only">Next</span>
             <span className={isLastPage ? "text-gray-300" : ""}>&gt;</span>
           </button>

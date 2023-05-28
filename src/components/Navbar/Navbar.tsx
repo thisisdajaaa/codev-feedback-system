@@ -1,14 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import React, { FC, useState } from "react";
 
 import clsxm from "@/utils/clsxm";
+import { useUserRole } from "@/hooks";
+
+import { SYSTEM_URL } from "@/constants/pageUrl";
 
 import { navLinks } from "./config";
+import { Typography } from "../Typography";
 
 const Navbar: FC = () => {
   const { data } = useSession();
+  const router = useRouter();
+  const { isSurveyor } = useUserRole();
+
+  const { pathname } = router;
+
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const handleLogout = async (
@@ -21,7 +31,7 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="fixed z-10 flex h-[4.5rem] w-full justify-between bg-white px-6">
+    <nav className="fixed z-10 flex h-[4.5rem] w-full justify-between bg-white px-6 shadow-md">
       <div className="flex items-center xs:invisible sm:visible md:visible">
         <Image
           src="/assets/codev-logo.svg"
@@ -30,12 +40,39 @@ const Navbar: FC = () => {
           alt="codev logo"
         />
         <h1 className="ml-3 text-[1.25rem]">Feedback System</h1>
+
+        <ul className="ml-[58px] flex h-full">
+          <li
+            className={clsxm(
+              "flex cursor-pointer items-center px-8 py-[21px] transition-all hover:bg-gray-100",
+              pathname === SYSTEM_URL.HOME && "bg-gray-100"
+            )}>
+            <Link href={SYSTEM_URL.HOME}>
+              <a>
+                <Typography preset="heading2">Home</Typography>
+              </a>
+            </Link>
+          </li>
+
+          {isSurveyor && (
+            <li
+              className={clsxm(
+                "flex cursor-pointer items-center px-8 py-[21px] transition-all hover:bg-gray-100",
+                pathname === SYSTEM_URL.RESPONSES && "bg-gray-100"
+              )}>
+              <Link href={SYSTEM_URL.RESPONSES}>
+                <a>
+                  <Typography preset="heading2">Responses</Typography>
+                </a>
+              </Link>
+            </li>
+          )}
+        </ul>
       </div>
 
       <div
         onClick={() => setIsDropdownOpen((prev) => !prev)}
-        className="relative flex cursor-pointer items-center gap-3"
-      >
+        className="relative flex cursor-pointer items-center gap-3">
         <Image
           src={data?.user.image || "/assets/avatar-placeholder.svg"}
           width={28}
@@ -68,16 +105,14 @@ const Navbar: FC = () => {
               {navLinks.map((nav, index) => (
                 <li
                   key={index}
-                  className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
-                >
+                  className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100">
                   <Link href={nav.url}>{nav.label}</Link>
                 </li>
               ))}
 
               <li
                 className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
-                onClick={handleLogout}
-              >
+                onClick={handleLogout}>
                 <span>Log Out</span>
               </li>
             </ul>
