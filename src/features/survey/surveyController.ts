@@ -10,6 +10,7 @@ import { SurveyService } from "@/features/survey/surveyService";
 import type {
   IAnswerSurveyRequest,
   IGetSurveyRequest,
+  SurveysResponse,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
@@ -64,7 +65,7 @@ export const SurveyController = () => {
   const handleGetSurveys = catchAsyncErrors(
     async (
       req: NextApiRequest,
-      res: NextApiResponse<ApiResponse<any>>,
+      res: NextApiResponse<ApiResponse<SurveysResponse>>,
       _next: NextHandler
     ) => {
       const { count, pagination, data } = await getSurveys(req);

@@ -7,8 +7,8 @@ import type { ApiResponse } from "@/types";
 
 import { SurveyController } from "@/features/survey";
 import type {
-  CreatedSurveyResponse,
   IAnswerSurveyRequest,
+  SurveysResponse,
 } from "@/features/survey/types";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
@@ -17,7 +17,7 @@ import { roleAtLeast } from "@/middlewares/roleAtLeast";
 
 const handler = nextConnect<
   IAnswerSurveyRequest,
-  NextApiResponse<ApiResponse<CreatedSurveyResponse>>
+  NextApiResponse<ApiResponse<SurveysResponse>>
 >({
   onError,
 });

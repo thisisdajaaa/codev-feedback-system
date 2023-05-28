@@ -5,15 +5,32 @@ import { IQuestion } from "@/models/Template/types";
 
 export type PickedSurveyDetails =
   | "coverageID"
-  | "answeredBy"
   | "surveyAnswers"
   | "dateSubmitted";
 
-export type PickedSurvey = Pick<ISurvey, PickedSurveyDetails>;
+export type AnsweredByUser = {
+  id: string;
+  email: string;
+  name: string;
+};
+
+export type PickedSurvey = Pick<ISurvey, PickedSurveyDetails> & {
+  answeredBy: AnsweredByUser;
+};
 
 export type CreatedSurveyResponse = {
   survey: PickedSurvey & { id: string };
 };
+
+export type SingleSurveyResponse = PickedSurvey & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  isAnonymous: boolean;
+  status: string;
+};
+
+export type SurveysResponse = SingleSurveyResponse[];
 
 export interface IViewSurveAnswer
   extends Pick<IQuestion, "title" | "type" | "options" | "isRequired">,

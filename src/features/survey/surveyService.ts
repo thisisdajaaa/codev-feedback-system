@@ -20,6 +20,7 @@ import type {
   IGetSurveyRequest,
   IGetSurveyResponse,
   IViewSurveAnswer,
+  SurveysResponse,
 } from "@/features/survey/types";
 
 import { SURVEY_MESSAGES } from "./config";
@@ -146,7 +147,7 @@ export const SurveyService = () => {
       populate: populateFields,
     };
 
-    return await advancedResults<ISurvey, any[]>(options);
+    return await advancedResults<ISurvey, SurveysResponse>(options);
   };
 
   return { answerSurvey, getSurveyByCoverageId, getSurveys };
