@@ -1,10 +1,14 @@
-import { NextApiRequest } from "next";
+import type { NextApiRequest } from "next";
 
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
-import { IQuestion } from "@/models/Template/types";
+import type { IQuestion } from "@/models/Template/types";
+
+import type { ApiResponse } from "@/types";
+
+import type { PickedTemplate } from "@/features/questionnaire/types";
 
 export type PickedSurveyDetails =
-  | "coverageID"
+  | "templateId"
   | "surveyAnswers"
   | "dateSubmitted";
 
@@ -22,21 +26,25 @@ export type CreatedSurveyResponse = {
   survey: PickedSurvey & { id: string };
 };
 
-export type SingleSurveyResponse = PickedSurvey & {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  isAnonymous: boolean;
-  status: string;
-};
+export type SingleSurveyResponse = PickedSurvey &
+  PickedTemplate & {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    isAnonymous: boolean;
+    status: string;
+    templateId: string;
+  };
 
 export type SurveysResponse = SingleSurveyResponse[];
+
+export type GetSurveysResponse = Omit<ApiResponse<SurveysResponse>, "success">;
 
 export interface IViewSurveAnswer
   extends Pick<IQuestion, "title" | "type" | "options" | "isRequired">,
     Pick<ISurveyAnswer, "questionId" | "answer" | "comment"> {}
 export interface IGetSurveyResponse
-  extends Pick<ISurvey, "coverageID" | "answeredBy"> {
+  extends Pick<ISurvey, "templateId" | "answeredBy"> {
   surveyAnswers: IViewSurveAnswer[];
 }
 

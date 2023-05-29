@@ -11,7 +11,6 @@ import type { ITemplate } from "@/models/Template/types";
 import type { AdvancedResultsOptions, ApiResponse } from "@/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
-import { SurveyCoverageService } from "@/features/questionnaire/surveyCoverageService";
 import { TemplateService } from "@/features/questionnaire/templateService";
 import type {
   CreatedQuestionnaireResponse,
@@ -21,7 +20,6 @@ import type {
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const QuestionnaireController = () => {
-  const { createSurveyCoverage } = SurveyCoverageService();
   const { createTemplate } = TemplateService();
 
   const handleGetQuestionnaires = catchAsyncErrors(
@@ -33,7 +31,6 @@ export const QuestionnaireController = () => {
       const populateFields = [
         { path: "createdBy", select: "name email" },
         { path: "updatedBy", select: "name email" },
-        { path: "surveyCoverage", select: "dateFrom dateTo status" },
       ];
 
       const options: AdvancedResultsOptions<ITemplate> = {
@@ -82,15 +79,8 @@ export const QuestionnaireController = () => {
       _next: NextHandler
     ) => {
       const createdTemplate = await createTemplate(req);
-      const createdCoverage = await createSurveyCoverage(
-        req,
-        createdTemplate.id
-      );
 
-      const data: CreatedQuestionnaireResponse = {
-        coverage: createdCoverage,
-        template: createdTemplate,
-      };
+      const data: CreatedQuestionnaireResponse = { ...createdTemplate };
 
       return res.status(StatusCodes.OK).json({
         success: true,

@@ -11,7 +11,6 @@ import type {
   IAnswerSurveyRequest,
 } from "@/features/survey/types";
 import { answerSurveyBodySchema } from "@/features/survey/validations/answerSurveyBodySchema";
-import { answerSurveyQuerySchema } from "@/features/survey/validations/answerSurveyQuerySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
@@ -25,13 +24,11 @@ const handler = nextConnect<
   onError,
 });
 
-const { handleGetSurveyByCoverageId, handleAnswerSurvey } = SurveyController();
+const { handleAnswerSurvey } = SurveyController();
 
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.SURVEYEE))
-  .use(validate("query", answerSurveyQuerySchema))
-  .get(mongoHandler(handleGetSurveyByCoverageId))
   .use(validate("body", answerSurveyBodySchema))
   .put(mongoHandler(handleAnswerSurvey));
 

@@ -1,6 +1,6 @@
 import type { NextApiRequest } from "next/types";
 
-import { advancedResults } from "@/utils/advancedResults";
+import { QueryBuilder } from "@/utils/advancedResults";
 import ErrorHandler from "@/utils/errorHandler";
 
 import { QuestionType } from "@/constants/questionType";
@@ -8,49 +8,47 @@ import { StatusCodes } from "@/constants/statusCode";
 
 import Survey from "@/models/Survey";
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
-import SurveyCoverage from "@/models/SurveyCoverage";
-import type { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 import Template from "@/models/Template";
 import type { ITemplate } from "@/models/Template/types";
+import User from "@/models/User/User";
 
-import type { AdvancedResultsOptions, Populate } from "@/types";
+import type { Populate } from "@/types";
 
 import type {
+  GetSurveysResponse,
   IAnswerSurveyRequest,
-  IGetSurveyRequest,
   IGetSurveyResponse,
   IViewSurveAnswer,
-  SurveysResponse,
+  SingleSurveyResponse,
 } from "@/features/survey/types";
 
 import { SURVEY_MESSAGES } from "./config";
-import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
+import { USER_MESSAGES } from "../user/config";
 
 export const SurveyService = () => {
-  const { isTitleExistInSurveyCoverage } = SurveyCoverageService();
-
-  const getSurveyByCoverageId = async (
-    req: IGetSurveyRequest["body"]
+  const getSurveyByTemplateId = async (
+    req: NextApiRequest
   ): Promise<IGetSurveyResponse> => {
-    const { coverageId, userId, title } = req;
+    const { templateId, title } = req.query;
+    const userId = req.user.id;
 
-    const coverage = (await SurveyCoverage.findById(
-      coverageId
-    )) as ISurveyCoverage | null;
     const survey = (await Survey.findOne({
-      coverageID: coverageId,
+      templateId,
       answeredBy: userId,
     })) as ISurvey | null;
-    const template = (await Template.findById(
-      coverage?.templateID
-    )) as ITemplate | null;
+
+    const template = (await Template.findOne({
+      id: templateId,
+    })) as ITemplate | null;
 
     const data: IGetSurveyResponse = {
-      coverageID: coverageId,
+      templateId: String(template?.id),
       answeredBy: survey?.answeredBy || userId,
       surveyAnswers: template?.questions
         .filter(
-          (f) => f.title.toLowerCase().includes(title?.toLowerCase()) || !title
+          (f) =>
+            f.title.toLowerCase().includes(String(title)?.toLowerCase()) ||
+            !title
         )
         .map((x) => {
           const surveyAnswer = survey?.surveyAnswers.find(
@@ -73,35 +71,35 @@ export const SurveyService = () => {
           };
         }) as IViewSurveAnswer[],
     };
+
     return data;
   };
 
   const answerSurvey = async (req: IAnswerSurveyRequest) => {
-    const { coverageId } = req.query;
+    const { templateId } = req.query;
 
     const { answer, questionId, comment } = req.body;
 
     const userId = req.user.id;
 
     let survey = (await Survey.findOne({
-      coverageID: coverageId,
+      templateId,
       answeredBy: userId,
     })) as ISurvey | null;
 
-    const isTitleExist = await isTitleExistInSurveyCoverage(
-      String(coverageId),
-      questionId
-    );
+    const template = (await Template.findOne({
+      id: templateId,
+    })) as ITemplate | null;
 
-    if (!isTitleExist)
+    if (!template)
       throw new ErrorHandler(
-        SURVEY_MESSAGES.ERROR.QUESTION_NOT_FOUND,
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
         StatusCodes.NOT_FOUND
       );
 
     if (!survey) {
       const newSurvey = {
-        coverageID: coverageId,
+        templateId,
         answeredBy: userId,
         surveyAnswers: [
           {
@@ -137,39 +135,69 @@ export const SurveyService = () => {
     return survey;
   };
 
-  const getSurveys = async (req: NextApiRequest) => {
-    const populateFields: Populate[] = [
+  const getSurveys = async (
+    req: NextApiRequest
+  ): Promise<GetSurveysResponse> => {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 25;
+    const createdBy = (req.query.createdBy as string) || req.user.email;
+    const title = req.query.title as string;
+
+    const user = await User.findOne({
+      $or: [{ email: createdBy }],
+    });
+
+    if (!user)
+      throw new ErrorHandler(
+        USER_MESSAGES.ERROR.USER_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const filter = {
+      createdBy: user._id,
+      ...(title && { title: { $regex: title, $options: "i" } }),
+    };
+
+    // Constructing initial query.
+    const query = Template.find();
+
+    const total = await Template.countDocuments(filter);
+
+    // Building query with QueryBuilder
+    const builder = new QueryBuilder(query, Template.schema, total);
+
+    const populate: Populate[] = [
       {
-        path: "templateID",
-        model: "Template",
-        select: "title description createdBy",
-        populate: {
-          path: "createdBy",
-          model: "User",
-          select: "email role",
-        },
+        path: "createdBy",
+        model: "User",
+        select: "email name",
       },
       {
         path: "surveys",
         model: "Survey",
         select: "answeredBy surveyAnswers isAnonymous status dateSubmitted",
-        populate: {
-          path: "answeredBy",
-          model: "User",
-          select: "email role",
-        },
       },
     ];
 
-    const options: AdvancedResultsOptions<ISurveyCoverage> = {
-      model: SurveyCoverage,
-      req,
-      strict: false,
-      populate: populateFields,
-    };
+    // Populate fields
+    builder.populateFields(populate);
 
-    return await advancedResults<ISurveyCoverage, any>(options);
+    // Filtering
+    await builder.filtering(filter);
+
+    // Sorting
+    builder.sorting(req.query.sort as string);
+
+    // Pagination
+    builder.pagination({ page, limit });
+
+    // Execute query
+
+    const { query: buildQuery, pagination } = builder.build();
+    const results = (await buildQuery.exec()) as SingleSurveyResponse[];
+
+    return { count: results.length, total, pagination, data: results };
   };
 
-  return { answerSurvey, getSurveyByCoverageId, getSurveys };
+  return { answerSurvey, getSurveyByTemplateId, getSurveys };
 };

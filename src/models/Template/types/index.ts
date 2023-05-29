@@ -12,6 +12,9 @@ export interface ITemplate extends Document {
   description: string;
   department: string;
   questions: IQuestion[];
+  dateFrom: string;
+  dateTo: string;
+  status: string;
   createdBy: mongoose.Schema.Types.ObjectId;
   updatedBy: mongoose.Schema.Types.ObjectId;
 }

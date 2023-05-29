@@ -20,9 +20,9 @@ export const SurveyAnswerSchema = new Schema<ISurveyAnswer>({
 
 export const SurveySchema = new Schema<ISurvey>(
   {
-    coverageID: {
+    templateId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "SurveyCoverage",
+      ref: "Template",
       required: true,
     },
     answeredBy: {

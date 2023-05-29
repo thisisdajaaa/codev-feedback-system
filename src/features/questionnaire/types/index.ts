@@ -1,6 +1,5 @@
 import type { NextApiRequest } from "next";
 
-import type { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 import type { ITemplate } from "@/models/Template/types";
 
 export type PickedSurveyCoverageDetails =
@@ -16,26 +15,17 @@ export type PickedTemplateDetails =
   | "department"
   | "questions"
   | "createdBy"
-  | "updatedBy";
-
-export type PickedCoverage = Pick<ISurveyCoverage, PickedSurveyCoverageDetails>;
+  | "updatedBy"
+  | "dateFrom"
+  | "dateTo"
+  | "status";
 
 export type PickedTemplate = Pick<ITemplate, PickedTemplateDetails>;
 
-export type PickedCoverageResponse = Omit<PickedCoverage, "templateID">;
+export type CreatedQuestionnaireResponse = PickedTemplate & { id: string };
 
-export type CreatedQuestionnaireResponse = {
-  coverage: PickedCoverage & { id: string };
-  template: PickedTemplate & { id: string };
-};
-
-export type GetQuestionnaireResponse = PickedCoverageResponse & {
-  template: PickedTemplate;
-} & { id: string };
+export type GetQuestionnaireResponse = PickedTemplate & { id: string };
 
 export interface ICreateQuestionnaireRequest extends NextApiRequest {
-  body: {
-    coverage: PickedCoverageResponse;
-    template: PickedTemplate;
-  };
+  body: PickedTemplate;
 }
