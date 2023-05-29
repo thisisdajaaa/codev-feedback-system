@@ -40,6 +40,8 @@ export type ApiResponse<T> = {
 export type Populate = {
   path: string;
   select?: string;
+  model?: string;
+  populate?: Populate | Populate[];
 };
 
 export type ValidationRequestOptions = "body" | "query";
@@ -49,5 +51,5 @@ export type AdvancedResultsOptions<T> = {
   req: NextApiRequest;
   strict?: boolean;
   populate?: Populate | Populate[];
-  discardQueryList?:string[]; //this contains our discard list of query params
+  discardQueryList?: string[]; //this contains our discard list of query params
 };

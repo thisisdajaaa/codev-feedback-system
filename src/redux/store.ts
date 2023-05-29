@@ -20,7 +20,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }).concat(logger),
-  devTools: isLocal,
+  // devTools: isLocal,
 });
 
 export type RootState = ReturnType<typeof store.getState>;

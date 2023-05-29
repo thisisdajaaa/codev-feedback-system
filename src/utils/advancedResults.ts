@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import { Query, Schema } from "mongoose";
 
-import type { AdvancedResultsOptions, Pagination } from "@/types";
+import type { AdvancedResultsOptions, Pagination, Populate } from "@/types";
 
 const checkPathInSchema = (schema: Schema, path: string): boolean => {
   const pathParts = path.split(".");
@@ -17,6 +17,21 @@ const checkPathInSchema = (schema: Schema, path: string): boolean => {
   }
 
   return true;
+};
+
+const setPopulation = (
+  query: Query<unknown, unknown>,
+  population: Populate | Populate[]
+) => {
+  if (Array.isArray(population)) {
+    for (const item of population) {
+      query = setPopulation(query, item);
+    }
+  } else {
+    query = query.populate(population);
+  }
+
+  return query;
 };
 
 export const advancedResults = async <T, K>(
@@ -96,15 +111,7 @@ export const advancedResults = async <T, K>(
 
   query = query.skip(startIndex).limit(limit);
 
-  if (populate) {
-    if (Array.isArray(populate)) {
-      for (const item of populate) {
-        query = query.populate(item);
-      }
-    } else {
-      query = query.populate(populate);
-    }
-  }
+  if (populate) setPopulation(query, populate);
 
   // Executing query
   const results = await query;

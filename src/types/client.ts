@@ -1,11 +1,15 @@
-import { NextPage } from "next";
-import { AppInitialProps } from "next/app";
+import type { NextPage } from "next";
+import type { AppInitialProps } from "next/app";
 
-export type NextApplicationPage = NextPage & {
+export type NextApplicationPage<P, T> = NextPage<PagePropsWithAuth<P, T>> & {
   requireAuth?: boolean;
 };
 
-export type NextAppProps = {
-  Component: NextApplicationPage;
+export type NextAppProps<P, T> = {
+  Component: NextApplicationPage<P, T>;
   pageProps: AppInitialProps["pageProps"];
+};
+
+export type PagePropsWithAuth<P, T> = P & {
+  data?: T;
 };

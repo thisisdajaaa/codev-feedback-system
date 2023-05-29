@@ -33,6 +33,13 @@ export const SurveyCoverageSchema = new Schema<ISurveyCoverage>(
   }
 );
 
+SurveyCoverageSchema.virtual("surveys", {
+  ref: "Survey",
+  localField: "_id",
+  foreignField: "coverageID",
+  justOne: false,
+});
+
 const SurveyCoverage =
   mongoose.models?.SurveyCoverage ||
   mongoose.model<ISurveyCoverage>("SurveyCoverage", SurveyCoverageSchema);

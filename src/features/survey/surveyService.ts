@@ -13,7 +13,7 @@ import type { ISurveyCoverage } from "@/models/SurveyCoverage/types";
 import Template from "@/models/Template";
 import type { ITemplate } from "@/models/Template/types";
 
-import type { AdvancedResultsOptions } from "@/types";
+import type { AdvancedResultsOptions, Populate } from "@/types";
 
 import type {
   IAnswerSurveyRequest,
@@ -138,16 +138,37 @@ export const SurveyService = () => {
   };
 
   const getSurveys = async (req: NextApiRequest) => {
-    const populateFields = [{ path: "answeredBy", select: "name email" }];
+    const populateFields: Populate[] = [
+      {
+        path: "templateID",
+        model: "Template",
+        select: "title description createdBy",
+        populate: {
+          path: "createdBy",
+          model: "User",
+          select: "email role",
+        },
+      },
+      {
+        path: "surveys",
+        model: "Survey",
+        select: "answeredBy surveyAnswers isAnonymous status dateSubmitted",
+        populate: {
+          path: "answeredBy",
+          model: "User",
+          select: "email role",
+        },
+      },
+    ];
 
-    const options: AdvancedResultsOptions<ISurvey> = {
-      model: Survey,
+    const options: AdvancedResultsOptions<ISurveyCoverage> = {
+      model: SurveyCoverage,
       req,
       strict: false,
       populate: populateFields,
     };
 
-    return await advancedResults<ISurvey, SurveysResponse>(options);
+    return await advancedResults<ISurveyCoverage, any>(options);
   };
 
   return { answerSurvey, getSurveyByCoverageId, getSurveys };
