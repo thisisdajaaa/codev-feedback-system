@@ -9,7 +9,7 @@ import type { ApiResponse } from "@/types";
 import type { SurveysResponse } from "@/features/survey/types";
 
 export const getSurveyListAPI = async (
-  params: Record<string, unknown>,
+  params?: Record<string, unknown>,
   context?: GetServerSidePropsContext
 ): Promise<ApiResponse<SurveysResponse>> => {
   const headers: AxiosRequestHeaders = {};

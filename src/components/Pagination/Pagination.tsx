@@ -1,23 +1,23 @@
-import React from "react";
+import React, { FC } from "react";
 
 import clsxm from "@/utils/clsxm";
 
 import { DOTS } from "./config";
 import { usePagination } from "./hooks/usePagination";
+import type { PaginationProps } from "./types";
+import { Button } from "../Button";
+import { Typography } from "../Typography";
 
-const Pagination = ({
-  onPageChange,
-  totalCount,
-  siblingCount = 1,
-  currentPage,
-  pageSize,
-}: {
-  onPageChange: (page: number) => void;
-  totalCount: number;
-  siblingCount?: number;
-  currentPage: number;
-  pageSize: number;
-}) => {
+const Pagination: FC<PaginationProps> = (props) => {
+  const {
+    onPageChange,
+    totalCount,
+    siblingCount = 1,
+    currentPage,
+    pageSize,
+    csv,
+  } = props;
+
   const paginationRange = usePagination({
     currentPage,
     totalCount,
@@ -48,72 +48,85 @@ const Pagination = ({
         </p>
       </div>
 
-      <ul className="flex items-center justify-between">
-        <li>
-          <button
-            type="button"
-            onClick={onPreviousPage}
-            disabled={isFirstPage}
-            className={clsxm(
-              "relative inline-flex min-w-[2.5rem] items-center rounded-l-md border-y-[1px] border-x-[1px] border-gray-500 px-3 py-2 font-bold text-gray-500",
-              isFirstPage
-                ? "cursor-not-allowed"
-                : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            )}>
-            <span className="sr-only">Previous</span>
-            <span className={isFirstPage ? "text-gray-300" : ""}>&lt;</span>
-          </button>
-        </li>
+      <div className="flex items-center gap-[17px]">
+        {csv && (
+          <Button onClick={csv.onClick} isLoading={csv.isLoading}>
+            <Typography
+              variant="p"
+              size="text-sm"
+              lineHeight="leading-[1.313rem]"
+              color="text-white"
+              className="font-normal">
+              Download CSV
+            </Typography>
+          </Button>
+        )}
 
-        {paginationRange?.map((pageNumber, i) => {
-          if (pageNumber === DOTS) {
+        <ul className="flex items-center justify-between">
+          <li>
+            <button
+              type="button"
+              onClick={onPreviousPage}
+              disabled={isFirstPage}
+              className={clsxm(
+                "relative inline-flex min-w-[2.5rem] items-center rounded-l-md border-y-[1px] border-x-[1px] border-gray-500 px-3 py-2 font-bold text-gray-500",
+                isFirstPage
+                  ? "cursor-not-allowed"
+                  : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              )}>
+              <span className="sr-only">Previous</span>
+              <span className={isFirstPage ? "text-gray-300" : ""}>&lt;</span>
+            </button>
+          </li>
+          {paginationRange?.map((pageNumber, i) => {
+            if (pageNumber === DOTS) {
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className="relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                  <li className="w-full text-center">&#8230;</li>
+                </button>
+              );
+            }
+
             return (
               <button
                 key={i}
                 type="button"
-                className="relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                <li className="w-full text-center">&#8230;</li>
+                onClick={() => onPageChange(pageNumber as number)}
+                className={clsxm(
+                  "relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0",
+                  currentPage === pageNumber && "bg-gray-50",
+                  pageNumber === lastPage && "border-r-0"
+                )}>
+                <li
+                  className={clsxm(
+                    "w-full text-center",
+                    currentPage === pageNumber ? "text-blue-500" : ""
+                  )}>
+                  {pageNumber}
+                </li>
               </button>
             );
-          }
-
-          return (
+          })}
+          <li>
             <button
-              key={i}
               type="button"
-              onClick={() => onPageChange(pageNumber as number)}
+              onClick={onNextPage}
+              disabled={isLastPage}
               className={clsxm(
-                "relative inline-flex min-w-[2.5rem] items-center border-y-[1px] border-l-0 border-r-[1px] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0",
-                currentPage === pageNumber && "bg-gray-50",
-                pageNumber === lastPage && "border-r-0"
+                "relative inline-flex min-w-[2.5rem] items-center rounded-r-md border-y-[1px] border-x-[1px] border-gray-500 px-3 py-2 font-bold text-gray-500",
+                isLastPage
+                  ? "cursor-not-allowed"
+                  : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               )}>
-              <li
-                className={clsxm(
-                  "w-full text-center",
-                  currentPage === pageNumber ? "text-blue-500" : ""
-                )}>
-                {pageNumber}
-              </li>
+              <span className="sr-only">Next</span>
+              <span className={isLastPage ? "text-gray-300" : ""}>&gt;</span>
             </button>
-          );
-        })}
-
-        <li>
-          <button
-            type="button"
-            onClick={onNextPage}
-            disabled={isLastPage}
-            className={clsxm(
-              "relative inline-flex min-w-[2.5rem] items-center rounded-r-md border-y-[1px] border-x-[1px] border-gray-500 px-3 py-2 font-bold text-gray-500",
-              isLastPage
-                ? "cursor-not-allowed"
-                : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            )}>
-            <span className="sr-only">Next</span>
-            <span className={isLastPage ? "text-gray-300" : ""}>&gt;</span>
-          </button>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

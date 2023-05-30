@@ -1,21 +1,24 @@
+import { GetServerSideProps, NextPage } from "next";
 import React, { useState } from "react";
 
 import { withAuth } from "@/utils/withAuth";
-import { GetServerSideProps, NextPage } from "next";
-import { ApiResponse } from "@/types";
-import { SurveysResponse } from "@/features/survey/types";
+
+import { TableRow } from "@/components/Table/types";
+
 import { getSurveyListAPI } from "@/api/surveys";
-import { getSession } from "next-auth/react";
-import { ResponsesProps } from "./types";
 
-const Responses: NextPage<ResponsesProps> = ({ data }) => {
-  const [surveyList, setSurveyList] = useState<ResponsesProps["data"]>(data);
+import { SurveyList } from "./components/SurveyList";
+import { PAGE_SIZE } from "./config";
+import type { ResponsesProps } from "./types";
 
-  console.log("surveyList: ", surveyList);
+const Responses: NextPage<ResponsesProps> = ({ items }) => {
+  const [selectedSurvey, setSelectedSurvey] = useState<string | null>(null);
+
+  const handleSelectSurvey = (row: TableRow) => setSelectedSurvey(row.id);
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
-      Responses
+      <SurveyList items={items} handleSelectSurvey={handleSelectSurvey} />
     </div>
   );
 };
@@ -25,13 +28,13 @@ export default withAuth(Responses);
 export const getServerSideProps: GetServerSideProps<ResponsesProps> = async (
   context
 ) => {
-  const queryParams = { page: 1, limit: 10 };
+  const queryParams = { page: 1, limit: PAGE_SIZE };
 
-  const { data } = await getSurveyListAPI(queryParams, context);
+  const response = await getSurveyListAPI(queryParams, context);
 
   return {
     props: {
-      data: data || [],
+      items: response,
     },
   };
 };

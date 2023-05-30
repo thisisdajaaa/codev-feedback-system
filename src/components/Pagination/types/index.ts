@@ -4,4 +4,10 @@ export type PaginationProps = {
   siblingCount?: number;
   currentPage: number;
   pageSize: number;
+  csv?: CSVProps;
+};
+
+export type CSVProps = {
+  onClick: () => void;
+  isLoading: boolean;
 };
