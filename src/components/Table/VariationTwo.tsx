@@ -48,7 +48,7 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
                           key={column.key}
                           scope="col"
                           className={clsx(
-                            "border border-auroMetalSaurus px-[14px] py-[5px] font-bold text-black",
+                            "border border-auroMetalSaurus px-[14px] py-[5px] text-lg font-bold text-black",
                             column.style,
                             index % 2 === 0 && "bg-gray-100",
                             index % 2 !== 0 && "bg-white"

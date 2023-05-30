@@ -6,7 +6,10 @@ import { onParseResponse } from "@/utils/helpers";
 
 import type { ApiResponse } from "@/types";
 
-import type { SurveysResponse } from "@/features/survey/types";
+import type {
+  AnalyticsResponse,
+  SurveysResponse,
+} from "@/features/survey/types";
 
 export const getSurveyListAPI = async (
   params?: Record<string, unknown>,
@@ -37,6 +40,17 @@ export const getAnsweredSurveysByTemplateAPI = async (
     method: "get",
     url: `/api/surveys/${templateId}`,
     params,
+  });
+
+  return response;
+};
+
+export const getSurveyAnalyticsByTemplateAPI = async (
+  templateId: string
+): Promise<ApiResponse<AnalyticsResponse>> => {
+  const response = await onParseResponse<AnalyticsResponse>({
+    method: "get",
+    url: `/api/surveys/analytics?templateId=${templateId}`,
   });
 
   return response;

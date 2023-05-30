@@ -26,20 +26,25 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
   const [pageCount, setPageCount] = useState<number>(items.count || PAGE_SIZE);
 
-  const handlePageChange = useCallback(async (page: number) => {
-    setIsListLoading(true);
+  const handlePageChange = useCallback(
+    async (page: number) => {
+      if (page === currentPage) return;
 
-    const queryParams = { page, limit: PAGE_SIZE };
+      setIsListLoading(true);
 
-    const { success, data, count } = await getSurveyListAPI(queryParams);
+      const queryParams = { page, limit: PAGE_SIZE };
 
-    if (success) setSurveyList(data || []);
+      const { success, data, count } = await getSurveyListAPI(queryParams);
 
-    setCurrentPage(page);
-    setPageCount(count || PAGE_SIZE);
+      if (success) setSurveyList(data || []);
 
-    setIsListLoading(false);
-  }, []);
+      setCurrentPage(page);
+      setPageCount(count || PAGE_SIZE);
+
+      setIsListLoading(false);
+    },
+    [currentPage]
+  );
 
   const handleDownloadCSV = useCallback(async () => {
     setIsCSVLoading(true);
