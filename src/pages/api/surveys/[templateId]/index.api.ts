@@ -9,6 +9,7 @@ import { SurveyController } from "@/features/survey";
 import type {
   CreatedSurveyResponse,
   IAnswerSurveyRequest,
+  SurveysResponse,
 } from "@/features/survey/types";
 import { answerSurveyBodySchema } from "@/features/survey/validations/answerSurveyBodySchema";
 import { onError } from "@/middlewares/errors";
@@ -19,16 +20,18 @@ import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
   IAnswerSurveyRequest,
-  NextApiResponse<ApiResponse<CreatedSurveyResponse>>
+  NextApiResponse<ApiResponse<CreatedSurveyResponse | SurveysResponse>>
 >({
   onError,
 });
 
-const { handleAnswerSurvey } = SurveyController();
+const { handleAnswerSurvey, handleGetAnsweredSurveysByTemplateId } =
+  SurveyController();
 
 handler
   .use(isAuthenticatedUser)
   .use(roleAtLeast(ROLES.SURVEYEE))
+  .get(mongoHandler(handleGetAnsweredSurveysByTemplateId))
   .use(validate("body", answerSurveyBodySchema))
   .put(mongoHandler(handleAnswerSurvey));
 

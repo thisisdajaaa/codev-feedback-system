@@ -48,4 +48,12 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-light-silver) transparent;
   }
+
+  .table-row:hover .table-cell {
+    transition-property: color, background-color, border-color,
+      text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
+  }
 }

@@ -199,5 +199,50 @@ export const SurveyService = () => {
     return { count: results.length, total, pagination, data: results };
   };
 
-  return { answerSurvey, getSurveyByTemplateId, getSurveys };
+  const getAnsweredSurveysByTemplateId = async (
+    req: NextApiRequest
+  ): Promise<GetSurveysResponse> => {
+    const { templateId } = req.query;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 25;
+
+    // Constructing initial query.
+    const query = Survey.find({ templateId });
+
+    const total = await Survey.countDocuments({ templateId });
+
+    // Building query with QueryBuilder
+    const builder = new QueryBuilder(query, Survey.schema, total);
+
+    const populate: Populate[] = [
+      {
+        path: "answeredBy",
+        model: "User",
+        select: "email name",
+      },
+    ];
+
+    // Populate fields
+    builder.populateFields(populate);
+
+    // Sorting
+    builder.sorting(req.query.sort as string);
+
+    // Pagination
+    builder.pagination({ page, limit });
+
+    // Execute query
+
+    const { query: buildQuery, pagination } = builder.build();
+    const results = (await buildQuery.exec()) as SingleSurveyResponse[];
+
+    return { count: results.length, total, pagination, data: results };
+  };
+
+  return {
+    answerSurvey,
+    getSurveyByTemplateId,
+    getAnsweredSurveysByTemplateId,
+    getSurveys,
+  };
 };

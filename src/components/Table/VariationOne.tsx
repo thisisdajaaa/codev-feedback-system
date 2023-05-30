@@ -16,7 +16,7 @@ const VariationOne: FC<VariationTableProps> = (props) => {
   );
 
   return (
-    <div className="mx-auto w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
+    <div className="mx-[10px] max-w-screen-2xl rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
       <Typography
         variant="h2"
         color="text-gray-600"
@@ -43,7 +43,7 @@ const VariationOne: FC<VariationTableProps> = (props) => {
                 <div
                   key={index}
                   onClick={handleRowClick(row)}
-                  className={`flex min-h-[4.125rem] cursor-pointer items-center justify-between transition-all hover:bg-gray-50 ${
+                  className={`flex min-h-[4.125rem] cursor-pointer items-center justify-between transition-all hover:bg-gray-200 ${
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
                   }`}>
                   {columns.map((column) => {

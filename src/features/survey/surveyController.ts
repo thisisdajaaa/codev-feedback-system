@@ -14,7 +14,8 @@ import type {
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const SurveyController = () => {
-  const { answerSurvey, getSurveys } = SurveyService();
+  const { answerSurvey, getSurveys, getAnsweredSurveysByTemplateId } =
+    SurveyService();
 
   const handleAnswerSurvey = catchAsyncErrors(
     async (
@@ -48,5 +49,25 @@ export const SurveyController = () => {
     }
   );
 
-  return { handleAnswerSurvey, handleGetSurveys };
+  const handleGetAnsweredSurveysByTemplateId = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<SurveysResponse>>,
+      _next: NextHandler
+    ) => {
+      const surveys = await getAnsweredSurveysByTemplateId(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        ...surveys,
+        message: SURVEY_MESSAGES.SUCCESS.ALL,
+      });
+    }
+  );
+
+  return {
+    handleAnswerSurvey,
+    handleGetAnsweredSurveysByTemplateId,
+    handleGetSurveys,
+  };
 };

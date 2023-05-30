@@ -16,7 +16,7 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-screen-2xl flex-col overflow-x-auto bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6 lg:-mx-8">
+    <div className="mx-[10px] max-w-screen-2xl overflow-x-auto rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
       <Typography
         variant="h2"
         color="text-gray-600"
@@ -38,7 +38,7 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
               No data available
             </Typography>
           ) : (
-            <div className="inline-block min-w-full py-2 lg:px-8">
+            <div className="inline-block min-w-full px-[10px]">
               <div className="overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200 text-center text-sm font-light">
                   <thead className="border-b font-medium">
@@ -50,10 +50,8 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
                           className={clsx(
                             "border border-auroMetalSaurus px-[14px] py-[5px] font-bold text-black",
                             column.style,
-                            {
-                              "bg-gray-100": index % 2 === 0,
-                              "bg-white": index % 2 !== 0,
-                            }
+                            index % 2 === 0 && "bg-gray-100",
+                            index % 2 !== 0 && "bg-white"
                           )}>
                           {column.title}
                         </th>
@@ -61,20 +59,21 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {data.map((row, index) => (
-                      <tr key={index} onClick={handleRowClick(row)}>
-                        {columns.map((column, index) => (
+                    {data.map((row, rowIndex) => (
+                      <tr
+                        key={rowIndex}
+                        className="table-row cursor-pointer"
+                        onClick={handleRowClick(row)}>
+                        {columns.map((column, columnIndex) => (
                           <td
                             key={column.key}
                             className={clsx(
-                              "whitespace-nowrap border border-auroMetalSaurus px-[14px] py-[5px]",
+                              "table-cell whitespace-nowrap border border-auroMetalSaurus px-[14px] py-[5px] text-sm",
                               column.style,
-                              {
-                                "bg-gray-100": index % 2 === 0,
-                                "bg-white": index % 2 !== 0,
-                              }
+                              columnIndex % 2 === 0 && "bg-gray-100",
+                              columnIndex % 2 !== 0 && "bg-white"
                             )}>
-                            <div className="text-sm">{row[column.key]}</div>
+                            {row[column.key]}
                           </td>
                         ))}
                       </tr>

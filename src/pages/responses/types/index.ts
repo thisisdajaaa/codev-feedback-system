@@ -1,7 +1,8 @@
+import type { TableRow } from "@/components/Table/types";
+
 import type { ApiResponse } from "@/types";
 
 import type { SurveysResponse } from "@/features/survey/types";
-import { TableRow } from "@/components/Table/types";
 
 export type ResponsesProps = {
   items: ApiResponse<SurveysResponse>;
@@ -9,5 +10,10 @@ export type ResponsesProps = {
 
 export type SurveyListProps = {
   items: ApiResponse<SurveysResponse>;
+  selectedSurvey: string | null;
   handleSelectSurvey: (row: TableRow) => void;
+};
+
+export type ResponseListProps = {
+  selectedSurvey: string;
 };

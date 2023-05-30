@@ -12,11 +12,11 @@ import { SurveyStatus } from "@/models/Survey/config";
 import { getSurveyListAPI } from "@/api/surveys";
 import type { SurveysResponse } from "@/features/survey/types";
 
-import { INITIAL_PAGE, PAGE_SIZE } from "../config";
+import { INITIAL_PAGE, INITIAL_TOTAL, PAGE_SIZE } from "../config";
 import type { ResponsesProps, SurveyListProps } from "../types";
 
 const SurveyList: FC<SurveyListProps> = (props) => {
-  const { items, handleSelectSurvey } = props;
+  const { items, handleSelectSurvey, selectedSurvey } = props;
 
   const [surveyList, setSurveyList] = useState<ResponsesProps["items"]["data"]>(
     items.data || []
@@ -34,7 +34,6 @@ const SurveyList: FC<SurveyListProps> = (props) => {
     const { success, data, count } = await getSurveyListAPI(queryParams);
 
     if (success) setSurveyList(data || []);
-    else setSurveyList([]);
 
     setCurrentPage(page);
     setPageCount(count || PAGE_SIZE);
@@ -53,6 +52,21 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   }, []);
 
   const { tableColumns, tableData } = useMemo(() => {
+    const renderTitle = (id: string, title: string) => {
+      return (
+        <Typography
+          variant="p"
+          size="text-lg"
+          lineHeight="leading-[1.688rem]"
+          color="text-gray-600"
+          className={clsx(
+            "px-4 capitalize",
+            id === selectedSurvey ? "font-semibold" : "font-normal"
+          )}>
+          {title}
+        </Typography>
+      );
+    };
     const renderChip = (status: string) => {
       const mappedStatus = {
         [SurveyStatus.DRAFT]: "bg-gray-500",
@@ -81,7 +95,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
     const tableData = (surveyList || [])?.map(({ id, title, status }) => ({
       id,
-      surveyor: title,
+      surveyor: renderTitle(id, title),
       chip: renderChip(status),
     }));
 
@@ -91,7 +105,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
     ];
 
     return { tableData, tableColumns };
-  }, [surveyList]);
+  }, [selectedSurvey, surveyList]);
 
   const csvProps = useMemo(
     () => ({
@@ -113,7 +127,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
       <Pagination
         currentPage={currentPage}
-        totalCount={items.total || 0}
+        totalCount={items.total || INITIAL_TOTAL}
         pageSize={pageCount}
         onPageChange={handlePageChange}
         csv={csvProps}

@@ -28,3 +28,16 @@ export const getSurveyListAPI = async (
 
   return response;
 };
+
+export const getAnsweredSurveysByTemplateAPI = async (
+  templateId: string,
+  params?: Record<string, unknown>
+): Promise<ApiResponse<SurveysResponse>> => {
+  const response = await onParseResponse<SurveysResponse>({
+    method: "get",
+    url: `/api/surveys/${templateId}`,
+    params,
+  });
+
+  return response;
+};
