@@ -40,9 +40,22 @@ export type SurveysResponse = SingleSurveyResponse[];
 
 export type GetSurveysResponse = Omit<ApiResponse<SurveysResponse>, "success">;
 
+export type QuestionAnalyticsData = {
+  value: string;
+  answers: string;
+};
+
+export type SingleAnalyticsResponse = {
+  questionName: string;
+  responses: QuestionAnalyticsData[];
+};
+
+export type AnalyticsResponse = SingleAnalyticsResponse[];
+
 export interface IViewSurveAnswer
   extends Pick<IQuestion, "title" | "type" | "options" | "isRequired">,
     Pick<ISurveyAnswer, "questionId" | "answer" | "comment"> {}
+
 export interface IGetSurveyResponse
   extends Pick<ISurvey, "templateId" | "answeredBy"> {
   surveyAnswers: IViewSurveAnswer[];
@@ -63,3 +76,16 @@ export interface IGetSurveyRequest extends NextApiRequest {
     title: string;
   };
 }
+
+export type TemplateQuestion = {
+  title: string;
+  type: string;
+  options: string;
+  isRequired: boolean;
+};
+
+export type AnalyticsQuestion = {
+  questionId: string;
+  answer: string;
+  comment?: string;
+};

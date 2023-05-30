@@ -1,3 +1,4 @@
+import { groupBy } from "lodash";
 import type { NextApiRequest } from "next/types";
 
 import { QueryBuilder } from "@/utils/advancedResults";
@@ -9,20 +10,25 @@ import { StatusCodes } from "@/constants/statusCode";
 import Survey from "@/models/Survey";
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import Template from "@/models/Template";
-import type { ITemplate } from "@/models/Template/types";
+import type { IQuestion, ITemplate } from "@/models/Template/types";
 import User from "@/models/User/User";
 
 import type { Populate } from "@/types";
 
 import type {
+  AnalyticsQuestion,
+  AnalyticsResponse,
   GetSurveysResponse,
   IAnswerSurveyRequest,
   IGetSurveyResponse,
   IViewSurveAnswer,
+  QuestionAnalyticsData,
   SingleSurveyResponse,
+  SurveysResponse,
 } from "@/features/survey/types";
 
 import { SURVEY_MESSAGES } from "./config";
+import type { GetQuestionnaireResponse } from "../questionnaire/types";
 import { USER_MESSAGES } from "../user/config";
 
 export const SurveyService = () => {
@@ -239,10 +245,100 @@ export const SurveyService = () => {
     return { count: results.length, total, pagination, data: results };
   };
 
+  const getTemplateAnalytics = async (
+    req: NextApiRequest
+  ): Promise<AnalyticsResponse> => {
+    const { templateId } = req.query;
+
+    if (!templateId) throw new Error("No Template ID");
+
+    // Get all surveys with the specific templateId
+    const surveys: SurveysResponse = await Survey.find({ templateId });
+    if (!surveys.length) throw new Error("Surveys not found");
+
+    // Get the template with the specific templateId
+    const template: GetQuestionnaireResponse | null = await Template.findOne({
+      _id: templateId,
+    });
+
+    if (!template) throw new Error("Template not found");
+    const templateQuestions: IQuestion[] = template.questions;
+
+    const totalSurveyCount = surveys.length;
+    let allQuestions: AnalyticsQuestion[] = [];
+
+    // Prepare analytics data
+    surveys.forEach((survey) => {
+      const convertedAnswers: AnalyticsQuestion[] = survey.surveyAnswers.map(
+        (answer) => {
+          return {
+            questionId: String(answer.questionId),
+            answer: answer.answer,
+            comment: answer.comment,
+          };
+        }
+      );
+      allQuestions = [...allQuestions, ...convertedAnswers];
+    });
+
+    const groupedQuestions = groupBy(allQuestions, "questionId");
+
+    const analytics: AnalyticsResponse = [];
+
+    for (const questionId in groupedQuestions) {
+      const questions = groupedQuestions[questionId];
+
+      // Find the corresponding question in the templateQuestions array
+      const questionInfo = templateQuestions.find(
+        (tq) => String(tq._id) === questionId
+      );
+
+      if (!questionInfo || !questionInfo?.options?.length) continue;
+
+      const responseCounts: Record<string, number> = {};
+      let totalResponses = 0;
+
+      questions.forEach((question) => {
+        responseCounts[question.answer] =
+          (responseCounts[question.answer] || 0) + 1;
+        totalResponses += 1;
+      });
+
+      const yetToRespond = questionInfo.isRequired
+        ? 0
+        : totalSurveyCount - totalResponses;
+      const totalPossibleResponses = totalSurveyCount;
+
+      // Convert to array format with percentage
+      const responseData: QuestionAnalyticsData[] = Object.entries(
+        responseCounts
+      ).map(([answer, count]) => ({
+        value: answer,
+        answers: `${(count / totalPossibleResponses) * 100}%`,
+      }));
+
+      // If question is not required, consider "yet to respond"
+      if (!questionInfo.isRequired) {
+        responseData.push({
+          value: "Yet to Respond",
+          answers: `${(yetToRespond / totalPossibleResponses) * 100}%`,
+        });
+      }
+
+      analytics.push({
+        questionName: questionInfo.title,
+        responses: responseData,
+      });
+    }
+
+    return analytics;
+  };
+
   return {
     answerSurvey,
     getSurveyByTemplateId,
     getAnsweredSurveysByTemplateId,
     getSurveys,
+    getTemplateAnalytics,
   };
 };

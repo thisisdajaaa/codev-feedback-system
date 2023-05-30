@@ -8,14 +8,19 @@ import { ApiResponse } from "@/types";
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
+  AnalyticsResponse,
   IAnswerSurveyRequest,
   SurveysResponse,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const SurveyController = () => {
-  const { answerSurvey, getSurveys, getAnsweredSurveysByTemplateId } =
-    SurveyService();
+  const {
+    answerSurvey,
+    getSurveys,
+    getAnsweredSurveysByTemplateId,
+    getTemplateAnalytics,
+  } = SurveyService();
 
   const handleAnswerSurvey = catchAsyncErrors(
     async (
@@ -65,9 +70,26 @@ export const SurveyController = () => {
     }
   );
 
+  const handleGetTemplateAnalytics = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<AnalyticsResponse>>,
+      _next: NextHandler
+    ) => {
+      const data = await getTemplateAnalytics(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: SURVEY_MESSAGES.SUCCESS.ALL,
+      });
+    }
+  );
+
   return {
     handleAnswerSurvey,
     handleGetAnsweredSurveysByTemplateId,
     handleGetSurveys,
+    handleGetTemplateAnalytics,
   };
 };
