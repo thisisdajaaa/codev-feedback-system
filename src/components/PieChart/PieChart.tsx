@@ -16,11 +16,9 @@ import type { LabelPosition, PieChartProps } from "./types";
 const PieChart: FC<PieChartProps> = (props) => {
   const { questionName, data } = props;
 
-  // Convert percentage string to number
   const percentToNumber = (percent: string): number =>
     Number(percent.replace("%", ""));
 
-  // The tailwind colors to use for the pie chart, you can use more colors or change them as per your needs
   const tailwindColors = [
     colors.green["500"],
     colors.blue["500"],
@@ -49,7 +47,7 @@ const PieChart: FC<PieChartProps> = (props) => {
         text: questionName,
       },
       legend: {
-        position: "right" as LabelPosition,
+        position: "top" as LabelPosition,
         labels: {
           usePointStyle: true,
           boxWidth: 10,
@@ -60,7 +58,7 @@ const PieChart: FC<PieChartProps> = (props) => {
   };
 
   return (
-    <div className="h-[175px] w-[175px]">
+    <div>
       <Pie data={chartData} options={{ ...options }} />
     </div>
   );
