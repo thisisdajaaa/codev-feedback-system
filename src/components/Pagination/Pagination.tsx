@@ -39,8 +39,8 @@ const Pagination = ({
   const isLastPage = currentPage === lastPage;
 
   return (
-    <div className="flex items-center justify-between">
-      <div>
+    <div className="flex items-center justify-between xs:flex-col sm:flex-col md:flex-row">
+      <div className="xs:mb-[0.625rem] sm:mb-[0.625rem] sm:mt-8 md:my-0">
         <p className="text-[1.25rem] text-gray-500">
           Showing <span className="font-medium">{totalCount}</span> to{" "}
           <span className="font-medium">{pageSize}</span> of{" "}
