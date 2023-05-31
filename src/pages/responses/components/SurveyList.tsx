@@ -24,7 +24,9 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
-  const [pageCount, setPageCount] = useState<number>(items.count || PAGE_SIZE);
+  const [pageCount, setPageCount] = useState<number>(
+    items.count || INITIAL_TOTAL
+  );
 
   const handlePageChange = useCallback(
     async (page: number) => {

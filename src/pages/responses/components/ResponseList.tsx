@@ -23,7 +23,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
-  const [pageCount, setPageCount] = useState<number>(PAGE_SIZE);
+  const [pageCount, setPageCount] = useState<number>(INITIAL_TOTAL);
   const [total, setTotal] = useState<number>(INITIAL_TOTAL);
 
   const handleFetchData = useCallback(
@@ -35,7 +35,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
 
       if (success) {
         setAnswerList(data || []);
-        setPageCount(count || PAGE_SIZE);
+        setPageCount(count || INITIAL_TOTAL);
         setTotal(total || INITIAL_TOTAL);
 
         if (queryParam?.page) setCurrentPage(+queryParam?.page);
@@ -145,7 +145,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
 
       <Pagination
         currentPage={currentPage}
-        totalCount={total || INITIAL_TOTAL}
+        totalCount={total}
         pageSize={pageCount}
         onPageChange={handlePageChange}
         csv={csvProps}
