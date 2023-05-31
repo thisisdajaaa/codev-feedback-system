@@ -13,7 +13,7 @@ export type PickedSurveyDetails =
   | "dateSubmitted";
 
 export type AnsweredByUser = {
-  id: string;
+  id?: string;
   email: string;
   name: string;
 };
@@ -39,6 +39,15 @@ export type SingleSurveyResponse = PickedSurvey &
 export type SurveysResponse = SingleSurveyResponse[];
 
 export type GetSurveysResponse = Omit<ApiResponse<SurveysResponse>, "success">;
+
+export type PickedSurveyAnswers = Pick<ISurveyAnswer, "title" | "answer">;
+
+export type SurveyDetailsByUserResponse = {
+  answeredBy: AnsweredByUser;
+  createdAt: string;
+  isAnonymous: boolean;
+  surveyAnswers: PickedSurveyAnswers[];
+};
 
 export type QuestionAnalyticsData = {
   value: string;

@@ -11,7 +11,8 @@ import Survey from "@/models/Survey";
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import Template from "@/models/Template";
 import type { IQuestion, ITemplate } from "@/models/Template/types";
-import User from "@/models/User/User";
+import User from "@/models/User";
+import type { IUser } from "@/models/User/types";
 
 import type { Populate } from "@/types";
 
@@ -24,6 +25,7 @@ import type {
   IViewSurveAnswer,
   QuestionAnalyticsData,
   SingleSurveyResponse,
+  SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
 
@@ -198,7 +200,6 @@ export const SurveyService = () => {
     builder.pagination({ page, limit });
 
     // Execute query
-
     const { query: buildQuery, pagination } = builder.build();
     const results = (await buildQuery.exec()) as SingleSurveyResponse[];
 
@@ -209,6 +210,18 @@ export const SurveyService = () => {
     req: NextApiRequest
   ): Promise<GetSurveysResponse> => {
     const { templateId } = req.query;
+
+    // Fetch the template once since we already have the templateId
+    const template = (await Template.findOne({
+      id: templateId,
+    })) as ITemplate | null;
+
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 25;
 
@@ -238,7 +251,6 @@ export const SurveyService = () => {
     builder.pagination({ page, limit });
 
     // Execute query
-
     const { query: buildQuery, pagination } = builder.build();
     const results = (await buildQuery.exec()) as SingleSurveyResponse[];
 
@@ -250,18 +262,32 @@ export const SurveyService = () => {
   ): Promise<AnalyticsResponse> => {
     const { templateId } = req.query;
 
-    if (!templateId) throw new Error("No Template ID");
+    if (!templateId)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.MISSING_TEMPLATEID,
+        StatusCodes.BAD_REQUEST
+      );
 
     // Get all surveys with the specific templateId
     const surveys: SurveysResponse = await Survey.find({ templateId });
-    if (!surveys.length) throw new Error("Surveys not found");
+
+    if (!surveys.length)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.SURVEY_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
 
     // Get the template with the specific templateId
     const template: GetQuestionnaireResponse | null = await Template.findOne({
       _id: templateId,
     });
 
-    if (!template) throw new Error("Template not found");
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
     const templateQuestions: IQuestion[] = template.questions;
 
     const totalSurveyCount = surveys.length;
@@ -320,7 +346,7 @@ export const SurveyService = () => {
       // If question is not required, consider "yet to respond"
       if (!questionInfo.isRequired) {
         responseData.push({
-          value: "Yet to Respond",
+          value: SURVEY_MESSAGES.INFO.YET_TO_RESPOND,
           answers: `${(yetToRespond / totalPossibleResponses) * 100}%`,
         });
       }
@@ -334,11 +360,71 @@ export const SurveyService = () => {
     return analytics;
   };
 
+  const getSurveyDetailsByUser = async (
+    req: NextApiRequest
+  ): Promise<SurveyDetailsByUserResponse> => {
+    const { templateId, userId } = req.query;
+
+    if (!templateId || !userId)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.MISSING_TEMPLATEID_USERID,
+        StatusCodes.BAD_REQUEST
+      );
+
+    const survey = (await Survey.findOne({
+      templateId: templateId,
+      answeredBy: userId,
+    }).lean()) as ISurvey | null;
+
+    const user = (await User.findOne({ _id: userId }).lean()) as IUser | null;
+
+    if (!survey || !user)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.SURVEY_USER_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const template = (await Template.findById(
+      survey.templateId
+    ).lean()) as ITemplate | null;
+
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const response: SurveyDetailsByUserResponse = {
+      answeredBy: {
+        name: String(user.name || "--"),
+        email: String(user.email || "--"),
+      },
+      isAnonymous: survey.isAnonymous,
+      createdAt: survey.dateSubmitted,
+      surveyAnswers: survey.surveyAnswers.map((surveyAnswer) => {
+        const question = template.questions.find(
+          (question) =>
+            question._id.toString() === surveyAnswer.questionId.toString()
+        );
+
+        return {
+          title: question
+            ? question.title
+            : SURVEY_MESSAGES.INFO.PLACEHOLDER_QUESTION,
+          answer: surveyAnswer.answer,
+        };
+      }),
+    };
+
+    return response;
+  };
+
   return {
     answerSurvey,
     getSurveyByTemplateId,
     getAnsweredSurveysByTemplateId,
     getSurveys,
     getTemplateAnalytics,
+    getSurveyDetailsByUser,
   };
 };

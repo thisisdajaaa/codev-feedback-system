@@ -21,3 +21,10 @@ export type ResponseListProps = {
 export type QuestionAnalyticsListProps = {
   selectedSurvey: string;
 };
+
+export type ResponseModalProps = {
+  open: boolean;
+  selectedUser: string;
+  selectedSurvey: string;
+  handleClose: () => void;
+};

@@ -8,6 +8,7 @@ import type { ApiResponse } from "@/types";
 
 import type {
   AnalyticsResponse,
+  SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
 
@@ -51,6 +52,18 @@ export const getSurveyAnalyticsByTemplateAPI = async (
   const response = await onParseResponse<AnalyticsResponse>({
     method: "get",
     url: `/api/surveys/analytics?templateId=${templateId}`,
+  });
+
+  return response;
+};
+
+export const getSurveyDetailsByUserAPI = async (
+  templateId: string,
+  userId: string
+): Promise<ApiResponse<SurveyDetailsByUserResponse>> => {
+  const response = await onParseResponse<SurveyDetailsByUserResponse>({
+    method: "get",
+    url: `/api/surveys/details?userId=${userId}&templateId=${templateId}`,
   });
 
   return response;

@@ -10,6 +10,7 @@ import { SurveyService } from "@/features/survey/surveyService";
 import type {
   AnalyticsResponse,
   IAnswerSurveyRequest,
+  SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
@@ -20,6 +21,7 @@ export const SurveyController = () => {
     getSurveys,
     getAnsweredSurveysByTemplateId,
     getTemplateAnalytics,
+    getSurveyDetailsByUser,
   } = SurveyService();
 
   const handleAnswerSurvey = catchAsyncErrors(
@@ -65,7 +67,7 @@ export const SurveyController = () => {
       return res.status(StatusCodes.OK).json({
         success: true,
         ...surveys,
-        message: SURVEY_MESSAGES.SUCCESS.ALL,
+        message: SURVEY_MESSAGES.SUCCESS.ALL_ANSWERED_SURVEYS,
       });
     }
   );
@@ -81,7 +83,23 @@ export const SurveyController = () => {
       return res.status(StatusCodes.OK).json({
         success: true,
         data,
-        message: SURVEY_MESSAGES.SUCCESS.ALL,
+        message: SURVEY_MESSAGES.SUCCESS.ALL_ANALYTICS,
+      });
+    }
+  );
+
+  const handleGetSurveyDetailsByUser = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<SurveyDetailsByUserResponse>>,
+      _next: NextHandler
+    ) => {
+      const data = await getSurveyDetailsByUser(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: SURVEY_MESSAGES.SUCCESS.USER_SURVEY_DETAILS,
       });
     }
   );
@@ -91,5 +109,6 @@ export const SurveyController = () => {
     handleGetAnsweredSurveysByTemplateId,
     handleGetSurveys,
     handleGetTemplateAnalytics,
+    handleGetSurveyDetailsByUser,
   };
 };

@@ -11,6 +11,7 @@ import { Typography } from "@/components/Typography";
 import { getAnsweredSurveysByTemplateAPI } from "@/api/surveys";
 import { SurveysResponse } from "@/features/survey/types";
 
+import { ResponseModal } from "./ResponseModal";
 import { INITIAL_PAGE, INITIAL_TOTAL, PAGE_SIZE } from "../config";
 import type { ResponseListProps } from "../types";
 
@@ -97,12 +98,12 @@ const ResponseList: FC<ResponseListProps> = (props) => {
 
     const tableData = (answerList || [])?.map(
       ({ id, isAnonymous, answeredBy, createdAt }, index) => {
-        const txtVisibility = isAnonymous ? "Public" : "Private";
+        const txtVisibility = isAnonymous ? "Private" : "Public";
         const txtName = isAnonymous ? "Anonymous" : answeredBy.name || "--";
         const txtEmail = isAnonymous ? "Anonymous" : answeredBy.email || "--";
 
         return {
-          id,
+          id: String(answeredBy.id) || "",
           item: renderCellItem(id, index + 1),
           visibility: renderCellItem(id, txtVisibility, isAnonymous),
           name: renderCellItem(id, txtName, isAnonymous),
@@ -149,6 +150,15 @@ const ResponseList: FC<ResponseListProps> = (props) => {
         onPageChange={handlePageChange}
         csv={csvProps}
       />
+
+      {!!selectedUser && (
+        <ResponseModal
+          open={!!selectedUser}
+          selectedUser={selectedUser}
+          selectedSurvey={selectedSurvey}
+          handleClose={() => setSelectedUser(null)}
+        />
+      )}
     </div>
   );
 };

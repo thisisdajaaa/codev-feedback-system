@@ -23,7 +23,7 @@ const QuestionAnalyticsList: FC<QuestionAnalyticsListProps> = (props) => {
       selectedSurvey
     );
 
-    if (success) setAnalyticsList(data || []);
+    success ? setAnalyticsList(data || []) : setAnalyticsList([]);
 
     setIsLoading(false);
   }, [selectedSurvey]);
@@ -45,18 +45,30 @@ const QuestionAnalyticsList: FC<QuestionAnalyticsListProps> = (props) => {
       {isLoading ? (
         <Loading height="h-96" />
       ) : (
-        <div className="flex flex-col items-center gap-3 px-2">
-          {analyticsList.map((data, index) => (
-            <div
-              className="flex w-full justify-center rounded-2xl bg-gray-100 pt-[26px] pb-[33px] sm:px-6"
-              key={index}>
-              <PieChart
-                questionName={data.questionName}
-                data={data.responses}
-              />
+        <>
+          {analyticsList.length === 0 ? (
+            <Typography
+              variant="p"
+              color="text-gray-600"
+              size="text-base"
+              className="px-2 font-semibold sm:px-0">
+              No data available
+            </Typography>
+          ) : (
+            <div className="flex flex-col items-center gap-3 px-2">
+              {analyticsList.map((data, index) => (
+                <div
+                  className="flex w-full justify-center rounded-2xl bg-gray-100 pt-[26px] pb-[33px] sm:px-6"
+                  key={index}>
+                  <PieChart
+                    questionName={data.questionName}
+                    data={data.responses}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

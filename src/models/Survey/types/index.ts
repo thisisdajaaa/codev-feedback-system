@@ -4,6 +4,7 @@ export interface ISurveyAnswer extends Document {
   questionId: mongoose.Schema.Types.ObjectId | string;
   answer: string;
   comment?: string;
+  title?: string;
 }
 
 export interface ISurvey extends Document {
