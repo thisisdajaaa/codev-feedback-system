@@ -15,6 +15,7 @@ import { ICommonSurveyorRequest } from "@/features/auth/types";
 import type { SingleUserResponse, UserResponse } from "@/features/user/types";
 
 import { InviteForm } from "../forms/InviteForm";
+import RevokeInvite from "../forms/RevokeInvite";
 
 const AdminView: FC = () => {
   const { data } = useSession();
@@ -22,6 +23,8 @@ const AdminView: FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [showInvite, setShowInvite] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showRevokeModal, setShowRevokeModal] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<string>("");
 
   const handleLoad = useCallback(async () => {
     setIsLoading(true);
@@ -56,7 +59,10 @@ const AdminView: FC = () => {
 
       const { success } = await revokeSurveyorAPI(request);
 
-      if (success) handleLoad();
+      if (success) {
+        handleLoad();
+        setShowRevokeModal(false);
+      }
     },
     [handleLoad]
   );
@@ -93,7 +99,13 @@ const AdminView: FC = () => {
     const renderBtnRevoke = (userId: string) => {
       return (
         <div className="px-[1.125rem]">
-          <Button onClick={() => handleRevoke(userId)} variant="warning">
+          <Button
+            onClick={() => {
+              setSelectedUser(userId);
+              setShowRevokeModal(true);
+            }}
+            variant="warning"
+          >
             <Icon src="/assets/trash.svg" />
             <Typography
               variant="p"
@@ -120,7 +132,7 @@ const AdminView: FC = () => {
     ];
 
     return { tableData, tableColumns };
-  }, [handleRevoke, users]);
+  }, [users]);
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
@@ -157,6 +169,12 @@ const AdminView: FC = () => {
         open={showInvite}
         handleClose={() => setShowInvite(false)}
         handleRefetch={handleLoad}
+      />
+
+      <RevokeInvite
+        open={showRevokeModal}
+        handleClose={() => setShowRevokeModal(false)}
+        handleRevoke={() => handleRevoke(selectedUser)}
       />
 
       <div>
