@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
 import { advancedResults } from "@/utils/advancedResults";
+import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
@@ -15,12 +16,13 @@ import { TemplateService } from "@/features/questionnaire/templateService";
 import type {
   CreatedQuestionnaireResponse,
   GetQuestionnaireResponse,
+  IAddQuestionRequest,
   ICreateQuestionnaireRequest,
 } from "@/features/questionnaire/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const QuestionnaireController = () => {
-  const { createTemplate } = TemplateService();
+  const { createTemplate, isTemplateExist, addQuestion } = TemplateService();
 
   const handleGetQuestionnaires = catchAsyncErrors(
     async (
@@ -90,5 +92,35 @@ export const QuestionnaireController = () => {
     }
   );
 
-  return { handleGetQuestionnaires, handleCreateQuestionnaire };
+  const handleAddQuestion = catchAsyncErrors(
+    async (
+      req: IAddQuestionRequest,
+      res: NextApiResponse<ApiResponse<CreatedQuestionnaireResponse>>,
+      _next: NextHandler
+    ) => {
+      const { templateId } = req.query;
+      if (!(await isTemplateExist(templateId as string))) {
+        throw new ErrorHandler(
+          QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      const template = await addQuestion(req);
+
+      const data: CreatedQuestionnaireResponse = { ...template };
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.CREATE,
+      });
+    }
+  );
+
+  return {
+    handleGetQuestionnaires,
+    handleCreateQuestionnaire,
+    handleAddQuestion,
+  };
 };

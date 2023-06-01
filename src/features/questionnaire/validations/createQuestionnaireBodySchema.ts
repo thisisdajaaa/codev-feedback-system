@@ -26,6 +26,7 @@ const optionalDateSchema = yup.string().test({
 });
 
 const questionSchema = yup.object().shape({
+  id: yup.string(),
   title: yup.string().required(),
   type: yup
     .string()
@@ -36,7 +37,7 @@ const questionSchema = yup.object().shape({
     )
     .required(),
   options: yup.string().trim(),
-  isRequired: yup.boolean().required(),
+  isRequired: yup.boolean(),
 });
 
 const questionnaireBodySchema = yup.object().shape({
@@ -62,4 +63,4 @@ const questionnaireBodySchema = yup.object().shape({
   questions: yup.array().of(questionSchema.noUnknown()),
 });
 
-export { questionnaireBodySchema };
+export { questionnaireBodySchema, questionSchema };

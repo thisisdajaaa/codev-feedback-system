@@ -1,8 +1,9 @@
 import Template from "@/models/Template";
-import { ITemplate } from "@/models/Template/types";
+import { IQuestion, ITemplate } from "@/models/Template/types";
 
 import type {
   CreatedQuestionnaireResponse,
+  IAddQuestionRequest,
   ICreateQuestionnaireRequest,
 } from "@/features/questionnaire/types";
 
@@ -61,6 +62,60 @@ export const TemplateService = () => {
     return formattedResponse;
   };
 
+  const addQuestion = async (
+    req: IAddQuestionRequest
+  ): Promise<CreatedQuestionnaireResponse> => {
+    const { templateId } = req.query;
+    const newQuestion = {
+      ...req.body,
+    };
+
+    const template = (await Template.findOne({ _id: templateId })) as ITemplate;
+
+    const item = template.questions.find(
+      (x) => x.id.toString() === newQuestion.id
+    );
+
+    if (item) {
+      item.title = newQuestion.title;
+      item.type = newQuestion.type;
+      item.options = newQuestion.options;
+      item.isRequired = newQuestion.isRequired;
+    } else {
+      template.questions.push(newQuestion as IQuestion);
+    }
+
+    await template.save();
+
+    const {
+      id,
+      title,
+      department,
+      dateFrom,
+      dateTo,
+      description,
+      questions,
+      createdBy,
+      updatedBy,
+      status,
+    } = template;
+
+    const formattedResponse: CreatedQuestionnaireResponse = {
+      id,
+      title,
+      department,
+      dateFrom,
+      dateTo,
+      description,
+      questions,
+      createdBy,
+      updatedBy,
+      status,
+    };
+
+    return formattedResponse;
+  };
+
   const isTitleExistInTemplate = async (
     templateId: string,
     questionId: string
@@ -80,14 +135,20 @@ export const TemplateService = () => {
   const isTemplateExist = async (templateId: string): Promise<boolean> => {
     let found = false;
     try {
-      found = await Template.findOne({
-        _id: templateId,
-      }).lean();
+      found =
+        (await Template.findOne({
+          _id: templateId,
+        }).lean()) != null;
     } catch {
       found = false;
     }
     return found;
   };
 
-  return { createTemplate, isTitleExistInTemplate, isTemplateExist };
+  return {
+    createTemplate,
+    isTitleExistInTemplate,
+    isTemplateExist,
+    addQuestion,
+  };
 };

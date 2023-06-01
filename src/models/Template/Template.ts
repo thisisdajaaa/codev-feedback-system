@@ -18,7 +18,7 @@ export const QuestionSchema = new Schema<IQuestion>(
     },
     isRequired: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   },
   {
