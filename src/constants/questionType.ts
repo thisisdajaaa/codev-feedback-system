@@ -133,7 +133,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
       { sortOrder: 7, name: "65+" },
     ] as IQuestionTypeItem[],
   } as IQuestionTypeInfo,
-  "Custom-Sigle": {
+  "Custom-Single": {
     code: "Custom-Single",
     name: "Custom Single Choice",
     options: [] as IQuestionTypeItem[],

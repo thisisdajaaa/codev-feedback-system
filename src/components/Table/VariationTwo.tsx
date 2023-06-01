@@ -16,12 +16,13 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
   );
 
   return (
-    <div className="mx-[10px] max-w-screen-2xl overflow-x-auto rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
+    <div className="mx-[0.625rem] max-w-screen-2xl overflow-x-auto rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
       <Typography
         variant="h2"
         color="text-gray-600"
         size="text-lg"
-        className="mb-[1.188rem] px-2 font-semibold sm:px-0">
+        className="mb-[1.188rem] px-2 font-semibold sm:px-0"
+      >
         {title}
       </Typography>
 
@@ -34,11 +35,12 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
               variant="p"
               color="text-gray-600"
               size="text-base"
-              className="px-2 font-semibold sm:px-0">
+              className="px-2 font-semibold sm:px-0"
+            >
               No data available
             </Typography>
           ) : (
-            <div className="inline-block min-w-full px-[10px]">
+            <div className="inline-block min-w-full px-[0.625rem]">
               <div className="overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200 text-center text-sm font-light">
                   <thead className="border-b font-medium">
@@ -48,11 +50,12 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
                           key={column.key}
                           scope="col"
                           className={clsx(
-                            "border border-auroMetalSaurus px-[14px] py-[5px] text-lg font-bold text-black",
+                            "border border-auroMetalSaurus px-[0.875rem] py-[0.313rem] text-lg font-bold text-black",
                             column.style,
                             index % 2 === 0 && "bg-gray-100",
                             index % 2 !== 0 && "bg-white"
-                          )}>
+                          )}
+                        >
                           {column.title}
                         </th>
                       ))}
@@ -63,16 +66,18 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
                       <tr
                         key={rowIndex}
                         className="table-row cursor-pointer"
-                        onClick={handleRowClick(row)}>
+                        onClick={handleRowClick(row)}
+                      >
                         {columns.map((column, columnIndex) => (
                           <td
                             key={column.key}
                             className={clsx(
-                              "table-cell whitespace-nowrap border border-auroMetalSaurus px-[14px] py-[5px] text-sm",
+                              "table-cell whitespace-nowrap border border-auroMetalSaurus px-[0.875rem] py-[0.313rem] text-sm",
                               column.style,
                               columnIndex % 2 === 0 && "bg-gray-100",
                               columnIndex % 2 !== 0 && "bg-white"
-                            )}>
+                            )}
+                          >
                             {row[column.key]}
                           </td>
                         ))}

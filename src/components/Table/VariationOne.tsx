@@ -16,12 +16,13 @@ const VariationOne: FC<VariationTableProps> = (props) => {
   );
 
   return (
-    <div className="mx-[10px] max-w-screen-2xl rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
+    <div className="mx-[0.625rem] max-w-screen-2xl rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
       <Typography
         variant="h2"
         color="text-gray-600"
         size="text-lg"
-        className="mb-[1.188rem] px-2 font-semibold sm:px-0">
+        className="mb-[1.188rem] px-2 font-semibold sm:px-0"
+      >
         {title}
       </Typography>
 
@@ -34,7 +35,8 @@ const VariationOne: FC<VariationTableProps> = (props) => {
               variant="p"
               color="text-gray-600"
               size="text-base"
-              className="px-2 font-semibold sm:px-0">
+              className="px-2 font-semibold sm:px-0"
+            >
               No data available
             </Typography>
           ) : (
@@ -45,7 +47,8 @@ const VariationOne: FC<VariationTableProps> = (props) => {
                   onClick={handleRowClick(row)}
                   className={`flex min-h-[4.125rem] cursor-pointer items-center justify-between transition-all hover:bg-gray-200 ${
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                  }`}>
+                  }`}
+                >
                   {columns.map((column) => {
                     const value = row[column.key];
                     const typeList = ["string", "number"];
@@ -56,7 +59,8 @@ const VariationOne: FC<VariationTableProps> = (props) => {
                         variant="p"
                         color="text-gray-600"
                         size="text-lg"
-                        className={clsx("px-4", column.style)}>
+                        className={clsx("px-4", column.style)}
+                      >
                         {value}
                       </Typography>
                     ) : (

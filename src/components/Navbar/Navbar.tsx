@@ -41,12 +41,13 @@ const Navbar: FC = () => {
         />
         <h1 className="ml-3 text-[1.25rem]">Feedback System</h1>
 
-        <ul className="ml-[58px] flex h-full">
+        <ul className="ml-[3.625rem] flex h-full">
           <li
             className={clsxm(
-              "flex cursor-pointer items-center px-8 py-[21px] transition-all hover:bg-gray-100",
+              "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
               pathname === SYSTEM_URL.HOME && "bg-gray-100"
-            )}>
+            )}
+          >
             <Link href={SYSTEM_URL.HOME}>
               <a>
                 <Typography preset="heading2">Home</Typography>
@@ -57,9 +58,10 @@ const Navbar: FC = () => {
           {isSurveyor && (
             <li
               className={clsxm(
-                "flex cursor-pointer items-center px-8 py-[21px] transition-all hover:bg-gray-100",
+                "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
                 pathname === SYSTEM_URL.RESPONSES && "bg-gray-100"
-              )}>
+              )}
+            >
               <Link href={SYSTEM_URL.RESPONSES}>
                 <a>
                   <Typography preset="heading2">Responses</Typography>
@@ -72,7 +74,8 @@ const Navbar: FC = () => {
 
       <div
         onClick={() => setIsDropdownOpen((prev) => !prev)}
-        className="relative flex cursor-pointer items-center gap-3">
+        className="relative flex cursor-pointer items-center gap-3"
+      >
         <Image
           src={data?.user.image || "/assets/avatar-placeholder.svg"}
           width={28}
@@ -105,14 +108,16 @@ const Navbar: FC = () => {
               {navLinks.map((nav, index) => (
                 <li
                   key={index}
-                  className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100">
+                  className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
+                >
                   <Link href={nav.url}>{nav.label}</Link>
                 </li>
               ))}
 
               <li
                 className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
-                onClick={handleLogout}>
+                onClick={handleLogout}
+              >
                 <span>Log Out</span>
               </li>
             </ul>

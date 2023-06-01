@@ -69,7 +69,8 @@ const SurveyList: FC<SurveyListProps> = (props) => {
           className={clsx(
             "px-4 capitalize",
             id === selectedSurvey ? "font-semibold" : "font-normal"
-          )}>
+          )}
+        >
           {title}
         </Typography>
       );
@@ -84,16 +85,18 @@ const SurveyList: FC<SurveyListProps> = (props) => {
       return (
         <div
           className={clsx(
-            "mx-[1.125rem] rounded-[15px] px-[1.125rem] py-[7px]",
+            "mx-[1.125rem] rounded-[0.938rem] px-[1.125rem] py-[0.438rem]",
             "hidden sm:inline",
             mappedStatus[status as keyof typeof SurveyStatus]
-          )}>
+          )}
+        >
           <Typography
             variant="p"
             size="text-sm"
             lineHeight="leading-[1.5rem]"
             color="text-white"
-            className="font-normal uppercase">
+            className="font-normal uppercase"
+          >
             {status}
           </Typography>
         </div>
@@ -123,7 +126,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   );
 
   return (
-    <div className="flex flex-col gap-[14px] md:mt-[57px]">
+    <div className="flex flex-col gap-[0.875rem] md:mt-[3.563rem]">
       <Table
         title="Survey List"
         data={tableData}

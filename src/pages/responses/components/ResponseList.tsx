@@ -93,7 +93,8 @@ const ResponseList: FC<ResponseListProps> = (props) => {
             "px-4",
             selectedUser === id && "font-semibold",
             isAnonymous && value === "Anonymous" && "italic"
-          )}>
+          )}
+        >
           {value}
         </Typography>
       );
@@ -123,11 +124,11 @@ const ResponseList: FC<ResponseListProps> = (props) => {
     );
 
     const tableColumns = [
-      { key: "item", title: "Item", style: "w-[107px]" },
-      { key: "visibility", title: "Visiblity", style: "w-[128px]" },
-      { key: "name", title: "Name", style: "w-[402px]" },
-      { key: "email", title: "Email Address", style: "w-[402px]" },
-      { key: "timestamp", title: "Timestamp", style: "w-[248px]" },
+      { key: "item", title: "Item", style: "w-[6.688rem]" },
+      { key: "visibility", title: "Visiblity", style: "w-[8rem]" },
+      { key: "name", title: "Name", style: "w-[25.125rem]" },
+      { key: "email", title: "Email Address", style: "w-[25.125rem]" },
+      { key: "timestamp", title: "Timestamp", style: "w-[15.5rem]" },
     ];
 
     return { tableData, tableColumns };
@@ -142,7 +143,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
   );
 
   return (
-    <div className="mt-[19.5px] flex flex-col gap-[14px]">
+    <div className="mt-[1.219rem] flex flex-col gap-[0.875rem]">
       <Table
         title="Responses"
         data={tableData}
