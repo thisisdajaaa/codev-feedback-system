@@ -70,9 +70,15 @@ export const AuthService = () => {
 
       const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/surveyor-invitation/${userId}`;
 
+      const formattedDepartment = department.includes("[")
+        ? JSON.parse(department)
+            .map(({ label }: Record<string, string>) => label)
+            .join(", ")
+        : department;
+
       await sendEmail({
         email,
-        subject: `${department} - ${AUTH_MESSAGES.INFO.VERIFICATION_SUBJECT}`,
+        subject: `${formattedDepartment} - ${AUTH_MESSAGES.INFO.VERIFICATION_SUBJECT}`,
         html: SurveyorVerification(invitationURL),
       });
     });
