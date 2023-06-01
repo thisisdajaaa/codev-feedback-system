@@ -16,6 +16,22 @@ export const TemplateService = () => {
       updatedBy: req.user._id,
     };
 
+    let isExist = false;
+    let dbTemplate = {} as ITemplate;
+
+    if (newTemplate.id) {
+      isExist = true;
+      dbTemplate = (await Template.findOneAndUpdate(
+        { _id: newTemplate.id },
+        newTemplate,
+        { new: true }
+      )) as ITemplate;
+    }
+
+    if (!isExist) {
+      dbTemplate = (await Template.create(newTemplate)) as ITemplate;
+    }
+
     const {
       id,
       title,
@@ -27,7 +43,7 @@ export const TemplateService = () => {
       createdBy,
       updatedBy,
       status,
-    } = (await Template.create(newTemplate)) as ITemplate;
+    } = dbTemplate;
 
     const formattedResponse: CreatedQuestionnaireResponse = {
       id,
@@ -61,5 +77,17 @@ export const TemplateService = () => {
     return found;
   };
 
-  return { createTemplate, isTitleExistInTemplate };
+  const isTemplateExist = async (templateId: string): Promise<boolean> => {
+    let found = false;
+    try {
+      found = await Template.findOne({
+        _id: templateId,
+      }).lean();
+    } catch {
+      found = false;
+    }
+    return found;
+  };
+
+  return { createTemplate, isTitleExistInTemplate, isTemplateExist };
 };
