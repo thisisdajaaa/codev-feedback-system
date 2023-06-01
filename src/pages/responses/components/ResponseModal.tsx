@@ -44,8 +44,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
       title={`Response ID: ${selectedUser}`}
       contentClassName="p-0"
       scrollable
-      className="max-h-[40rem] min-h-[25rem] bg-gray-100"
-    >
+      className="max-h-[40rem] min-h-[25rem] bg-gray-100">
       {isLoading ? (
         <Loading height="h-96" />
       ) : (
@@ -57,8 +56,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 color="text-gray-700"
                 size="text-base"
                 lineHeight="leading-[1.5rem]"
-                className="font-semibold sm:px-0"
-              >
+                className="font-semibold sm:px-0">
                 Name
               </Typography>
               <Typography
@@ -66,8 +64,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 color="text-gray-700"
                 size="text-base"
                 lineHeight="leading-[1.5rem]"
-                className="font-semibold sm:px-0"
-              >
+                className="font-semibold sm:px-0">
                 Email
               </Typography>
               <Typography
@@ -75,8 +72,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 color="text-gray-700"
                 size="text-base"
                 lineHeight="leading-[1.5rem]"
-                className="font-semibold sm:px-0"
-              >
+                className="font-semibold sm:px-0">
                 Timestamp
               </Typography>
             </div>
@@ -87,8 +83,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 color="text-gray-700"
                 size="text-base"
                 lineHeight="leading-[1.5rem]"
-                className={clsx(userData?.isAnonymous && "italic")}
-              >
+                className={clsx(userData?.isAnonymous && "italic")}>
                 {userData?.isAnonymous
                   ? "Anonymous"
                   : userData?.answeredBy.name || "--"}
@@ -98,8 +93,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 color="text-gray-700"
                 size="text-base"
                 lineHeight="leading-[1.5rem]"
-                className={clsx(userData?.isAnonymous && "italic")}
-              >
+                className={clsx(userData?.isAnonymous && "italic")}>
                 {userData?.isAnonymous
                   ? "Anonymous"
                   : userData?.answeredBy.email || "--"}
@@ -108,8 +102,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 variant="h4"
                 color="text-gray-700"
                 size="text-base"
-                lineHeight="leading-[1.5rem]"
-              >
+                lineHeight="leading-[1.5rem]">
                 {moment(userData?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
               </Typography>
             </div>
@@ -119,28 +112,25 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
             {userData?.surveyAnswers?.map((surveyAnswer, index) => (
               <div
                 key={index}
-                className="flex w-full rounded-2xl border border-auroMetalSaurus"
-              >
+                className="flex w-full rounded-2xl border border-auroMetalSaurus">
                 <div className="flex items-center rounded-tl-2xl rounded-bl-2xl border-r border-auroMetalSaurus bg-gray-200 px-4 py-2">
                   <Typography
                     variant="h3"
                     color="text-gray-700"
                     size="text-lg"
                     lineHeight="leading-[1.688rem]"
-                    className="font-semibold"
-                  >
+                    className="font-semibold">
                     Q{index + 1}
                   </Typography>
                 </div>
                 <div className="flex w-full flex-col">
-                  <div className="rounded-tr-2xl border-b bg-gray-200 px-[0.563rem] py-[0.313rem]">
+                  <div className="rounded-tr-2xl border-b border-auroMetalSaurus bg-gray-200 px-[0.563rem] py-[0.313rem]">
                     <Typography
                       variant="h3"
                       color="text-gray-700"
                       size="text-base"
                       lineHeight="leading-[1.5rem]"
-                      className="font-semibold"
-                    >
+                      className="font-semibold">
                       {surveyAnswer.title}
                     </Typography>
                   </div>
@@ -150,8 +140,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                       variant="h3"
                       color="text-gray-700"
                       size="text-lg"
-                      lineHeight="leading-[1.688rem]"
-                    >
+                      lineHeight="leading-[1.688rem]">
                       {surveyAnswer.answer}
                     </Typography>
                   </div>
