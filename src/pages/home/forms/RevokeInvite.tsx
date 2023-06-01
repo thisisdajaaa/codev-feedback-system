@@ -33,7 +33,7 @@ const RevokeInvite: FC<RevokeInviteProps> = ({
           color="text-gray-500"
           className="mt-3 mb-[2.375rem]"
         >
-          Are you sure you want to delete this survey?
+          Are you sure you want to revoke this surveyor?
         </Typography>
       </div>
 
