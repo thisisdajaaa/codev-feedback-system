@@ -1,7 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-//import { Button } from '../Button'
-//import { Dropdown } from '../Dropdown';
-import React from "react";
+
+import { Button } from "../Button";
+import { Dropdown } from "../Dropdown";
+import type { Option } from "../Dropdown/types";
 
 interface SearchBoxProps {
   onSearch: (query: string) => void;
@@ -17,47 +18,47 @@ const SearchBar = ({ onSearch }: SearchBoxProps) => {
     onSearch(query);
   };
 
-  // const mockFilter = [
-  //     {
-  //       label: "ALL SURVEY",
-  //       value: "ALL",
-  //     },
-  //     {
-  //       label: "ACTIVE SURVEY",
-  //       value: "ACTIVE",
-  //     },
-  //     {
-  //       label: "DRAFT SURVEY",
-  //       value: "DRAFT",
-  //     },
-  //   ];
+  const mockFilter = [
+    {
+      label: "ALL SURVEY",
+      value: "ALL",
+    },
+    {
+      label: "ACTIVE SURVEY",
+      value: "ACTIVE",
+    },
+    {
+      label: "DRAFT SURVEY",
+      value: "DRAFT",
+    },
+  ];
+  const [selectedOption, setSelectedOption] = useState<
+    Option | Option[] | null
+  >(null);
+
+  const handleOptionChange = (selectedOptions: Option | Option[]) => {
+    setSelectedOption(selectedOptions);
+  };
   return (
     <form
       onSubmit={handleSubmit}
       className="mx-auto mb-[1.5rem] flex w-screen max-w-3xl items-center px-4"
     >
-      <select
-        name="cars"
-        id="cars"
-        className="rounded-l border border-gray-400 text-sm"
-      >
-        <option value="ALL" selected>
-          All Surveys
-        </option>
-        <option value="ACTIVE">Active Surveys</option>
-        <option value="CLOSED">Closed Surveys</option>
-        <option value="DRAFT">Draft Surveys</option>
-      </select>
+      <Dropdown
+        options={mockFilter}
+        selectedOption={selectedOption as Option[]}
+        placeholder="Select"
+        onChange={handleOptionChange}
+        className="min-h-[37px] w-[170px] rounded-r-none border-gray-400 bg-white text-sm focus:border-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
       <input
         type="text"
         className="w-full border border-gray-400 text-sm placeholder-slate-400 shadow-md focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         value={query}
         onChange={handleChange}
       />
-      <button
-        type="submit"
-        className="rounded-r border border-blue-600 bg-blue-500 px-2 py-[6px] text-lg font-semibold text-white shadow-md hover:bg-blue-600 focus:bg-blue-600"
-      >
+
+      <Button className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[6px]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -70,7 +71,7 @@ const SearchBar = ({ onSearch }: SearchBoxProps) => {
             clip-rule="evenodd"
           />
         </svg>
-      </button>
+      </Button>
     </form>
   );
 };
