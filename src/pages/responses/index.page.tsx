@@ -3,7 +3,7 @@ import React, { Fragment, useState } from "react";
 
 import { withAuth } from "@/utils/withAuth";
 
-import { TableRow } from "@/components/Table/types";
+import type { TableRow } from "@/components/Table/types";
 
 import { getSurveyListAPI } from "@/api/surveys";
 
