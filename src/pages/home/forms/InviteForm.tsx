@@ -22,6 +22,10 @@ const InviteForm: FC<InviteFormProps> = ({
     string | undefined
   >(undefined);
 
+  useUpdateEffect(() => {
+    setServerErrorMessage(undefined);
+  }, [open]);
+
   const handleSubmit = async (values: InviteFormSchema) => {
     const { email, departments } = values;
 
@@ -66,7 +70,8 @@ const InviteForm: FC<InviteFormProps> = ({
       handleClose={handleClose}
       size="sm"
       scrollable={false}
-      className="min-h-[25rem]">
+      className="min-h-[25rem]"
+    >
       <FormikContext.Provider value={formikBag}>
         <AlertBanner
           open={!!serverErrorMesage}
