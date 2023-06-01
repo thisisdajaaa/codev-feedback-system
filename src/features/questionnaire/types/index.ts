@@ -2,12 +2,6 @@ import type { NextApiRequest } from "next";
 
 import type { ITemplate } from "@/models/Template/types";
 
-export type PickedSurveyCoverageDetails =
-  | "templateID"
-  | "dateFrom"
-  | "dateTo"
-  | "status";
-
 export type PickedTemplateDetails =
   | "id"
   | "title"
