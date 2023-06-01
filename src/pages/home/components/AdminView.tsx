@@ -7,6 +7,7 @@ import { useMount } from "@/hooks";
 import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import DeleteModal from "@/components/Modal/DeleteModal";
 import { Table } from "@/components/Table";
 import { Typography } from "@/components/Typography";
 
@@ -15,7 +16,6 @@ import { ICommonSurveyorRequest } from "@/features/auth/types";
 import type { SingleUserResponse, UserResponse } from "@/features/user/types";
 
 import { InviteForm } from "../forms/InviteForm";
-import RevokeInvite from "../forms/RevokeInvite";
 
 const AdminView: FC = () => {
   const { data } = useSession();
@@ -88,7 +88,8 @@ const AdminView: FC = () => {
               variant="p"
               size="text-sm"
               lineHeight="leading-[1.313rem]"
-              color="text-gray-500">
+              color="text-gray-500"
+            >
               {email}
             </Typography>
           </div>
@@ -112,7 +113,8 @@ const AdminView: FC = () => {
               size="text-base"
               lineHeight="leading-[1.5rem]"
               color="text-white"
-              className="hidden font-normal sm:inline">
+              className="hidden font-normal sm:inline"
+            >
               Revoke
             </Typography>
           </Button>
@@ -148,7 +150,8 @@ const AdminView: FC = () => {
       <div className="mt-7 mb-[1.125rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => setShowInvite(true)}
-          className="flex w-full justify-center sm:w-auto">
+          className="flex w-full justify-center sm:w-auto"
+        >
           <div className="text-[1.313rem]">
             <Icon src="/assets/mail.svg" />
           </div>
@@ -159,7 +162,8 @@ const AdminView: FC = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold">
+            className="font-semibold"
+          >
             Invite
           </Typography>
         </Button>
@@ -171,11 +175,13 @@ const AdminView: FC = () => {
         handleRefetch={handleLoad}
       />
 
-      <RevokeInvite
+      <DeleteModal
         open={showRevokeModal}
         handleClose={() => setShowRevokeModal(false)}
-        handleRevoke={() => handleRevoke(selectedUser)}
+        handleDeleteFunction={() => handleRevoke(selectedUser)}
         title="Are you sure you want to revoke this surveyor?"
+        primaryLabel="Yes, I'm sure"
+        secondaryLabel="No, cancel"
       />
 
       <div>

@@ -1,17 +1,18 @@
 import Image from "next/image";
 import React, { FC } from "react";
 
-import { Button } from "@/components/Button";
-import { Modal } from "@/components/Modal";
-import { Typography } from "@/components/Typography";
+import { Modal } from "./Modal";
+import type { DeleteModalProps } from "./types";
+import { Button } from "../Button";
+import { Typography } from "../Typography";
 
-import type { RevokeInviteProps } from "../types";
-
-const RevokeInvite: FC<RevokeInviteProps> = ({
+const DeleteModal: FC<DeleteModalProps> = ({
   open,
   handleClose,
-  handleRevoke,
-  title,
+  handleDeleteFunction,
+  title = "Are you sure you want to delete this?",
+  primaryLabel = "Confirm",
+  secondaryLabel = "Cancel",
 }) => {
   return (
     <Modal
@@ -34,29 +35,31 @@ const RevokeInvite: FC<RevokeInviteProps> = ({
           color="text-gray-500"
           className="mt-3 mb-[2.375rem]"
         >
-          {title || "Are you sure you want to delete this survey?"}
+          {title}
         </Typography>
       </div>
 
       <div className="flex items-center justify-center gap-[1.75rem]">
         <Button
-          onClick={handleRevoke}
+          onClick={handleDeleteFunction}
           variant="warning"
           className="min-w-[6.875rem] text-[0.875rem] font-semibold"
         >
           <span className="inline-block w-full text-center">
-            Yes, I&apos;m sure
+            {primaryLabel}
           </span>
         </Button>
         <Button
           onClick={handleClose}
           className="min-w-[6.875rem] border border-gray-100 bg-gray-100 text-[0.875rem] font-semibold text-gray-500 hover:bg-gray-200 hover:text-gray-500 active:bg-gray-200"
         >
-          <span className="inline-block w-full text-center">No, cancel</span>
+          <span className="inline-block w-full text-center">
+            {secondaryLabel}
+          </span>
         </Button>
       </div>
     </Modal>
   );
 };
 
-export default RevokeInvite;
+export default DeleteModal;

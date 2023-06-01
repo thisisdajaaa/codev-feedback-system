@@ -10,10 +10,3 @@ export type InviteFormProps = {
   handleClose: () => void;
   handleRefetch: () => void;
 };
-
-export type RevokeInviteProps = {
-  open: boolean;
-  handleClose: () => void;
-  handleRevoke: () => void;
-  title: string;
-};
