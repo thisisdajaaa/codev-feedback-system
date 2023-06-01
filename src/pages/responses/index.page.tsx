@@ -7,8 +7,8 @@ import { TableRow } from "@/components/Table/types";
 
 import { getSurveyListAPI } from "@/api/surveys";
 
-import { QuestionAnalyticsList } from "./components/QuestionAnalyticsList";
 import { ResponseList } from "./components/ResponseList";
+import { SummaryList } from "./components/SummaryList";
 import { SurveyList } from "./components/SurveyList";
 import { INITIAL_PAGE, PAGE_SIZE } from "./config";
 import type { ResponsesProps } from "./types";
@@ -29,7 +29,7 @@ const Responses: NextPage<ResponsesProps> = ({ items }) => {
       {selectedSurvey && (
         <Fragment>
           <ResponseList selectedSurvey={selectedSurvey} />
-          <QuestionAnalyticsList selectedSurvey={selectedSurvey} />
+          <SummaryList selectedSurvey={selectedSurvey} />
         </Fragment>
       )}
     </div>

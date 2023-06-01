@@ -26,7 +26,7 @@ const { handleGetSurveyDetailsByUser } = SurveyController();
 
 handler
   .use(isAuthenticatedUser)
-  .use(roleAtLeast(ROLES.SURVEYEE))
+  .use(roleAtLeast(ROLES.SURVEYOR))
   .get(mongoHandler(handleGetSurveyDetailsByUser));
 
 export default handler;

@@ -6,6 +6,7 @@ import { DOTS } from "./config";
 import { usePagination } from "./hooks/usePagination";
 import type { PaginationProps } from "./types";
 import { Button } from "../Button";
+import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
 const Pagination: FC<PaginationProps> = (props) => {
@@ -41,7 +42,7 @@ const Pagination: FC<PaginationProps> = (props) => {
   return (
     <div className="flex items-center justify-between xs:flex-col sm:flex-col md:flex-row">
       <div className="xs:mb-[0.625rem] sm:mb-[0.625rem] sm:mt-8 md:my-0">
-        <p className="text-[1.25rem] text-gray-500">
+        <p className="text-sm text-gray-500">
           Showing <span className="font-medium">{totalCount}</span> to{" "}
           <span className="font-medium">{pageSize}</span> of{" "}
           <span className="font-medium">{pageSize}</span> results
@@ -50,15 +51,27 @@ const Pagination: FC<PaginationProps> = (props) => {
 
       <div className="flex items-center gap-[17px]">
         {csv && (
-          <Button onClick={csv.onClick} isLoading={csv.isLoading}>
+          <Button
+            onClick={csv.onClick}
+            isLoading={csv.isLoading}
+            className="items-center gap-0">
             <Typography
               variant="p"
               size="text-sm"
-              lineHeight="leading-[1.313rem]"
               color="text-white"
-              className="font-normal">
-              Download CSV
+              className="mr-1 hidden font-normal md:block">
+              Download
             </Typography>
+            <Typography
+              variant="p"
+              size="text-sm"
+              color="text-white"
+              className="mr-[0.4px] font-normal md:mr-0">
+              CSV
+            </Typography>
+            <div className="block md:hidden">
+              <Icon src="/assets/download.svg" />
+            </div>
           </Button>
         )}
 

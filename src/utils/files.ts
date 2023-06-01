@@ -5,15 +5,14 @@ export const downloadCSV = <T extends Record<string, any>>(
   const dataArray = Array.isArray(data) ? data : [data];
 
   const csvRows: string[] = [];
-  const headers = Object.keys(dataArray[0]);
-  csvRows.push(headers.join(","));
 
   for (const row of dataArray) {
-    const values = headers.map((header) => {
+    const values = Object.keys(row).map((header) => {
       let value = row[header];
 
       if (typeof value === "object") {
-        value = JSON.stringify(value);
+        // Stringify the object and replace commas and double quotes with spaces to avoid breaking the CSV format
+        value = JSON.stringify(value).replace(/,|"/g, " ");
       }
 
       const escaped = ("" + value).replace(/"/g, '\\"');

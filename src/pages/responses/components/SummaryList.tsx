@@ -5,11 +5,11 @@ import { PieChart } from "@/components/PieChart";
 import { Typography } from "@/components/Typography";
 
 import { getSurveyAnalyticsByTemplateAPI } from "@/api/surveys";
-import { AnalyticsResponse } from "@/features/survey/types";
+import type { AnalyticsResponse } from "@/features/survey/types";
 
-import type { QuestionAnalyticsListProps } from "../types";
+import type { SummaryListProps } from "../types";
 
-const QuestionAnalyticsList: FC<QuestionAnalyticsListProps> = (props) => {
+const SummaryList: FC<SummaryListProps> = (props) => {
   const { selectedSurvey } = props;
 
   const [analyticsList, setAnalyticsList] = useState<AnalyticsResponse>([]);
@@ -39,7 +39,7 @@ const QuestionAnalyticsList: FC<QuestionAnalyticsListProps> = (props) => {
         color="text-gray-600"
         size="text-lg"
         className="mb-[1.188rem] px-2 font-semibold sm:px-0">
-        Question Analytics
+        Summary
       </Typography>
 
       {isLoading ? (
@@ -74,4 +74,4 @@ const QuestionAnalyticsList: FC<QuestionAnalyticsListProps> = (props) => {
   );
 };
 
-export { QuestionAnalyticsList };
+export { SummaryList };

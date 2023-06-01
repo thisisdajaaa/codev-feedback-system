@@ -18,7 +18,7 @@ export type ResponseListProps = {
   selectedSurvey: string;
 };
 
-export type QuestionAnalyticsListProps = {
+export type SummaryListProps = {
   selectedSurvey: string;
 };
 

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import moment from "moment";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { downloadCSV } from "@/utils/files";
@@ -7,6 +8,7 @@ import { Pagination } from "@/components/Pagination";
 import { Table } from "@/components/Table";
 import { Variations } from "@/components/Table/config";
 import { Typography } from "@/components/Typography";
+import type { TailwindTextAlign } from "@/components/Typography/types";
 
 import { getAnsweredSurveysByTemplateAPI } from "@/api/surveys";
 import { SurveysResponse } from "@/features/survey/types";
@@ -78,6 +80,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
     const renderCellItem = (
       id: string,
       value: string | number,
+      textAlign: TailwindTextAlign,
       isAnonymous?: boolean
     ) => {
       return (
@@ -85,7 +88,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
           variant="p"
           color="text-gray-600"
           size="text-lg"
-          textAlign={value === "--" ? "text-center" : "text-left"}
+          textAlign={value === "--" ? "text-center" : textAlign}
           className={clsx(
             "px-4",
             selectedUser === id && "font-semibold",
@@ -101,14 +104,20 @@ const ResponseList: FC<ResponseListProps> = (props) => {
         const txtVisibility = isAnonymous ? "Private" : "Public";
         const txtName = isAnonymous ? "Anonymous" : answeredBy.name || "--";
         const txtEmail = isAnonymous ? "Anonymous" : answeredBy.email || "--";
+        const txtTimestamp = moment(createdAt).format("YYYY-MM-DD HH:mm:ss");
 
         return {
           id: String(answeredBy.id) || "",
-          item: renderCellItem(id, index + 1),
-          visibility: renderCellItem(id, txtVisibility, isAnonymous),
-          name: renderCellItem(id, txtName, isAnonymous),
-          email: renderCellItem(id, txtEmail, isAnonymous),
-          timestamp: renderCellItem(id, createdAt),
+          item: renderCellItem(id, index + 1, "text-center"),
+          visibility: renderCellItem(
+            id,
+            txtVisibility,
+            "text-center",
+            isAnonymous
+          ),
+          name: renderCellItem(id, txtName, "text-left", isAnonymous),
+          email: renderCellItem(id, txtEmail, "text-left", isAnonymous),
+          timestamp: renderCellItem(id, txtTimestamp, "text-center"),
         };
       }
     );

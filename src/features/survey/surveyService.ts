@@ -83,20 +83,15 @@ export const SurveyService = () => {
     return data;
   };
 
-  const answerSurvey = async (req: IAnswerSurveyRequest) => {
-    const { templateId } = req.query;
-
-    const { answer, questionId, comment } = req.body;
+  const answerSurvey = async (
+    req: IAnswerSurveyRequest
+  ): Promise<ISurvey | null> => {
+    const { templateId, answer, questionId, comment } = req.body;
 
     const userId = req.user.id;
 
-    let survey = (await Survey.findOne({
-      templateId,
-      answeredBy: userId,
-    })) as ISurvey | null;
-
     const template = (await Template.findOne({
-      id: templateId,
+      _id: templateId,
     })) as ITemplate | null;
 
     if (!template)
@@ -104,6 +99,11 @@ export const SurveyService = () => {
         SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
         StatusCodes.NOT_FOUND
       );
+
+    let survey = (await Survey.findOne({
+      templateId,
+      answeredBy: userId,
+    })) as ISurvey | null;
 
     if (!survey) {
       const newSurvey = {

@@ -72,6 +72,7 @@ export interface IGetSurveyResponse
 
 export interface IAnswerSurveyRequest extends NextApiRequest {
   body: {
+    templateId: string;
     questionId: string;
     answer: string;
     comment?: string;

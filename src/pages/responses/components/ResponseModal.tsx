@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import moment from "moment";
 import React, { FC, useCallback, useEffect, useState } from "react";
 
 import { Loading } from "@/components/Loading";
@@ -102,7 +103,7 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
                 color="text-gray-700"
                 size="text-base"
                 lineHeight="leading-[1.5rem]">
-                {userData?.createdAt}
+                {moment(userData?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
               </Typography>
             </div>
           </div>
