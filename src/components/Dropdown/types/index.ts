@@ -12,4 +12,5 @@ export type DropdownProps = {
   onBlur?: () => void;
   onFocus?: () => void;
   multiSelect?: boolean;
+  className?: string;
 };
