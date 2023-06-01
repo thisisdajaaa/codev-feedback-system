@@ -27,32 +27,26 @@ const questionSchema = yup.object().shape({
 });
 
 const questionnaireBodySchema = yup.object().shape({
-  coverage: yup.object().shape({
-    dateFrom: dateSchema,
-    dateTo: dateSchema.when(
-      "dateFrom",
-      (dateFrom, schema) =>
-        dateFrom &&
-        schema.test(
-          "is-after",
-          QUESTIONNAIRE_MESSAGES.ERROR.INCORRECT_DATE_RANGE,
-          (value: string) => moment(value).isAfter(moment(dateFrom))
-        )
-    ),
-    isActive: yup.boolean(),
-  }),
-
-  template: yup.object().shape({
-    title: yup.string().trim().required(),
-    description: yup.string().trim().required(),
-    department: yup.string().trim().required(),
-    questions: yup
-      .array()
-      .of(questionSchema.noUnknown())
-      .required()
-      .min(1)
-      .required(),
-  }),
+  title: yup.string().trim().required(),
+  description: yup.string().trim().required(),
+  department: yup.string().trim().required(),
+  dateFrom: dateSchema,
+  dateTo: dateSchema.when(
+    "dateFrom",
+    (dateFrom, schema) =>
+      dateFrom &&
+      schema.test(
+        "is-after",
+        QUESTIONNAIRE_MESSAGES.ERROR.INCORRECT_DATE_RANGE,
+        (value: string) => moment(value).isAfter(moment(dateFrom))
+      )
+  ),
+  questions: yup
+    .array()
+    .of(questionSchema.noUnknown())
+    .required()
+    .min(1)
+    .required(),
 });
 
 export { questionnaireBodySchema };

@@ -1,7 +1,5 @@
 import { useSession } from "next-auth/react";
-import React, { Fragment, useMemo, useState } from "react";
-
-import { withAuth } from "@/utils/withAuth";
+import React, { FC, Fragment, useMemo, useState } from "react";
 
 import { AlertBanner } from "@/components/AlertBanner";
 import { Pagination } from "@/components/Pagination";
@@ -9,14 +7,21 @@ import { SurveyCard } from "@/components/SurveyCard";
 import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
 
-const PageSize = 10;
+import { INITIAL_PAGE, PAGE_SIZE } from "../config";
 
-const ResponsesPage = () => {
+const SurveyorView: FC = () => {
   const { data } = useSession();
   const [showAlert, setShowAlert] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
 
   const firstName = data?.user?.name?.split(" ")[0];
+
+  const currentSurveyData = useMemo(() => {
+    const firstPageIndex = (currentPage - 1) * PAGE_SIZE;
+    const lastPageIndex = firstPageIndex + PAGE_SIZE;
+
+    return surveyList.slice(firstPageIndex, lastPageIndex);
+  }, [currentPage]);
 
   const renderAlertMessage = (
     <div className="flex flex-col gap-1 sm:flex-row">
@@ -26,18 +31,6 @@ const ResponsesPage = () => {
       <Typography preset="regular">Welcome to the Feedback System</Typography>
     </div>
   );
-
-  const currentSurveyData = useMemo(() => {
-    /* 
-      PageSize is to be with how many cards we want to display per page;
-      value is only temporary to show UI and functionalities of pagination component
-    */
-
-    const firstPageIndex = (currentPage - 1) * PageSize;
-    const lastPageIndex = firstPageIndex + PageSize;
-
-    return surveyList.slice(firstPageIndex, lastPageIndex);
-  }, [currentPage]);
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
@@ -55,8 +48,7 @@ const ResponsesPage = () => {
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
-        >
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
           My Surveys
         </Typography>
 
@@ -70,10 +62,8 @@ const ResponsesPage = () => {
 
         <Pagination
           currentPage={currentPage}
-          // totalCount to be also replaced with surveyList.length
           totalCount={100}
-          // pageSize is determined on how many you want to display
-          pageSize={PageSize}
+          pageSize={PAGE_SIZE}
           onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
@@ -81,4 +71,4 @@ const ResponsesPage = () => {
   );
 };
 
-export default withAuth(ResponsesPage);
+export { SurveyorView };

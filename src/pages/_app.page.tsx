@@ -18,7 +18,7 @@ import { persistor, store } from "@/redux/store";
 
 import type { NextAppProps } from "@/types";
 
-const MyApp: NextPage<NextAppProps> = ({
+const MyApp: NextPage<NextAppProps<unknown, unknown>> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {

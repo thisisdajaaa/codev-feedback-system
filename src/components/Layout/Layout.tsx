@@ -22,7 +22,7 @@ const Layout: FC<PropsWithChildren> = (props) => {
         <Navbar />
 
         <div className="flex flex-1 flex-col md:flex-row">
-          <main className="mt-[72px] flex-1 overflow-x-auto bg-brightGray transition-all duration-200 ease-in-out">
+          <main className="mt-[4.5rem] flex-1 overflow-x-auto bg-brightGray transition-all duration-200 ease-in-out">
             {isRouteChange ? (
               <Loading height="h-[calc(100vh-6.75rem)]" />
             ) : (

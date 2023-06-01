@@ -3,58 +3,112 @@ import { NextHandler } from "next-connect";
 
 import { StatusCodes } from "@/constants/statusCode";
 
+import { ApiResponse } from "@/types";
+
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
-  ICreateSurveyRequest,
-  IGetSurveyRequest,
+  AnalyticsResponse,
+  IAnswerSurveyRequest,
+  SurveyDetailsByUserResponse,
+  SurveysResponse,
 } from "@/features/survey/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
-import { SurveyCoverageService } from "../questionnaire/surveyCoverageService";
-
 export const SurveyController = () => {
-  const { createSurvey, getSurvey } = SurveyService();
-  const { isExistSurveyCoverage } = SurveyCoverageService();
+  const {
+    answerSurvey,
+    getSurveys,
+    getAnsweredSurveysByTemplateId,
+    getTemplateAnalytics,
+    getSurveyDetailsByUser,
+  } = SurveyService();
 
-  const handleCreateSurvey = catchAsyncErrors(
-    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
-      const createReq = req.body as ICreateSurveyRequest;
-      createReq.userId = req.user._id;
-      const createdSurvey = await createSurvey(createReq);
+  const handleAnswerSurvey = catchAsyncErrors(
+    async (
+      req: IAnswerSurveyRequest,
+      res: NextApiResponse,
+      _next: NextHandler
+    ) => {
+      const answeredSurvey = await answerSurvey(req);
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        data: createdSurvey,
+        data: answeredSurvey,
         message: SURVEY_MESSAGES.SUCCESS.CREATE,
       });
     }
   );
 
-  const handleGetSurvey = catchAsyncErrors(
-    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
-      const { coverageId, question } = req.query;
-      const userId = req.user._id;
-      const param = {
-        coverageId,
-        userId,
-        title: question,
-      } as IGetSurveyRequest;
+  const handleGetSurveys = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<SurveysResponse>>,
+      _next: NextHandler
+    ) => {
+      const surveys = await getSurveys(req);
 
-      if (await isExistSurveyCoverage(coverageId as string)) {
-        const data = await getSurvey(param);
-        return res.status(StatusCodes.OK).json({
-          success: true,
-          data,
-          message: SURVEY_MESSAGES.SUCCESS.ALL,
-        });
-      } else {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          success: false,
-        });
-      }
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        ...surveys,
+        message: SURVEY_MESSAGES.SUCCESS.ALL,
+      });
     }
   );
 
-  return { handleCreateSurvey, handleGetSurvey };
+  const handleGetAnsweredSurveysByTemplateId = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<SurveysResponse>>,
+      _next: NextHandler
+    ) => {
+      const surveys = await getAnsweredSurveysByTemplateId(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        ...surveys,
+        message: SURVEY_MESSAGES.SUCCESS.ALL_ANSWERED_SURVEYS,
+      });
+    }
+  );
+
+  const handleGetTemplateAnalytics = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<AnalyticsResponse>>,
+      _next: NextHandler
+    ) => {
+      const data = await getTemplateAnalytics(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: SURVEY_MESSAGES.SUCCESS.ALL_ANALYTICS,
+      });
+    }
+  );
+
+  const handleGetSurveyDetailsByUser = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<SurveyDetailsByUserResponse>>,
+      _next: NextHandler
+    ) => {
+      const data = await getSurveyDetailsByUser(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: SURVEY_MESSAGES.SUCCESS.USER_SURVEY_DETAILS,
+      });
+    }
+  );
+
+  return {
+    handleAnswerSurvey,
+    handleGetAnsweredSurveysByTemplateId,
+    handleGetSurveys,
+    handleGetTemplateAnalytics,
+    handleGetSurveyDetailsByUser,
+  };
 };

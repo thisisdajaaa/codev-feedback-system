@@ -362,9 +362,6 @@
           },
           "updatedAt": {
             "type": "string"
-          },
-          "surveyCoverage": {
-            "$ref": "#/components/schemas/SurveyCoverage"
           }
         }
       },
@@ -468,20 +465,6 @@
           }
         }
       },
-      "SurveyCoverage": {
-        "type": "object",
-        "properties": {
-          "dateFrom": {
-            "type": "string"
-          },
-          "dateTo": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "string"
-          }
-        }
-      },
       "Question": {
         "type": "object",
         "properties": {
@@ -528,6 +511,15 @@
           "department": {
             "type": "string",
             "enum": ["IT", "HR", "FINANCE", "RECRUITMENT", "OPERATIONS"]
+          },
+          "dateFrom": {
+            "type": "string"
+          },
+          "dateTo": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
           },
           "questions": {
             "type": "array",

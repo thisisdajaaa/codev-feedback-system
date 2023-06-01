@@ -24,8 +24,7 @@ const Typography: FC<PropsWithChildren<TypographyProps>> = (props) => {
 
   return (
     <Element
-      className={`${fields?.size} ${fields?.lineHeight} ${fields?.color} ${fields?.textAlign} ${fields?.className} ${className}`}
-    >
+      className={`${fields?.size} ${fields?.lineHeight} ${fields?.color} ${fields?.textAlign} ${fields?.className} ${className}`}>
       {children}
     </Element>
   );

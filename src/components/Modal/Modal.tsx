@@ -22,6 +22,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
     className,
     size = "sm",
     scrollable = true,
+    contentClassName,
     children,
   } = props;
 
@@ -60,9 +61,8 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               scaleClass,
               sizes,
               className
-            )}
-          >
-            <div className="flex flex-shrink-0 items-center justify-between px-[1.375rem] pt-4 pb-[0.688rem]">
+            )}>
+            <div className="flex flex-shrink-0 items-center justify-between rounded-tl-lg rounded-tr-lg bg-white px-[1.375rem] pt-4 pb-[0.688rem]">
               {typeof title === "string" ? (
                 <Typography preset="heading2">{title}</Typography>
               ) : (
@@ -77,9 +77,9 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
             <div
               className={clsxm(
                 "modal-scrollbar flex-grow px-[1.375rem] py-[1.813rem]",
-                scrollable && "overflow-y-auto"
-              )}
-            >
+                scrollable && "overflow-y-auto",
+                contentClassName
+              )}>
               {children}
             </div>
           </div>

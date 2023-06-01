@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
       }
 
-      return Promise.resolve(token);
+      return token;
     },
     session: async ({ session, token }) => {
       if (token) {

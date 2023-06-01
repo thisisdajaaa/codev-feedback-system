@@ -1,15 +1,22 @@
 import clsx from "clsx";
-import React, { FC, Fragment } from "react";
+import React, { FC, Fragment, useCallback } from "react";
 
-import type { VariationTableProps } from "./types";
+import type { TableRow, VariationTableProps } from "./types";
 import { Loading } from "../Loading";
 import { Typography } from "../Typography";
 
 const VariationOne: FC<VariationTableProps> = (props) => {
-  const { title, data, isLoading, columns } = props;
+  const { title, data, isLoading, onClick, columns } = props;
+
+  const handleRowClick = useCallback(
+    (row: TableRow) => () => {
+      if (onClick) onClick(row);
+    },
+    [onClick]
+  );
 
   return (
-    <div className="mx-auto w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
+    <div className="mx-[0.625rem] max-w-screen-2xl rounded-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:mx-0 sm:px-6">
       <Typography
         variant="h2"
         color="text-gray-600"
@@ -37,7 +44,8 @@ const VariationOne: FC<VariationTableProps> = (props) => {
               {data.map((row, index) => (
                 <div
                   key={index}
-                  className={`flex min-h-[4.125rem] items-center justify-between ${
+                  onClick={handleRowClick(row)}
+                  className={`flex min-h-[4.125rem] cursor-pointer items-center justify-between transition-all hover:bg-gray-200 ${
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
                   }`}
                 >

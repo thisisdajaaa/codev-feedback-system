@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 import type { IQuestion, ITemplate } from "./types";
+import { SurveyStatus, surveyStatusList } from "../Survey/config";
 
 export const QuestionSchema = new Schema<IQuestion>(
   {
@@ -54,6 +55,20 @@ export const TemplateSchema = new Schema<ITemplate>(
       ref: "User",
       required: true,
     },
+    dateFrom: {
+      type: String,
+      required: true,
+    },
+    dateTo: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: surveyStatusList,
+      default: SurveyStatus.DRAFT,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -63,11 +78,11 @@ export const TemplateSchema = new Schema<ITemplate>(
   }
 );
 
-TemplateSchema.virtual("surveyCoverage", {
-  ref: "SurveyCoverage",
+TemplateSchema.virtual("surveys", {
+  ref: "Survey",
   localField: "_id",
-  foreignField: "templateID",
-  justOne: true,
+  foreignField: "templateId",
+  justOne: false,
 });
 
 const Template =

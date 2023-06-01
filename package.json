@@ -29,6 +29,7 @@
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
+    "chart.js": "^4.3.0",
     "clsx": "^1.2.1",
     "crpyto": "^0.0.1-security",
     "dotenv": "^16.0.3",
@@ -43,6 +44,7 @@
     "next-seo": "^5.15.0",
     "nodemailer": "^6.8.0",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "react-input-mask": "^2.0.4",
@@ -52,7 +54,6 @@
     "redux-persist": "^6.0.0",
     "swagger-ui-react": "^4.18.3",
     "tailwind-merge": "^1.6.0",
-    "xlsx": "^0.18.5",
     "yup": "^0.32.11"
   },
   "devDependencies": {

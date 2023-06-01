@@ -31,6 +31,7 @@ export type ApiResponse<T> = {
   data?: T;
   success: boolean;
   count?: number;
+  total?: number;
   pagination?: Pagination;
   message?: string;
   error?: ErrorHandler;
@@ -40,6 +41,8 @@ export type ApiResponse<T> = {
 export type Populate = {
   path: string;
   select?: string;
+  model?: string;
+  populate?: Populate | Populate[];
 };
 
 export type ValidationRequestOptions = "body" | "query";
@@ -49,5 +52,13 @@ export type AdvancedResultsOptions<T> = {
   req: NextApiRequest;
   strict?: boolean;
   populate?: Populate | Populate[];
-  discardQueryList?:string[]; //this contains our discard list of query params
+  discardQueryList?: string[];
+};
+
+export type QueryOptions = {
+  page?: number;
+  limit?: number;
+  sort?: string;
+  select?: string;
+  filter?: Record<string, unknown>;
 };

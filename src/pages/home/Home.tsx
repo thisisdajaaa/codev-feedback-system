@@ -5,15 +5,17 @@ import { withAuth } from "@/utils/withAuth";
 import { useUserRole } from "@/hooks";
 
 import { AdminView } from "./components/AdminView";
+import { SurveyorView } from "./components/SurveyorView";
 
 const HomePage: NextPage = () => {
-  const { isAdmin } = useUserRole();
+  const { isAdmin, isSurveyor } = useUserRole();
 
   const renderView = useMemo(() => {
     if (isAdmin) return <AdminView />;
+    if (isSurveyor) return <SurveyorView />;
 
     return <Fragment />;
-  }, [isAdmin]);
+  }, [isAdmin, isSurveyor]);
 
   return <Fragment>{renderView}</Fragment>;
 };

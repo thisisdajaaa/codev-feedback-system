@@ -9,29 +9,57 @@ import type {
 export const TemplateService = () => {
   const createTemplate = async (
     req: ICreateQuestionnaireRequest
-  ): Promise<CreatedQuestionnaireResponse["template"]> => {
-    const { template } = req.body;
-
+  ): Promise<CreatedQuestionnaireResponse> => {
     const newTemplate = {
-      ...template,
+      ...req.body,
       createdBy: req.user._id,
       updatedBy: req.user._id,
     };
 
-    return await Template.create(newTemplate);
+    const {
+      id,
+      title,
+      department,
+      dateFrom,
+      dateTo,
+      description,
+      questions,
+      createdBy,
+      updatedBy,
+      status,
+    } = (await Template.create(newTemplate)) as ITemplate;
+
+    const formattedResponse: CreatedQuestionnaireResponse = {
+      id,
+      title,
+      department,
+      dateFrom,
+      dateTo,
+      description,
+      questions,
+      createdBy,
+      updatedBy,
+      status,
+    };
+
+    return formattedResponse;
   };
 
-  const isTitleExistInTemplate = async (templateId: string, questionId: string
-    ):Promise<boolean> => {
-      let found = false;
-      try{
-        const template = (await Template.findOne({_id: templateId})) as ITemplate;
-        found = (template && template?.questions.some(x => x.id === questionId));
-      }catch{
-        found = false;
-      }
-      return found;
-    };
+  const isTitleExistInTemplate = async (
+    templateId: string,
+    questionId: string
+  ): Promise<boolean> => {
+    let found = false;
+    try {
+      const template = (await Template.findOne({
+        _id: templateId,
+      })) as ITemplate;
+      found = template && template?.questions.some((x) => x.id === questionId);
+    } catch {
+      found = false;
+    }
+    return found;
+  };
 
   return { createTemplate, isTitleExistInTemplate };
 };
