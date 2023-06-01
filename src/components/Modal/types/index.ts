@@ -11,3 +11,12 @@ export type ModalProps = {
   handleClose: () => void;
   contentClassName?: string;
 };
+
+export type DeleteModalProps = {
+  open: boolean;
+  handleClose: () => void;
+  handleDeleteFunction: () => void;
+  title: string;
+  primaryLabel: string;
+  secondaryLabel: string;
+};

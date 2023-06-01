@@ -7,6 +7,7 @@ import { useMount } from "@/hooks";
 import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import DeleteModal from "@/components/Modal/DeleteModal";
 import { Table } from "@/components/Table";
 import { Typography } from "@/components/Typography";
 
@@ -22,6 +23,8 @@ const AdminView: FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [showInvite, setShowInvite] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showRevokeModal, setShowRevokeModal] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<string>("");
 
   const handleLoad = useCallback(async () => {
     setIsLoading(true);
@@ -56,7 +59,10 @@ const AdminView: FC = () => {
 
       const { success } = await revokeSurveyorAPI(request);
 
-      if (success) handleLoad();
+      if (success) {
+        handleLoad();
+        setShowRevokeModal(false);
+      }
     },
     [handleLoad]
   );
@@ -82,7 +88,8 @@ const AdminView: FC = () => {
               variant="p"
               size="text-sm"
               lineHeight="leading-[1.313rem]"
-              color="text-gray-500">
+              color="text-gray-500"
+            >
               {email}
             </Typography>
           </div>
@@ -93,14 +100,21 @@ const AdminView: FC = () => {
     const renderBtnRevoke = (userId: string) => {
       return (
         <div className="px-[1.125rem]">
-          <Button onClick={() => handleRevoke(userId)} variant="warning">
+          <Button
+            onClick={() => {
+              setSelectedUser(userId);
+              setShowRevokeModal(true);
+            }}
+            variant="warning"
+          >
             <Icon src="/assets/trash.svg" />
             <Typography
               variant="p"
               size="text-base"
               lineHeight="leading-[1.5rem]"
               color="text-white"
-              className="hidden font-normal sm:inline">
+              className="hidden font-normal sm:inline"
+            >
               Revoke
             </Typography>
           </Button>
@@ -120,7 +134,7 @@ const AdminView: FC = () => {
     ];
 
     return { tableData, tableColumns };
-  }, [handleRevoke, users]);
+  }, [users]);
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
@@ -136,7 +150,8 @@ const AdminView: FC = () => {
       <div className="mt-7 mb-[1.125rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => setShowInvite(true)}
-          className="flex w-full justify-center sm:w-auto">
+          className="flex w-full justify-center sm:w-auto"
+        >
           <div className="text-[1.313rem]">
             <Icon src="/assets/mail.svg" />
           </div>
@@ -147,7 +162,8 @@ const AdminView: FC = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold">
+            className="font-semibold"
+          >
             Invite
           </Typography>
         </Button>
@@ -157,6 +173,15 @@ const AdminView: FC = () => {
         open={showInvite}
         handleClose={() => setShowInvite(false)}
         handleRefetch={handleLoad}
+      />
+
+      <DeleteModal
+        open={showRevokeModal}
+        handleClose={() => setShowRevokeModal(false)}
+        handleDeleteFunction={() => handleRevoke(selectedUser)}
+        title="Are you sure you want to revoke this surveyor?"
+        primaryLabel="Yes, I'm sure"
+        secondaryLabel="No, cancel"
       />
 
       <div>
