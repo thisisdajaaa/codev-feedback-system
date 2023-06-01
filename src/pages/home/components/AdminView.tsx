@@ -175,6 +175,7 @@ const AdminView: FC = () => {
         open={showRevokeModal}
         handleClose={() => setShowRevokeModal(false)}
         handleRevoke={() => handleRevoke(selectedUser)}
+        title="Are you sure you want to revoke this surveyor?"
       />
 
       <div>

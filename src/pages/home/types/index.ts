@@ -15,4 +15,5 @@ export type RevokeInviteProps = {
   open: boolean;
   handleClose: () => void;
   handleRevoke: () => void;
+  title: string;
 };
