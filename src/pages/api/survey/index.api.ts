@@ -1,33 +1,36 @@
-import { NextApiResponse } from "next";
+import type { NextApiResponse } from "next";
 import nextConnect from "next-connect";
 
-import { ApiResponse } from "@/types";
+import { ROLES } from "@/models/User/config";
+
+import type { ApiResponse } from "@/types";
 
 import { SurveyController } from "@/features/survey";
-import {
-  CreatedSurveyResponse,
-  ICreateSurveyRequest,
+import type {
+  IAnswerSurveyRequest,
+  SurveysResponse,
 } from "@/features/survey/types";
-import { createSurveyValidator } from "@/features/survey/validations/createSurveyBodySchema";
+import { answerSurveyBodySchema } from "@/features/survey/validations/answerSurveyBodySchema";
 import { onError } from "@/middlewares/errors";
 import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
 import { mongoHandler } from "@/middlewares/mongodb";
+import { roleAtLeast } from "@/middlewares/roleAtLeast";
 import { validate } from "@/middlewares/validate";
 
 const handler = nextConnect<
-  ICreateSurveyRequest,
-  NextApiResponse<ApiResponse<CreatedSurveyResponse>>
+  IAnswerSurveyRequest,
+  NextApiResponse<ApiResponse<SurveysResponse>>
 >({
   onError,
 });
 
-const { handleCreateSurvey, handleGetSurvey } = SurveyController();
+const { handleGetSurveys, handleAnswerSurvey } = SurveyController();
 
 handler
   .use(isAuthenticatedUser)
-  .get(handleGetSurvey)
-  .use(isAuthenticatedUser)
-  .use(validate("body", createSurveyValidator))
-  .post(mongoHandler(handleCreateSurvey));
+  .use(roleAtLeast(ROLES.SURVEYOR))
+  .get(mongoHandler(handleGetSurveys))
+  .use(validate("body", answerSurveyBodySchema))
+  .post(mongoHandler(handleAnswerSurvey));
 
 export default handler;
