@@ -69,7 +69,8 @@ const SurveyList: FC<SurveyListProps> = (props) => {
           className={clsx(
             "px-4 capitalize",
             id === selectedSurvey ? "font-semibold" : "font-normal"
-          )}>
+          )}
+        >
           {title}
         </Typography>
       );
@@ -80,6 +81,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
         [SurveyStatus.DRAFT]: "bg-gray-500",
         [SurveyStatus.ACTIVE]: "bg-blue-500",
         [SurveyStatus.FINISHED]: "bg-green-500",
+        [SurveyStatus.DELETED]: "bg-gray-500",
       };
 
       return (
@@ -88,13 +90,15 @@ const SurveyList: FC<SurveyListProps> = (props) => {
             "mx-[1.125rem] rounded-[0.938rem] px-[1.125rem] py-[0.438rem]",
             "hidden sm:inline",
             mappedStatus[status as keyof typeof SurveyStatus]
-          )}>
+          )}
+        >
           <Typography
             variant="p"
             size="text-sm"
             lineHeight="leading-[1.5rem]"
             color="text-white"
-            className="font-normal uppercase">
+            className="font-normal uppercase"
+          >
             {status}
           </Typography>
         </div>
