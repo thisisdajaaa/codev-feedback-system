@@ -18,7 +18,7 @@ export const QuestionSchema = new Schema<IQuestion>(
     },
     isRequired: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   },
   {
@@ -35,15 +35,12 @@ export const TemplateSchema = new Schema<ITemplate>(
     },
     description: {
       type: String,
-      required: true,
     },
     department: {
       type: String,
-      required: true,
     },
     questions: {
       type: [QuestionSchema],
-      required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -57,11 +54,9 @@ export const TemplateSchema = new Schema<ITemplate>(
     },
     dateFrom: {
       type: String,
-      required: true,
     },
     dateTo: {
       type: String,
-      required: true,
     },
     status: {
       type: String,

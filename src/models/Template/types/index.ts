@@ -4,7 +4,7 @@ export interface IQuestion extends Document {
   title: string;
   type: string;
   options?: string;
-  isRequired: boolean;
+  isRequired?: boolean;
 }
 
 export interface ITemplate extends Document {
