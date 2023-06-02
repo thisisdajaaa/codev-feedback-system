@@ -1,6 +1,7 @@
 import moment from "moment";
 import React, { ReactNode } from "react";
 
+import clsxm from "@/utils/clsxm";
 import { withAuth } from "@/utils/withAuth";
 
 import { surveyQuestions } from "./config";
@@ -19,7 +20,7 @@ const ViewSurvey = () => {
             <td className="pl-4 pb-2">{description}</td>
           </tr>
           <tr>
-            <td>Duration</td>
+            <td className="align-top">Duration</td>
             <td className="pl-4">
               From{" "}
               <span className="font-semibold">
@@ -38,7 +39,11 @@ const ViewSurvey = () => {
         (question: Questions, i: number): ReactNode => (
           <div
             key={i}
-            className="my-10 rounded-lg bg-white px-[2.813rem] py-[2.125rem]"
+            className={clsxm(
+              "my-10 rounded-lg bg-white md:px-[2.813rem] md:py-[2.125rem]",
+              "sm:p-6",
+              "xs:p-5"
+            )}
           >
             <h2 className="mb-2 text-[1.25rem] font-semibold">
               {`Q${i + 1}. ${question.question}`}
