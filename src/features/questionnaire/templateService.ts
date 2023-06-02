@@ -1,3 +1,5 @@
+import { NextApiRequest } from "next";
+
 import Template from "@/models/Template";
 import { IQuestion, ITemplate } from "@/models/Template/types";
 
@@ -62,6 +64,12 @@ export const TemplateService = () => {
     return formattedResponse;
   };
 
+  const setTemplateStatus = async (req: NextApiRequest): Promise<void> => {
+    const { templateId, status } = req.query;
+
+    await Template.findOneAndUpdate({ _id: templateId }, { status: status });
+  };
+
   const addQuestion = async (
     req: IAddQuestionRequest
   ): Promise<CreatedQuestionnaireResponse> => {
@@ -116,7 +124,52 @@ export const TemplateService = () => {
     return formattedResponse;
   };
 
-  const isTitleExistInTemplate = async (
+  const removeQuestion = async (
+    req: NextApiRequest
+  ): Promise<CreatedQuestionnaireResponse> => {
+    const { templateId } = req.query;
+    const reqQuestion = {
+      ...req.body,
+    };
+
+    const template = (await Template.findOne({ _id: templateId })) as ITemplate;
+
+    template.questions = template.questions.filter(
+      (x) => x.id.toString() !== reqQuestion.id
+    );
+
+    await template.save();
+
+    const {
+      id,
+      title,
+      department,
+      dateFrom,
+      dateTo,
+      description,
+      questions,
+      createdBy,
+      updatedBy,
+      status,
+    } = template;
+
+    const formattedResponse: CreatedQuestionnaireResponse = {
+      id,
+      title,
+      department,
+      dateFrom,
+      dateTo,
+      description,
+      questions,
+      createdBy,
+      updatedBy,
+      status,
+    };
+
+    return formattedResponse;
+  };
+
+  const isQuestionExistInTemplate = async (
     templateId: string,
     questionId: string
   ): Promise<boolean> => {
@@ -147,8 +200,10 @@ export const TemplateService = () => {
 
   return {
     createTemplate,
-    isTitleExistInTemplate,
+    setTemplateStatus,
+    isQuestionExistInTemplate,
     isTemplateExist,
     addQuestion,
+    removeQuestion,
   };
 };

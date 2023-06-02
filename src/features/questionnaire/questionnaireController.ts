@@ -22,7 +22,14 @@ import type {
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const QuestionnaireController = () => {
-  const { createTemplate, isTemplateExist, addQuestion } = TemplateService();
+  const {
+    createTemplate,
+    setTemplateStatus,
+    isTemplateExist,
+    isQuestionExistInTemplate,
+    addQuestion,
+    removeQuestion,
+  } = TemplateService();
 
   const handleGetQuestionnaires = catchAsyncErrors(
     async (
@@ -92,6 +99,25 @@ export const QuestionnaireController = () => {
     }
   );
 
+  const handleQuestionnaireStatus = catchAsyncErrors(
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
+      const { templateId } = req.query;
+      if (!(await isTemplateExist(templateId as string))) {
+        throw new ErrorHandler(
+          QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      await setTemplateStatus(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.DELETED,
+      });
+    }
+  );
+
   const handleAddQuestion = catchAsyncErrors(
     async (
       req: IAddQuestionRequest,
@@ -118,9 +144,47 @@ export const QuestionnaireController = () => {
     }
   );
 
+  const handleRemoveQuestion = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<CreatedQuestionnaireResponse>>,
+      _next: NextHandler
+    ) => {
+      const { templateId } = req.query;
+      const { id } = req.body;
+      if (!(await isTemplateExist(templateId as string))) {
+        throw new ErrorHandler(
+          QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      if (
+        !(await isQuestionExistInTemplate(templateId as string, id as string))
+      ) {
+        throw new ErrorHandler(
+          QUESTIONNAIRE_MESSAGES.ERROR.QUESTION_NOT_FOUND,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      const template = await removeQuestion(req);
+
+      const data: CreatedQuestionnaireResponse = { ...template };
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.CREATE,
+      });
+    }
+  );
+
   return {
     handleGetQuestionnaires,
     handleCreateQuestionnaire,
+    handleQuestionnaireStatus,
     handleAddQuestion,
+    handleRemoveQuestion,
   };
 };
