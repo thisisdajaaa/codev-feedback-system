@@ -12,7 +12,7 @@ interface IQuestionTypeInfo {
 export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   Rating: {
     code: "Rating",
-    name: "Rating (1 - 5)",
+    name: "Rating",
     options: [
       { sortOrder: 1, name: "1" },
       { sortOrder: 2, name: "2" },
@@ -23,7 +23,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Satisfaction-Scale": {
     code: "Satisfaction-Scale",
-    name: "Satisfaction Scale (Very dissatisfied - Very satisfied)",
+    name: "Satisfaction Scale",
     options: [
       { sortOrder: 1, name: "Very dissatisfied" },
       { sortOrder: 2, name: "Dissatisfied" },
@@ -34,7 +34,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Likelihood-Scale": {
     code: "Likelihood-Scale",
-    name: "Likelihood Scale (Very unlikely - Very likely)",
+    name: "Likelihood Scale",
     options: [
       { sortOrder: 1, name: "Very unlikely" },
       { sortOrder: 2, name: "Unlikely" },
@@ -45,7 +45,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Concern-Scale": {
     code: "Concern-Scale",
-    name: "Level of Concern (Very unconcerned - Very concerned)",
+    name: "Level of Concern",
     options: [
       { sortOrder: 1, name: "Very unconcerned" },
       { sortOrder: 2, name: "Unconcerned" },
@@ -56,7 +56,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Agreement-Scale": {
     code: "Agreement-Scale",
-    name: "Agreement Scale (Strongly disagree - Strongly agree)",
+    name: "Agreement Scale",
     options: [
       { sortOrder: 1, name: "Strongly disagree" },
       { sortOrder: 2, name: "Disagree" },
@@ -67,7 +67,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Frequency-Scale": {
     code: "Frequency-Scale",
-    name: "Frequency Scale (Never - Always)",
+    name: "Frequency Scale",
     options: [
       { sortOrder: 1, name: "Never" },
       { sortOrder: 2, name: "Rarely" },
@@ -78,7 +78,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Awareness-Scale": {
     code: "Awareness-Scale",
-    name: "Awareness Scale (Very unaware - Very aware)",
+    name: "Awareness Scale",
     options: [
       { sortOrder: 1, name: "Very unaware" },
       { sortOrder: 2, name: "Unaware" },
@@ -89,7 +89,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Familiarity-Scale": {
     code: "Familiarity-Scale",
-    name: "Familiarity Scale (Very unfamiliar - Very familiar)",
+    name: "Familiarity Scale",
     options: [
       { sortOrder: 1, name: "Very unfamiliar" },
       { sortOrder: 2, name: "Unfamiliar" },
@@ -100,7 +100,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Quality-Scale": {
     code: "Quality-Scale",
-    name: "Quality Scale (Very poor - Very good)",
+    name: "Quality Scale",
     options: [
       { sortOrder: 1, name: "Very poor" },
       { sortOrder: 2, name: "Poor" },
@@ -111,7 +111,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Importance-Scale": {
     code: "Importance-Scale",
-    name: "Importance Scale (Very unimportant - Very important)",
+    name: "Importance Scale",
     options: [
       { sortOrder: 1, name: "Very unimportant" },
       { sortOrder: 2, name: "Unimportant" },
@@ -122,7 +122,7 @@ export const QuestionType: { [key: string]: IQuestionTypeInfo } = {
   } as IQuestionTypeInfo,
   "Age-Range": {
     code: "Age-Range",
-    name: "Age Range (Under 18 - 65+)",
+    name: "Age Range",
     options: [
       { sortOrder: 1, name: "Under 18" },
       { sortOrder: 2, name: "18 - 24" },
