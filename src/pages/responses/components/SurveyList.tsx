@@ -107,7 +107,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
     const tableData = (surveyList || [])?.map(({ id, title, status }) => ({
       id,
-      surveyor: renderTitle(id, title),
+      surveyor: renderTitle(id, title || ""),
       chip: renderChip(status),
     }));
 
