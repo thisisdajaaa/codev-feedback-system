@@ -1,8 +1,12 @@
 export const QUESTIONNAIRE_MESSAGES = {
   ERROR: {
     INVALID_DATE_FORMAT: "Invalid ISO 8601 date string",
+    MISSING_DATE: "Missing dateFrom or dateTo",
     INCORRECT_DATE_RANGE: "dateTo must be later than dateFrom",
     INVALID_QUESTION_TYPE: "Invalid question type",
+    EMPTY_QUESTIONNAIRE: "Questionnaire must have a question",
+    TITLE_IS_REQUIRED: "Title field is required",
+    DEPARTMENT_IS_REQUIRED: "Department field is required",
     TEMPLATE_NOT_FOUND: "Template not found",
     QUESTION_NOT_FOUND: "Question not found",
   },

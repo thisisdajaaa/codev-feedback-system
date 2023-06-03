@@ -3,11 +3,15 @@ import { NextApiRequest } from "next";
 import Template from "@/models/Template";
 import { IQuestion, ITemplate } from "@/models/Template/types";
 
+import { ValidationResult } from "@/types";
+
 import type {
   CreatedQuestionnaireResponse,
   IAddQuestionRequest,
   ICreateQuestionnaireRequest,
 } from "@/features/questionnaire/types";
+
+import { QUESTIONNAIRE_MESSAGES } from "./config";
 
 export const TemplateService = () => {
   const createTemplate = async (
@@ -198,6 +202,42 @@ export const TemplateService = () => {
     return found;
   };
 
+  const validateTemplate = async (
+    templateId: string
+  ): Promise<ValidationResult> => {
+    const template = (await Template.findOne({
+      _id: templateId,
+    }).lean()) as ITemplate;
+
+    if (!template.title) {
+      return {
+        isValid: false,
+        message: QUESTIONNAIRE_MESSAGES.ERROR.TITLE_IS_REQUIRED,
+      };
+    }
+
+    if (!template.department) {
+      return {
+        isValid: false,
+        message: QUESTIONNAIRE_MESSAGES.ERROR.DEPARTMENT_IS_REQUIRED,
+      };
+    }
+
+    if (!(template.dateFrom && template.dateTo)) {
+      return {
+        isValid: false,
+        message: QUESTIONNAIRE_MESSAGES.ERROR.MISSING_DATE,
+      };
+    }
+    if (template.questions.length === 0) {
+      return {
+        isValid: false,
+        message: QUESTIONNAIRE_MESSAGES.ERROR.EMPTY_QUESTIONNAIRE,
+      };
+    }
+    return { isValid: true };
+  };
+
   return {
     createTemplate,
     setTemplateStatus,
@@ -205,5 +245,6 @@ export const TemplateService = () => {
     isTemplateExist,
     addQuestion,
     removeQuestion,
+    validateTemplate,
   };
 };

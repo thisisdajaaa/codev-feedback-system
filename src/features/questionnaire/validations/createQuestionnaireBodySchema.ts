@@ -42,7 +42,7 @@ const questionSchema = yup.object().shape({
 
 const questionnaireBodySchema = yup.object().shape({
   id: templateIdValidator,
-  title: yup.string().trim().required(),
+  title: yup.string().trim(),
   description: yup.string(),
   dateFrom: optionalDateSchema,
   dateTo: optionalDateSchema.when(

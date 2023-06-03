@@ -6,6 +6,7 @@ import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
+import { SurveyStatus } from "@/models/Survey/config";
 import Template from "@/models/Template";
 import type { ITemplate } from "@/models/Template/types";
 
@@ -29,6 +30,7 @@ export const QuestionnaireController = () => {
     isQuestionExistInTemplate,
     addQuestion,
     removeQuestion,
+    validateTemplate,
   } = TemplateService();
 
   const handleGetQuestionnaires = catchAsyncErrors(
@@ -101,12 +103,30 @@ export const QuestionnaireController = () => {
 
   const handleQuestionnaireStatus = catchAsyncErrors(
     async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
-      const { templateId } = req.query;
+      const { templateId, status } = req.query;
+
+      if (!Object.values(SurveyStatus).includes(status as SurveyStatus)) {
+        throw new ErrorHandler("Invalid status", StatusCodes.BAD_REQUEST);
+      }
+
       if (!(await isTemplateExist(templateId as string))) {
         throw new ErrorHandler(
           QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
-          StatusCodes.NOT_FOUND
+          StatusCodes.BAD_REQUEST
         );
+      }
+
+      if (status === SurveyStatus.ACTIVE) {
+        const { isValid, message } = await validateTemplate(
+          templateId as string
+        );
+
+        if (!isValid) {
+          throw new ErrorHandler(
+            message || "Validation error/s",
+            StatusCodes.BAD_REQUEST
+          );
+        }
       }
 
       await setTemplateStatus(req);
