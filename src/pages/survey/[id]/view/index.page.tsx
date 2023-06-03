@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 
 import clsxm from "@/utils/clsxm";
 import { withAuth } from "@/utils/withAuth";
@@ -7,7 +7,7 @@ import { withAuth } from "@/utils/withAuth";
 import { surveyQuestions } from "./config";
 import { Questions } from "./types";
 
-const ViewSurvey = () => {
+const ViewSurvey: FC = () => {
   const { title, description, duration, questions } = surveyQuestions;
 
   return (
