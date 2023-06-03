@@ -27,15 +27,14 @@ const optionalDateSchema = yup.string().test({
 
 const questionSchema = yup.object().shape({
   id: yup.string(),
-  title: yup.string().required(),
+  title: yup.string(),
   type: yup
     .string()
     .trim()
     .oneOf(
       Object.keys(QuestionType),
       QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE
-    )
-    .required(),
+    ),
   options: yup.string().trim(),
   isRequired: yup.boolean(),
 });

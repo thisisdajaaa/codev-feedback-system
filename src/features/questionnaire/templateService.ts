@@ -89,10 +89,7 @@ export const TemplateService = () => {
     );
 
     if (item) {
-      item.title = newQuestion.title;
-      item.type = newQuestion.type;
-      item.options = newQuestion.options;
-      item.isRequired = newQuestion.isRequired;
+      Object.assign(item, { ...newQuestion });
     } else {
       template.questions.push(newQuestion as IQuestion);
     }
