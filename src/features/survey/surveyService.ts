@@ -14,7 +14,7 @@ import type { IQuestion, ITemplate } from "@/models/Template/types";
 import User from "@/models/User";
 import type { IUser } from "@/models/User/types";
 
-import type { Populate } from "@/types";
+import type { Populate, ValidationResult } from "@/types";
 
 import type {
   AnalyticsQuestion,
@@ -34,6 +34,25 @@ import type { GetQuestionnaireResponse } from "../questionnaire/types";
 import { USER_MESSAGES } from "../user/config";
 
 export const SurveyService = () => {
+  const setSurveyStatus = async (req: NextApiRequest): Promise<void> => {
+    const { surveyId, status } = req.query;
+
+    await Survey.findOneAndUpdate({ _id: surveyId }, { status: status });
+  };
+
+  const isSurveyExist = async (surveyId: string): Promise<boolean> => {
+    let found = false;
+    try {
+      found =
+        (await Survey.findOne({
+          _id: surveyId,
+        }).lean()) != null;
+    } catch {
+      found = false;
+    }
+    return found;
+  };
+
   const getSurveyByTemplateId = async (
     req: NextApiRequest
   ): Promise<IGetSurveyResponse> => {
@@ -55,7 +74,7 @@ export const SurveyService = () => {
       surveyAnswers: template?.questions
         .filter(
           (f) =>
-            f.title.toLowerCase().includes(String(title)?.toLowerCase()) ||
+            f.title?.toLowerCase().includes(String(title)?.toLowerCase()) ||
             !title
         )
         .map((x) => {
@@ -67,9 +86,9 @@ export const SurveyService = () => {
             title: x.title,
             type: x.type,
             options:
-              QuestionType[x.type]?.options.length > 0
+              QuestionType[x.type || ""]?.options.length > 0
                 ? JSON.stringify(
-                    QuestionType[x.type].options
+                    QuestionType[x.type || ""].options
                       .sort((a, b) => a.sortOrder - b.sortOrder)
                       .map((x) => x.name)
                   )
@@ -352,7 +371,7 @@ export const SurveyService = () => {
       }
 
       analytics.push({
-        questionName: questionInfo.title,
+        questionName: questionInfo.title || "",
         responses: responseData,
       });
     }
@@ -419,6 +438,42 @@ export const SurveyService = () => {
     return response;
   };
 
+  const validateSurvey = async (
+    surveyId: string
+  ): Promise<ValidationResult> => {
+    const survey = (await Survey.findOne({
+      _id: surveyId,
+    }).lean()) as ISurvey;
+
+    if (survey.surveyAnswers.length === 0) {
+      return {
+        isValid: false,
+        message: SURVEY_MESSAGES.ERROR.UNANSWERED_SURVEY,
+      };
+    }
+
+    const template = (await Template.findById(
+      survey.templateId
+    ).lean()) as ITemplate;
+
+    if (
+      template.questions
+        .filter((x) => x.isRequired)
+        .some((q) => {
+          const hasAnswer = survey.surveyAnswers.some(
+            (a) => a.questionId.toString() === q._id.toString() && a.answer
+          );
+          return !hasAnswer;
+        })
+    ) {
+      return {
+        isValid: false,
+        message: SURVEY_MESSAGES.ERROR.INCOMPLETE_ANSWER,
+      };
+    }
+
+    return { isValid: true };
+  };
   return {
     answerSurvey,
     getSurveyByTemplateId,
@@ -426,5 +481,8 @@ export const SurveyService = () => {
     getSurveys,
     getTemplateAnalytics,
     getSurveyDetailsByUser,
+    isSurveyExist,
+    setSurveyStatus,
+    validateSurvey,
   };
 };

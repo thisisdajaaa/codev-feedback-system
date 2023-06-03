@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
+import ErrorHandler from "@/utils/errorHandler";
+
 import { StatusCodes } from "@/constants/statusCode";
+
+import { SurveyStatus } from "@/models/Survey/config";
 
 import { ApiResponse } from "@/types";
 
@@ -22,6 +26,9 @@ export const SurveyController = () => {
     getAnsweredSurveysByTemplateId,
     getTemplateAnalytics,
     getSurveyDetailsByUser,
+    isSurveyExist,
+    setSurveyStatus,
+    validateSurvey,
   } = SurveyService();
 
   const handleAnswerSurvey = catchAsyncErrors(
@@ -104,11 +111,47 @@ export const SurveyController = () => {
     }
   );
 
+  const handleSurveyStatus = catchAsyncErrors(
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
+      const { surveyId, status } = req.query;
+
+      if (!Object.values(SurveyStatus).includes(status as SurveyStatus)) {
+        throw new ErrorHandler("Invalid status", StatusCodes.BAD_REQUEST);
+      }
+
+      if (!(await isSurveyExist(surveyId as string))) {
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.SURVEY_NOT_FOUND,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      if (status === SurveyStatus.FINISHED) {
+        const { isValid, message } = await validateSurvey(surveyId as string);
+
+        if (!isValid) {
+          throw new ErrorHandler(
+            message || "Validation error/s",
+            StatusCodes.BAD_REQUEST
+          );
+        }
+      }
+
+      await setSurveyStatus(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: SURVEY_MESSAGES.SUCCESS.GENERIC,
+      });
+    }
+  );
+
   return {
     handleAnswerSurvey,
     handleGetAnsweredSurveysByTemplateId,
     handleGetSurveys,
     handleGetTemplateAnalytics,
     handleGetSurveyDetailsByUser,
+    handleSurveyStatus,
   };
 };
