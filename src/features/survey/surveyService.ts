@@ -8,6 +8,7 @@ import { QuestionType } from "@/constants/questionType";
 import { StatusCodes } from "@/constants/statusCode";
 
 import Survey from "@/models/Survey";
+import { SurveyStatus } from "@/models/Survey/config";
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import Template from "@/models/Template";
 import type { IQuestion, ITemplate } from "@/models/Template/types";
@@ -21,6 +22,7 @@ import type {
   AnalyticsResponse,
   GetSurveysResponse,
   IAnswerSurveyRequest,
+  ICreateSurveyRequest,
   IGetSurveyResponse,
   IViewSurveAnswer,
   QuestionAnalyticsData,
@@ -37,7 +39,14 @@ export const SurveyService = () => {
   const setSurveyStatus = async (req: NextApiRequest): Promise<void> => {
     const { surveyId, status } = req.query;
 
-    await Survey.findOneAndUpdate({ _id: surveyId }, { status: status });
+    if (status === SurveyStatus.FINISHED) {
+      await Survey.findOneAndUpdate(
+        { _id: surveyId },
+        { status: status, dateSubmitted: new Date().toISOString() }
+      );
+    } else {
+      await Survey.findOneAndUpdate({ _id: surveyId }, { status: status });
+    }
   };
 
   const isSurveyExist = async (surveyId: string): Promise<boolean> => {
@@ -102,6 +111,46 @@ export const SurveyService = () => {
     return data;
   };
 
+  const createSurvey = async (req: ICreateSurveyRequest): Promise<ISurvey> => {
+    const { templateId, isAnonymous } = req.body;
+
+    const userId = req.user.id;
+
+    const template = (await Template.findOne({
+      _id: templateId,
+    })) as ITemplate | null;
+
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const survey = await Survey.findOne({
+      templateId,
+      answeredBy: userId,
+    }).lean();
+
+    if (!survey) {
+      const newSurvey = {
+        templateId,
+        answeredBy: userId,
+        isAnonymous: isAnonymous,
+      };
+
+      return (await Survey.create(newSurvey)) as ISurvey;
+    } else {
+      return (await Survey.findOneAndUpdate(
+        {
+          templateId,
+          answeredBy: userId,
+        },
+        { ...req.body },
+        { new: true }
+      )) as ISurvey;
+    }
+  };
+
   const answerSurvey = async (
     req: IAnswerSurveyRequest
   ): Promise<ISurvey | null> => {
@@ -135,7 +184,7 @@ export const SurveyService = () => {
             comment,
           },
         ],
-        dateSubmitted: new Date().toISOString(),
+        isAnonymous: false,
       };
 
       survey = await Survey.create(newSurvey);
@@ -155,7 +204,6 @@ export const SurveyService = () => {
         } as ISurveyAnswer);
       }
 
-      survey.dateSubmitted = new Date().toISOString();
       await survey.save();
     }
 
@@ -475,6 +523,7 @@ export const SurveyService = () => {
     return { isValid: true };
   };
   return {
+    createSurvey,
     answerSurvey,
     getSurveyByTemplateId,
     getAnsweredSurveysByTemplateId,
