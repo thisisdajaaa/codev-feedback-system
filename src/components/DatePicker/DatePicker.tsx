@@ -8,13 +8,14 @@ import { Icon } from "../Icon";
 import { Solid as InputSolid } from "../Input/Solid";
 
 const DatePicker: FC<DatePickerProps> = (props) => {
-  const { selectedDate, onChange, errorMessage } = props;
+  const { selectedDate, onBlur, onChange, errorMessage } = props;
 
   return (
     <>
       <ReactDatePicker
         selected={selectedDate}
         onChange={onChange}
+        onBlur={onBlur}
         placeholderText="mm/dd/yyyy"
         className="w-full border-none bg-transparent p-0 focus:border-transparent focus:outline-none focus:ring-0"
         customInput={

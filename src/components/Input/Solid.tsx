@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { forwardRef } from "react";
 
 import clsxm from "@/utils/clsxm";
 
@@ -6,7 +6,7 @@ import { Base } from "./Base";
 import type { InputProps } from "./types";
 import { Typography } from "../Typography";
 
-const Solid: FC<InputProps> = (props) => {
+const Solid = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { disabled = false, errorMessage, containerClassName } = props;
 
   return (
@@ -21,7 +21,7 @@ const Solid: FC<InputProps> = (props) => {
           containerClassName
         )}
       >
-        <Base inputClassName="bg-transparent" {...props} />
+        <Base ref={ref} inputClassName="bg-transparent" {...props} />
       </div>
 
       {!!errorMessage && (
@@ -38,6 +38,6 @@ const Solid: FC<InputProps> = (props) => {
       )}
     </>
   );
-};
+});
 
 export { Solid };

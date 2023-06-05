@@ -11,6 +11,7 @@ const TextArea: FC<TextAreaProps> = (props) => {
     readOnly,
     onFocus,
     className,
+    errorMessage: _errorMessage,
     ...rest
   } = props;
 

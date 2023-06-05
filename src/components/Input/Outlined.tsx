@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { forwardRef } from "react";
 
 import clsxm from "@/utils/clsxm";
 
@@ -6,7 +6,7 @@ import { Base } from "./Base";
 import type { InputProps } from "./types";
 import { Typography } from "../Typography";
 
-const Outlined: FC<InputProps> = (props) => {
+const Outlined = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { disabled = false, errorMessage, containerClassName } = props;
 
   return (
@@ -21,7 +21,7 @@ const Outlined: FC<InputProps> = (props) => {
           containerClassName
         )}
       >
-        <Base {...props} />
+        <Base ref={ref} {...props} />
       </div>
 
       {!!errorMessage && (
@@ -38,6 +38,6 @@ const Outlined: FC<InputProps> = (props) => {
       )}
     </>
   );
-};
+});
 
 export { Outlined };
