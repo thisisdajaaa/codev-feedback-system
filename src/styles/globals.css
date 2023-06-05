@@ -11,6 +11,7 @@
   --tw-color-disable: 223 225 226;
   --tw-color-light-silver: 209 213 219;
   --tw-color-auro-metal-saurus: 107 114 128;
+  --tw-color-alice-blue: 239 246 255;
 
   --color-bright-gray: rgb(var(--tw-color-bright-gray)); /* #EAEBEE */
   --color-blueberry: rgb(var(--tw-color-blueberry)); /* #3B82F6  */
@@ -20,6 +21,7 @@
   --color-auro-metal-saurus: rgb(
     var(--tw-color-auro-metal-saurus)
   ); /* #6B7280 */
+  --color-alice-blue: rgb(var(--tw-color-alice-blue)); /* #FFF8EF */
 }
 
 @layer components {

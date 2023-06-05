@@ -1,10 +1,17 @@
+import { ReactNode } from "react";
+
 export type Option = {
   value: string;
-  label: string;
+  label: string | ReactNode;
+};
+
+export type GroupOption = {
+  group: string;
+  options: Option[];
 };
 
 export type DropdownProps = {
-  options: Option[];
+  options: (Option | GroupOption)[];
   selectedOption: Option | Option[] | null;
   placeholder: string;
   errorMessage?: string;

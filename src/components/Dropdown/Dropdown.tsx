@@ -4,7 +4,7 @@ import clsxm from "@/utils/clsxm";
 import { noop } from "@/utils/helpers";
 import { useOnClickOutsideElement } from "@/hooks";
 
-import type { DropdownProps, Option } from "./types";
+import type { DropdownProps, GroupOption, Option } from "./types";
 import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
@@ -102,33 +102,83 @@ const Dropdown: FC<DropdownProps> = ({
 
         {isOpen && (
           <ul className="absolute z-30 mt-2 w-full rounded-[0.25rem] border border-gray-200 bg-white">
-            {options.map((option, index) => {
-              const isSelectedOption = selectedOptions.find(
-                (opt) => opt.value === option.value
-              );
+            {options.map((groupOrOption, index) => {
+              if ("options" in groupOrOption) {
+                const groupOption: GroupOption = groupOrOption;
 
-              return (
-                <li
-                  key={option.value}
-                  onClick={() => handleOptionClick(option)}
-                  className={clsxm(
-                    "cursor-pointer px-[0.875rem] py-2",
-                    "hover:bg-gray-100 active:bg-gray-200",
-                    index % 2 === 0 ? "bg-gray-100" : "bg-white",
-                    multiSelect && isSelectedOption && "bg-blue-100"
-                  )}
-                >
-                  {multiSelect && (
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={!!isSelectedOption}
-                      onChange={noop}
-                    />
-                  )}
-                  {option.label}
-                </li>
-              );
+                return (
+                  <li key={groupOption.group}>
+                    <div className="px-[14px] pt-2 pb-1">
+                      <Typography
+                        variant="p"
+                        size="text-sm"
+                        color="text-gray-700"
+                        className="uppercase"
+                      >
+                        {groupOption.group}
+                      </Typography>
+                    </div>
+
+                    <ul>
+                      {groupOption.options.map((option) => {
+                        const isSelectedOption = selectedOptions.find(
+                          (opt) => opt.value === option.value
+                        );
+
+                        return (
+                          <li
+                            key={option.value}
+                            onClick={() => handleOptionClick(option)}
+                            className={clsxm(
+                              "bg:white cursor-pointer py-2 pl-7 pr-[0.875rem]",
+                              "hover:bg-aliceBlue active:bg-aliceBlue",
+                              multiSelect && isSelectedOption && "bg-blue-100"
+                            )}
+                          >
+                            {multiSelect && (
+                              <input
+                                type="checkbox"
+                                className="mr-2"
+                                checked={!!isSelectedOption}
+                                onChange={noop}
+                              />
+                            )}
+                            {option.label}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </li>
+                );
+              } else {
+                const option: Option = groupOrOption;
+                const isSelectedOption = selectedOptions.find(
+                  (opt) => opt.value === option.value
+                );
+
+                return (
+                  <li
+                    key={option.value}
+                    onClick={() => handleOptionClick(option)}
+                    className={clsxm(
+                      "cursor-pointer px-[0.875rem] py-2",
+                      "hover:bg-gray-100 active:bg-gray-200",
+                      index % 2 === 0 ? "bg-gray-100" : "bg-white",
+                      multiSelect && isSelectedOption && "bg-blue-100"
+                    )}
+                  >
+                    {multiSelect && (
+                      <input
+                        type="checkbox"
+                        className="mr-2"
+                        checked={!!isSelectedOption}
+                        onChange={noop}
+                      />
+                    )}
+                    {option.label}
+                  </li>
+                );
+              }
             })}
           </ul>
         )}

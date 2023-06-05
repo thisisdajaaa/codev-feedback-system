@@ -5,7 +5,7 @@ import type { TableRow, VariationTableProps } from "./types";
 import { Loading } from "../Loading";
 import { Typography } from "../Typography";
 
-const VariationTwo: FC<VariationTableProps> = (props) => {
+const Secondary: FC<VariationTableProps> = (props) => {
   const { title, data, isLoading, onClick, columns } = props;
 
   const handleRowClick = useCallback(
@@ -94,4 +94,4 @@ const VariationTwo: FC<VariationTableProps> = (props) => {
   );
 };
 
-export { VariationTwo };
+export { Secondary };

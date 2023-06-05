@@ -1,16 +1,16 @@
 import React, { FC, Fragment } from "react";
 
-import { Variations } from "./config";
+import { TableVariations } from "./config";
+import { Primary } from "./Primary";
+import { Secondary } from "./Secondary";
 import type { TableProps } from "./types";
-import { VariationOne } from "./VariationOne";
-import { VariationTwo } from "./VariationTwo";
 
 const Table: FC<TableProps> = (props) => {
-  const { variation = Variations.Primary, ...rest } = props;
+  const { variation = TableVariations.Primary, ...rest } = props;
 
   const variations = {
-    [Variations.Primary]: <VariationOne {...rest} />,
-    [Variations.Secondary]: <VariationTwo {...rest} />,
+    [TableVariations.Primary]: <Primary {...rest} />,
+    [TableVariations.Secondary]: <Secondary {...rest} />,
   };
 
   return variations[variation] || <Fragment />;
