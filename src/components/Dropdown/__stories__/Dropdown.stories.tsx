@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Dropdown } from "@/components/Dropdown";
 import { Typography } from "@/components/Typography";
 
-import { mockDropdownOptions } from "../fixtures";
+import { mockDropdownOptions, mockGroupedDropdownOptions } from "../fixtures";
 import type { Option } from "../types";
 
 export default {
@@ -91,8 +91,36 @@ const WithErrorDropdown: ComponentStory<typeof Dropdown> = () => {
   );
 };
 
+const GroupedOptionsDropdown: ComponentStory<typeof Dropdown> = () => {
+  const [selectedOption, setSelectedOption] = useState<
+    Option | Option[] | null
+  >(null);
+
+  const handleOptionChange = (selectedOptions: Option | Option[]) => {
+    setSelectedOption(selectedOptions);
+  };
+
+  return (
+    <div>
+      <Dropdown
+        selectedOption={selectedOption}
+        options={mockGroupedDropdownOptions}
+        placeholder="Select an option"
+        onChange={handleOptionChange}
+      />
+
+      <Typography variant="p" className="mt-2">
+        {JSON.stringify(selectedOption)}
+      </Typography>
+    </div>
+  );
+};
+
 export const Default = Template.bind({});
 Default.args = {};
+
+export const GroupedOptions = GroupedOptionsDropdown.bind({});
+GroupedOptions.args = {};
 
 export const MultiSelect = MultiSelectDropdown.bind({});
 MultiSelect.args = {};

@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-import { Variations } from "../config";
+import { TableVariations } from "../config";
 
-export type VariationOptions = keyof typeof Variations;
+export type BaseVariationOptions = keyof typeof TableVariations;
 
 export type TableRow = {
   id: string;
@@ -24,5 +24,5 @@ export type VariationTableProps = {
 };
 
 export type TableProps = {
-  variation?: VariationOptions;
+  variation?: BaseVariationOptions;
 } & VariationTableProps;

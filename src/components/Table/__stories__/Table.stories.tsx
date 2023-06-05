@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { Table } from "@/components/Table";
 
-import { Variations } from "../config";
+import { TableVariations } from "../config";
 
 export default {
   title: "Components/Table",
@@ -58,7 +58,7 @@ const SecondaryTable: ComponentStory<typeof Table> = () => {
   return (
     <div>
       <Table
-        variation={Variations.Secondary}
+        variation={TableVariations.Secondary}
         title="Sample Title"
         data={data}
         columns={columns}

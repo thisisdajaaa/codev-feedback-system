@@ -1,4 +1,4 @@
-export enum Variations {
+export enum TableVariations {
   Primary = "Primary",
   Secondary = "Secondary",
 }

@@ -6,7 +6,7 @@ import { downloadCSV } from "@/utils/files";
 
 import { Pagination } from "@/components/Pagination";
 import { Table } from "@/components/Table";
-import { Variations } from "@/components/Table/config";
+import { TableVariations } from "@/components/Table/config";
 import { Typography } from "@/components/Typography";
 import type { TailwindTextAlign } from "@/components/Typography/types";
 
@@ -148,7 +148,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
         title="Responses"
         data={tableData}
         columns={tableColumns}
-        variation={Variations.Secondary}
+        variation={TableVariations.Secondary}
         isLoading={isListLoading}
         onClick={(row) => setSelectedUser(row.id)}
       />
