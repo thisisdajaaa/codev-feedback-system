@@ -3,13 +3,13 @@ import React, { FC, useCallback } from "react";
 
 import { useFieldError, useUpdateEffect } from "@/hooks";
 
-import { Dropdown } from "@/components/Dropdown";
-import type { Option } from "@/components/Dropdown/types";
+import { RadioGroup } from "@/components/RadioGroup";
+import type { Option } from "@/components/RadioGroup/types";
 
-import type { FormDropdownProps } from "./types";
+import type { FormRadioGroupProps } from "./types";
 
-const FormDropdown: FC<FormDropdownProps> = (props) => {
-  const { name, handleDropdownChange, ...rest } = props;
+const FormRadioGroup: FC<FormRadioGroupProps> = (props) => {
+  const { name, handleRadioGroupChange, ...rest } = props;
 
   const [field, meta, helpers] = useField(name);
 
@@ -20,28 +20,24 @@ const FormDropdown: FC<FormDropdownProps> = (props) => {
   }, [meta.value]);
 
   const handleOptionClick = useCallback(
-    (option: Option | Option[]) => {
+    (option: Option) => {
       helpers.setValue(option);
       helpers.setError("");
+      helpers.setTouched(true);
 
-      if (handleDropdownChange) handleDropdownChange(option);
+      if (handleRadioGroupChange) handleRadioGroupChange(option);
     },
-    [helpers, handleDropdownChange]
+    [helpers, handleRadioGroupChange]
   );
 
-  const handleBlur = useCallback(() => {
-    helpers.setTouched(true);
-  }, [helpers]);
-
   return (
-    <Dropdown
+    <RadioGroup
       {...rest}
       selectedOption={field.value}
       errorMessage={errorMessage}
       onChange={handleOptionClick}
-      onBlur={handleBlur}
     />
   );
 };
 
-export { FormDropdown };
+export { FormRadioGroup };
