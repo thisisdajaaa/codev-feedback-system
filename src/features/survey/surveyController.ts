@@ -14,6 +14,7 @@ import { SurveyService } from "@/features/survey/surveyService";
 import type {
   AnalyticsResponse,
   IAnswerSurveyRequest,
+  ICreateSurveyRequest,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -21,6 +22,7 @@ import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const SurveyController = () => {
   const {
+    createSurvey,
     answerSurvey,
     getSurveys,
     getAnsweredSurveysByTemplateId,
@@ -42,6 +44,22 @@ export const SurveyController = () => {
       return res.status(StatusCodes.OK).json({
         success: true,
         data: answeredSurvey,
+        message: SURVEY_MESSAGES.SUCCESS.CREATE,
+      });
+    }
+  );
+
+  const handleCreateSurvey = catchAsyncErrors(
+    async (
+      req: ICreateSurveyRequest,
+      res: NextApiResponse,
+      _next: NextHandler
+    ) => {
+      const survey = await createSurvey(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data: survey,
         message: SURVEY_MESSAGES.SUCCESS.CREATE,
       });
     }
@@ -147,6 +165,7 @@ export const SurveyController = () => {
   );
 
   return {
+    handleCreateSurvey,
     handleAnswerSurvey,
     handleGetAnsweredSurveysByTemplateId,
     handleGetSurveys,
