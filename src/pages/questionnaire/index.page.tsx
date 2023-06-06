@@ -31,6 +31,8 @@ const Questionnaire: NextPage = () => {
     formikBag.setFieldValue("questions", [...questions, { ...newQuestion }]);
   };
 
+  console.log("formik", formikBag.values);
+
   return (
     <FormikContext.Provider value={formikBag}>
       <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">

@@ -13,6 +13,7 @@ const RadioGroup: FC<RadioGroupProps> = (props) => {
     errorMessage,
     className,
     itemClassName,
+    readOnly,
   } = props;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,8 +33,7 @@ const RadioGroup: FC<RadioGroupProps> = (props) => {
           "flex flex-col md:flex-row md:justify-between",
           className,
           isColumnLayout && "md:flex-col"
-        )}
-      >
+        )}>
         {options.map((option, index) => (
           <label
             key={index}
@@ -42,14 +42,14 @@ const RadioGroup: FC<RadioGroupProps> = (props) => {
               isColumnLayout &&
                 "mt-3 flex-row items-start gap-[25px] md:flex-row",
               itemClassName
-            )}
-          >
+            )}>
             <input
               type="radio"
               value={option.value}
               checked={Boolean(
                 selectedOption && selectedOption.value === option.value
               )}
+              disabled={readOnly}
               onChange={handleChange}
               className="form-radio h-5 w-5 text-gray-600"
             />
@@ -68,8 +68,7 @@ const RadioGroup: FC<RadioGroupProps> = (props) => {
           lineHeight="leading-[1.063rem]"
           textAlign="text-left"
           color="text-red-400"
-          className="mt-[0.5rem] font-light"
-        >
+          className="mt-[0.5rem] font-light">
           {errorMessage}
         </Typography>
       )}

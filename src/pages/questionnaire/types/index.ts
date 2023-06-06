@@ -10,7 +10,7 @@ export type QuestionnaireForm = {
 
 export type Question = {
   title: string;
-  type: string | null;
+  type: Option | null;
   options?: Option[];
   isRequired?: boolean;
 };

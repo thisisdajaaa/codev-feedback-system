@@ -12,4 +12,5 @@ export type RadioGroupProps = {
   errorMessage?: string;
   className?: string;
   itemClassName?: string;
+  readOnly?: boolean;
 };
