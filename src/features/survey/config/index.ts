@@ -5,6 +5,8 @@ export const SURVEY_MESSAGES = {
     SURVEY_USER_NOT_FOUND: "Survey or user not found!",
     MISSING_TEMPLATEID: "Missing template id!",
     SURVEY_NOT_FOUND: "Survey not found!",
+    INCOMPLETE_ANSWER: "Incomplete answer!",
+    UNANSWERED_SURVEY: "Unanswered survey!",
   },
   SUCCESS: {
     ALL: "Successfully retrieved surveys!",
@@ -12,6 +14,7 @@ export const SURVEY_MESSAGES = {
     USER_SURVEY_DETAILS: "Successfully retrieved survey details by user!",
     ALL_ANSWERED_SURVEYS: "Successfully retrieved surveys by template!",
     CREATE: "Successfully created!",
+    GENERIC: "Succeeded!",
   },
   INFO: {
     YET_TO_RESPOND: "Yet to Respond",

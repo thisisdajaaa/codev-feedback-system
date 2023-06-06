@@ -62,3 +62,8 @@ export type QueryOptions = {
   select?: string;
   filter?: Record<string, unknown>;
 };
+
+export type ValidationResult = {
+  isValid: boolean;
+  message?: string;
+};

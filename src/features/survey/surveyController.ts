@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
+import ErrorHandler from "@/utils/errorHandler";
+
 import { StatusCodes } from "@/constants/statusCode";
+
+import { SurveyStatus } from "@/models/Survey/config";
 
 import { ApiResponse } from "@/types";
 
@@ -10,6 +14,7 @@ import { SurveyService } from "@/features/survey/surveyService";
 import type {
   AnalyticsResponse,
   IAnswerSurveyRequest,
+  ICreateSurveyRequest,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -17,11 +22,15 @@ import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
 export const SurveyController = () => {
   const {
+    createSurvey,
     answerSurvey,
     getSurveys,
     getAnsweredSurveysByTemplateId,
     getTemplateAnalytics,
     getSurveyDetailsByUser,
+    isSurveyExist,
+    setSurveyStatus,
+    validateSurvey,
   } = SurveyService();
 
   const handleAnswerSurvey = catchAsyncErrors(
@@ -35,6 +44,22 @@ export const SurveyController = () => {
       return res.status(StatusCodes.OK).json({
         success: true,
         data: answeredSurvey,
+        message: SURVEY_MESSAGES.SUCCESS.CREATE,
+      });
+    }
+  );
+
+  const handleCreateSurvey = catchAsyncErrors(
+    async (
+      req: ICreateSurveyRequest,
+      res: NextApiResponse,
+      _next: NextHandler
+    ) => {
+      const survey = await createSurvey(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data: survey,
         message: SURVEY_MESSAGES.SUCCESS.CREATE,
       });
     }
@@ -104,11 +129,48 @@ export const SurveyController = () => {
     }
   );
 
+  const handleSurveyStatus = catchAsyncErrors(
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
+      const { surveyId, status } = req.query;
+
+      if (!Object.values(SurveyStatus).includes(status as SurveyStatus)) {
+        throw new ErrorHandler("Invalid status", StatusCodes.BAD_REQUEST);
+      }
+
+      if (!(await isSurveyExist(surveyId as string))) {
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.SURVEY_NOT_FOUND,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      if (status === SurveyStatus.FINISHED) {
+        const { isValid, message } = await validateSurvey(surveyId as string);
+
+        if (!isValid) {
+          throw new ErrorHandler(
+            message || "Validation error/s",
+            StatusCodes.BAD_REQUEST
+          );
+        }
+      }
+
+      await setSurveyStatus(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: SURVEY_MESSAGES.SUCCESS.GENERIC,
+      });
+    }
+  );
+
   return {
+    handleCreateSurvey,
     handleAnswerSurvey,
     handleGetAnsweredSurveysByTemplateId,
     handleGetSurveys,
     handleGetTemplateAnalytics,
     handleGetSurveyDetailsByUser,
+    handleSurveyStatus,
   };
 };

@@ -32,11 +32,9 @@ export const SurveySchema = new Schema<ISurvey>(
     },
     surveyAnswers: {
       type: [SurveyAnswerSchema],
-      required: true,
     },
     dateSubmitted: {
       type: String,
-      required: true,
     },
     isAnonymous: {
       type: Boolean,
@@ -46,7 +44,6 @@ export const SurveySchema = new Schema<ISurvey>(
       type: String,
       enum: surveyStatusList,
       default: SurveyStatus.DRAFT,
-      required: true,
     },
   },
   {

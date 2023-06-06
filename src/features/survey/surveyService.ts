@@ -8,19 +8,21 @@ import { QuestionType } from "@/constants/questionType";
 import { StatusCodes } from "@/constants/statusCode";
 
 import Survey from "@/models/Survey";
+import { SurveyStatus } from "@/models/Survey/config";
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import Template from "@/models/Template";
 import type { IQuestion, ITemplate } from "@/models/Template/types";
 import User from "@/models/User";
 import type { IUser } from "@/models/User/types";
 
-import type { Populate } from "@/types";
+import type { Populate, ValidationResult } from "@/types";
 
 import type {
   AnalyticsQuestion,
   AnalyticsResponse,
   GetSurveysResponse,
   IAnswerSurveyRequest,
+  ICreateSurveyRequest,
   IGetSurveyResponse,
   IViewSurveAnswer,
   QuestionAnalyticsData,
@@ -34,6 +36,32 @@ import type { GetQuestionnaireResponse } from "../questionnaire/types";
 import { USER_MESSAGES } from "../user/config";
 
 export const SurveyService = () => {
+  const setSurveyStatus = async (req: NextApiRequest): Promise<void> => {
+    const { surveyId, status } = req.query;
+
+    if (status === SurveyStatus.FINISHED) {
+      await Survey.findOneAndUpdate(
+        { _id: surveyId },
+        { status: status, dateSubmitted: new Date().toISOString() }
+      );
+    } else {
+      await Survey.findOneAndUpdate({ _id: surveyId }, { status: status });
+    }
+  };
+
+  const isSurveyExist = async (surveyId: string): Promise<boolean> => {
+    let found = false;
+    try {
+      found =
+        (await Survey.findOne({
+          _id: surveyId,
+        }).lean()) != null;
+    } catch {
+      found = false;
+    }
+    return found;
+  };
+
   const getSurveyByTemplateId = async (
     req: NextApiRequest
   ): Promise<IGetSurveyResponse> => {
@@ -55,7 +83,7 @@ export const SurveyService = () => {
       surveyAnswers: template?.questions
         .filter(
           (f) =>
-            f.title.toLowerCase().includes(String(title)?.toLowerCase()) ||
+            f.title?.toLowerCase().includes(String(title)?.toLowerCase()) ||
             !title
         )
         .map((x) => {
@@ -67,9 +95,9 @@ export const SurveyService = () => {
             title: x.title,
             type: x.type,
             options:
-              QuestionType[x.type]?.options.length > 0
+              QuestionType[x.type || ""]?.options.length > 0
                 ? JSON.stringify(
-                    QuestionType[x.type].options
+                    QuestionType[x.type || ""].options
                       .sort((a, b) => a.sortOrder - b.sortOrder)
                       .map((x) => x.name)
                   )
@@ -81,6 +109,46 @@ export const SurveyService = () => {
     };
 
     return data;
+  };
+
+  const createSurvey = async (req: ICreateSurveyRequest): Promise<ISurvey> => {
+    const { templateId, isAnonymous } = req.body;
+
+    const userId = req.user.id;
+
+    const template = (await Template.findOne({
+      _id: templateId,
+    })) as ITemplate | null;
+
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const survey = await Survey.findOne({
+      templateId,
+      answeredBy: userId,
+    }).lean();
+
+    if (!survey) {
+      const newSurvey = {
+        templateId,
+        answeredBy: userId,
+        isAnonymous: isAnonymous,
+      };
+
+      return (await Survey.create(newSurvey)) as ISurvey;
+    } else {
+      return (await Survey.findOneAndUpdate(
+        {
+          templateId,
+          answeredBy: userId,
+        },
+        { ...req.body },
+        { new: true }
+      )) as ISurvey;
+    }
   };
 
   const answerSurvey = async (
@@ -116,7 +184,7 @@ export const SurveyService = () => {
             comment,
           },
         ],
-        dateSubmitted: new Date().toISOString(),
+        isAnonymous: false,
       };
 
       survey = await Survey.create(newSurvey);
@@ -136,7 +204,6 @@ export const SurveyService = () => {
         } as ISurveyAnswer);
       }
 
-      survey.dateSubmitted = new Date().toISOString();
       await survey.save();
     }
 
@@ -352,7 +419,7 @@ export const SurveyService = () => {
       }
 
       analytics.push({
-        questionName: questionInfo.title,
+        questionName: questionInfo.title || "",
         responses: responseData,
       });
     }
@@ -419,12 +486,52 @@ export const SurveyService = () => {
     return response;
   };
 
+  const validateSurvey = async (
+    surveyId: string
+  ): Promise<ValidationResult> => {
+    const survey = (await Survey.findOne({
+      _id: surveyId,
+    }).lean()) as ISurvey;
+
+    if (survey.surveyAnswers.length === 0) {
+      return {
+        isValid: false,
+        message: SURVEY_MESSAGES.ERROR.UNANSWERED_SURVEY,
+      };
+    }
+
+    const template = (await Template.findById(
+      survey.templateId
+    ).lean()) as ITemplate;
+
+    if (
+      template.questions
+        .filter((x) => x.isRequired)
+        .some((q) => {
+          const hasAnswer = survey.surveyAnswers.some(
+            (a) => a.questionId.toString() === q._id.toString() && a.answer
+          );
+          return !hasAnswer;
+        })
+    ) {
+      return {
+        isValid: false,
+        message: SURVEY_MESSAGES.ERROR.INCOMPLETE_ANSWER,
+      };
+    }
+
+    return { isValid: true };
+  };
   return {
+    createSurvey,
     answerSurvey,
     getSurveyByTemplateId,
     getAnsweredSurveysByTemplateId,
     getSurveys,
     getTemplateAnalytics,
     getSurveyDetailsByUser,
+    isSurveyExist,
+    setSurveyStatus,
+    validateSurvey,
   };
 };

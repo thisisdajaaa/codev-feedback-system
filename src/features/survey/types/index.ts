@@ -70,6 +70,13 @@ export interface IGetSurveyResponse
   surveyAnswers: IViewSurveAnswer[];
 }
 
+export interface ICreateSurveyRequest extends NextApiRequest {
+  body: {
+    templateId: string;
+    isAnonymous?: boolean;
+  };
+}
+
 export interface IAnswerSurveyRequest extends NextApiRequest {
   body: {
     templateId: string;

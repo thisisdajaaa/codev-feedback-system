@@ -27,22 +27,21 @@ const optionalDateSchema = yup.string().test({
 
 const questionSchema = yup.object().shape({
   id: yup.string(),
-  title: yup.string().required(),
+  title: yup.string(),
   type: yup
     .string()
     .trim()
     .oneOf(
       Object.keys(QuestionType),
       QUESTIONNAIRE_MESSAGES.ERROR.INVALID_QUESTION_TYPE
-    )
-    .required(),
+    ),
   options: yup.string().trim(),
   isRequired: yup.boolean(),
 });
 
 const questionnaireBodySchema = yup.object().shape({
   id: templateIdValidator,
-  title: yup.string().trim().required(),
+  title: yup.string().trim(),
   description: yup.string(),
   dateFrom: optionalDateSchema,
   dateTo: optionalDateSchema.when(

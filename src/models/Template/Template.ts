@@ -7,11 +7,9 @@ export const QuestionSchema = new Schema<IQuestion>(
   {
     title: {
       type: String,
-      required: true,
     },
     type: {
       type: String,
-      required: true,
     },
     options: {
       type: String,
@@ -31,7 +29,6 @@ export const TemplateSchema = new Schema<ITemplate>(
   {
     title: {
       type: String,
-      required: true,
     },
     description: {
       type: String,
