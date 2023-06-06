@@ -84,14 +84,14 @@ export const TemplateService = () => {
 
     const template = (await Template.findOne({ _id: templateId })) as ITemplate;
 
-    const item = template.questions.find(
+    const item = template.questions?.find(
       (x) => x.id.toString() === newQuestion.id
     );
 
     if (item) {
       Object.assign(item, { ...newQuestion });
     } else {
-      template.questions.push(newQuestion as IQuestion);
+      template.questions?.push(newQuestion as IQuestion);
     }
 
     await template.save();
@@ -135,7 +135,7 @@ export const TemplateService = () => {
 
     const template = (await Template.findOne({ _id: templateId })) as ITemplate;
 
-    template.questions = template.questions.filter(
+    template.questions = template.questions?.filter(
       (x) => x.id.toString() !== reqQuestion.id
     );
 
@@ -179,7 +179,9 @@ export const TemplateService = () => {
       const template = (await Template.findOne({
         _id: templateId,
       })) as ITemplate;
-      found = template && template?.questions.some((x) => x.id === questionId);
+      found =
+        template &&
+        Boolean(template?.questions?.some((x) => x.id === questionId));
     } catch {
       found = false;
     }
@@ -226,7 +228,7 @@ export const TemplateService = () => {
         message: QUESTIONNAIRE_MESSAGES.ERROR.MISSING_DATE,
       };
     }
-    if (template.questions.length === 0) {
+    if (template.questions?.length === 0) {
       return {
         isValid: false,
         message: QUESTIONNAIRE_MESSAGES.ERROR.EMPTY_QUESTIONNAIRE,

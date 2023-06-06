@@ -11,10 +11,10 @@ export interface ITemplate extends Document {
   title?: string;
   description?: string;
   department?: string;
-  questions: IQuestion[];
+  questions?: IQuestion[];
   dateFrom?: string;
   dateTo?: string;
-  status: string;
-  createdBy: mongoose.Schema.Types.ObjectId;
-  updatedBy: mongoose.Schema.Types.ObjectId;
+  status?: string;
+  createdBy?: mongoose.Schema.Types.ObjectId;
+  updatedBy?: mongoose.Schema.Types.ObjectId;
 }

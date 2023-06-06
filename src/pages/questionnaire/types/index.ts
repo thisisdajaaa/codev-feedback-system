@@ -1,6 +1,7 @@
 import type { Option } from "@/components/CheckboxGroup/types";
 
 export type QuestionnaireForm = {
+  id: string;
   title: string;
   description: string;
   dateFrom: Date | null;

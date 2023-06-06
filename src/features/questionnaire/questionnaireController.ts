@@ -145,6 +145,7 @@ export const QuestionnaireController = () => {
       _next: NextHandler
     ) => {
       const { templateId } = req.query;
+
       if (!(await isTemplateExist(templateId as string))) {
         throw new ErrorHandler(
           QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
