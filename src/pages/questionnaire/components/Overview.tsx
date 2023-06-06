@@ -34,8 +34,8 @@ const Overview: FC = () => {
           Duration:
         </Typography>
 
-        <div className="flex gap-1">
-          <div className="flex items-center gap-1">
+        <div className="flex flex-col gap-2 md:flex-row">
+          <div className="flex flex-col gap-1 md:flex-row md:items-center">
             <Typography variant="label" className="mr-1">
               From
             </Typography>
@@ -43,7 +43,7 @@ const Overview: FC = () => {
             <FormDatePicker name="dateFrom" />
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex flex-col gap-1 md:flex-row md:items-center">
             <Typography variant="label" className="mr-1">
               To
             </Typography>

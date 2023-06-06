@@ -74,11 +74,12 @@ const Question: FC<QuestionProps> = (props) => {
       ["Rating"]: <Rating value={0} onChange={noop} readOnly />,
     };
 
-    if (
+    const isRadioGroup =
       selectedType?.type &&
       !mappedOptions[selectedType.type.value] &&
-      selectedType.type.value !== "Rating"
-    ) {
+      selectedType.type.value !== "Rating";
+
+    if (isRadioGroup && selectedType?.type) {
       const questionOptions = QuestionType[selectedType.type.value].options;
 
       if (questionOptions && questionOptions.length > 0) {
@@ -117,6 +118,7 @@ const Question: FC<QuestionProps> = (props) => {
           name={`questions.${index}.type`}
           placeholder="Select question type here..."
           options={getTypeOptions}
+          className="lg:w-[300px]"
         />
       </div>
 
