@@ -9,8 +9,8 @@ export default {
   argTypes: {},
 } as ComponentMeta<typeof Rating>;
 
-const Template: ComponentStory<typeof Rating> = (args) => {
-  const [rating, setRating] = useState(0);
+const Template: ComponentStory<typeof Rating> = () => {
+  const [rating, setRating] = useState<number>(0);
 
   return (
     <div>

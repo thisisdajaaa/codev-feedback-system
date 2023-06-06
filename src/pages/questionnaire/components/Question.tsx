@@ -12,6 +12,7 @@ import { Icon } from "@/components/Icon";
 import { Input } from "@/components/Input";
 import { InputVariations } from "@/components/Input/config";
 import { RadioGroup } from "@/components/RadioGroup";
+import { Rating } from "@/components/Rating";
 import { TextArea } from "@/components/TextArea";
 import { Typography } from "@/components/Typography";
 
@@ -49,7 +50,7 @@ const Question: FC<QuestionProps> = (props) => {
         .filter(([key]) => key !== "Custom-Single" && key !== "Custom-Multiple")
         .map(([_key, value]) => ({
           label: (
-            <div className="row flex items-center gap-[30.8px]">
+            <div className="row flex items-center gap-[30.8px] px-2">
               <div className="text-2xl">{renderIcon(value.code)}</div>
               <Typography>{value.name}</Typography>
             </div>
@@ -70,6 +71,7 @@ const Question: FC<QuestionProps> = (props) => {
         />
       ),
       ["Text-Area"]: <TextArea readOnly placeholder="Paragraph text field" />,
+      ["Rating"]: <Rating value={0} onChange={noop} readOnly />,
     };
 
     if (
@@ -115,11 +117,14 @@ const Question: FC<QuestionProps> = (props) => {
           name={`questions.${index}.type`}
           placeholder="Select question type here..."
           options={getTypeOptions}
-          className="lg:w-[280px]"
         />
       </div>
 
       <div className="mt-5">{renderQuestionOptions()}</div>
+
+      <div className="mt-4 flex cursor-pointer justify-end text-2xl">
+        <Icon src="/assets/red-trash.svg" />
+      </div>
     </div>
   );
 };
