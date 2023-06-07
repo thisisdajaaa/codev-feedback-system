@@ -81,7 +81,7 @@ export const SurveyService = () => {
       templateId: String(template?.id),
       answeredBy: survey?.answeredBy || userId,
       surveyAnswers: template?.questions
-        .filter(
+        ?.filter(
           (f) =>
             f.title?.toLowerCase().includes(String(title)?.toLowerCase()) ||
             !title
@@ -355,7 +355,7 @@ export const SurveyService = () => {
         StatusCodes.NOT_FOUND
       );
 
-    const templateQuestions: IQuestion[] = template.questions;
+    const templateQuestions: IQuestion[] = template.questions || [];
 
     const totalSurveyCount = surveys.length;
     let allQuestions: AnalyticsQuestion[] = [];
@@ -469,7 +469,7 @@ export const SurveyService = () => {
       isAnonymous: survey.isAnonymous,
       createdAt: survey.dateSubmitted,
       surveyAnswers: survey.surveyAnswers.map((surveyAnswer) => {
-        const question = template.questions.find(
+        const question = template.questions?.find(
           (question) =>
             question._id.toString() === surveyAnswer.questionId.toString()
         );
@@ -506,7 +506,7 @@ export const SurveyService = () => {
 
     if (
       template.questions
-        .filter((x) => x.isRequired)
+        ?.filter((x) => x.isRequired)
         .some((q) => {
           const hasAnswer = survey.surveyAnswers.some(
             (a) => a.questionId.toString() === q._id.toString() && a.answer

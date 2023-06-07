@@ -1,6 +1,7 @@
 import type { Question, QuestionnaireForm } from "../types";
 
 export const initialQuestionnaireValues: QuestionnaireForm = {
+  id: "",
   title: "",
   description: "",
   dateFrom: null,
