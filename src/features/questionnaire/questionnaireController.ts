@@ -15,10 +15,12 @@ import type { AdvancedResultsOptions, ApiResponse } from "@/types";
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 import { TemplateService } from "@/features/questionnaire/templateService";
 import type {
+  AddedQuestionResponse,
   CreatedQuestionnaireResponse,
   GetQuestionnaireResponse,
   IAddQuestionRequest,
   ICreateQuestionnaireRequest,
+  IRemoveQuestionRequest,
 } from "@/features/questionnaire/types";
 import { catchAsyncErrors } from "@/middlewares/catchAsyncErrors";
 
@@ -141,7 +143,7 @@ export const QuestionnaireController = () => {
   const handleAddQuestion = catchAsyncErrors(
     async (
       req: IAddQuestionRequest,
-      res: NextApiResponse<ApiResponse<CreatedQuestionnaireResponse>>,
+      res: NextApiResponse<ApiResponse<AddedQuestionResponse>>,
       _next: NextHandler
     ) => {
       const { templateId } = req.query;
@@ -155,7 +157,7 @@ export const QuestionnaireController = () => {
 
       const template = await addQuestion(req);
 
-      const data: CreatedQuestionnaireResponse = { ...template };
+      const data: AddedQuestionResponse = { ...template };
 
       return res.status(StatusCodes.OK).json({
         success: true,
@@ -167,12 +169,13 @@ export const QuestionnaireController = () => {
 
   const handleRemoveQuestion = catchAsyncErrors(
     async (
-      req: NextApiRequest,
+      req: IRemoveQuestionRequest,
       res: NextApiResponse<ApiResponse<CreatedQuestionnaireResponse>>,
       _next: NextHandler
     ) => {
       const { templateId } = req.query;
       const { id } = req.body;
+
       if (!(await isTemplateExist(templateId as string))) {
         throw new ErrorHandler(
           QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,

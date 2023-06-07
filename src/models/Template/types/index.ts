@@ -1,6 +1,7 @@
 import mongoose, { Document } from "mongoose";
 
 export interface IQuestion extends Document {
+  id?: string;
   title?: string;
   type?: string;
   options?: string;

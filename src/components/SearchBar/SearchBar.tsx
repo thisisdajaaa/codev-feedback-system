@@ -49,7 +49,7 @@ const SearchBar = ({ onSearch }: SearchBoxProps) => {
         selectedOption={selectedOption as Option[]}
         placeholder="Select"
         onChange={handleOptionChange}
-        className="min-h-[37px] w-[170px] rounded-r-none border-gray-400 bg-white text-sm focus:border-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="min-h-[2.313rem] w-[10.625rem] rounded-r-none border-gray-400 bg-white text-sm focus:border-none focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
       <input
         type="text"
@@ -58,7 +58,7 @@ const SearchBar = ({ onSearch }: SearchBoxProps) => {
         onChange={handleChange}
       />
 
-      <Button className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[6px]">
+      <Button className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[0.375rem]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

@@ -9,7 +9,7 @@ const Checkbox: FC<CheckboxProps> = (props) => {
   return (
     <label
       htmlFor={name}
-      className="flex cursor-pointer items-center gap-[25px]"
+      className="flex cursor-pointer items-center gap-[1.563rem]"
     >
       <input
         type="checkbox"

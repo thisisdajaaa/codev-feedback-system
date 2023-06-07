@@ -38,7 +38,7 @@ const CheckboxGroup: FC<CheckboxGroupProps> = ({
 
   return (
     <>
-      <div className={clsxm("flex flex-col gap-[19px]", className)}>
+      <div className={clsxm("flex flex-col gap-[1.188rem]", className)}>
         {options.map((option, index) => (
           <label
             key={index}
@@ -57,7 +57,7 @@ const CheckboxGroup: FC<CheckboxGroupProps> = ({
               className="form-checkbox h-5 w-5 text-gray-600"
             />
 
-            <span className="ml-[25px] text-gray-700">{option.label}</span>
+            <span className="ml-[1.563rem] text-gray-700">{option.label}</span>
           </label>
         ))}
       </div>

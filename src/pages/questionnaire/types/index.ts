@@ -10,6 +10,7 @@ export type QuestionnaireForm = {
 };
 
 export type Question = {
+  id?: string;
   title: string;
   type: Option | null;
   options?: Option[];
@@ -18,4 +19,5 @@ export type Question = {
 
 export type QuestionProps = {
   index: number;
+  handleDeleteQuestion: (questionId: string, index: number) => Promise<boolean>;
 };

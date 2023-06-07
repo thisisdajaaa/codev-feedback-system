@@ -1,7 +1,12 @@
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import React, { FC, Fragment, useMemo, useState } from "react";
 
+import { SYSTEM_URL } from "@/constants/pageUrl";
+
 import { AlertBanner } from "@/components/AlertBanner";
+import { Button } from "@/components/Button";
+import { Icon } from "@/components/Icon";
 import { Pagination } from "@/components/Pagination";
 import { SurveyCard } from "@/components/SurveyCard";
 import { surveyList } from "@/components/SurveyCard/config";
@@ -11,6 +16,7 @@ import { INITIAL_PAGE, PAGE_SIZE } from "../config";
 
 const SurveyorView: FC = () => {
   const { data } = useSession();
+  const router = useRouter();
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
 
@@ -43,12 +49,35 @@ const SurveyorView: FC = () => {
         />
       </div>
 
+      <div className="mt-7 mb-[27px] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
+        <Button
+          onClick={() => router.push(SYSTEM_URL.ADD_QUESTIONNAIRE)}
+          className="flex gap-0"
+        >
+          <div className="text-[1.313rem]">
+            <Icon src="/assets/add.svg" />
+          </div>
+
+          <Typography
+            variant="span"
+            size="text-lg"
+            lineHeight="leading-[1.688rem]"
+            textAlign="text-left"
+            color="text-white"
+            className="font-semibold"
+          >
+            Survey
+          </Typography>
+        </Button>
+      </div>
+
       <div className="mx-auto mt-16 w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
         <Typography
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
+        >
           My Surveys
         </Typography>
 

@@ -1,7 +1,8 @@
-import { useFormikContext } from "formik";
 import { debounce } from "lodash";
 import moment from "moment";
 import React, { FC, useRef } from "react";
+
+import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
 import { FormDatePicker } from "@/components/Formik/FormDatePicker/FormDatePicker";
 import { FormInput } from "@/components/Formik/FormInput";
@@ -9,22 +10,25 @@ import { FormTextArea } from "@/components/Formik/FormTextArea";
 import { InputVariations } from "@/components/Input/config";
 import { Typography } from "@/components/Typography";
 
+import { actions, selectors } from "@/redux/questionnaire";
+
 import { addQuestionnaireOverviewAPI } from "@/api/questionnaire";
 import type { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
 
-import type { QuestionnaireForm } from "../types";
-
 const Overview: FC = () => {
-  const {
-    values: { id: templateId },
-    setFieldValue,
-  } = useFormikContext<QuestionnaireForm>();
+  const dispatch = useAppDispatch();
+  const activeTemplateId = useAppSelector(selectors.activeTemplateId);
+
+  useMount(() => {
+    dispatch(actions.callSetActiveTemplateId(""));
+  });
 
   const debouncedHandleCallAddQuestionnaire = useRef(
     debounce(async (request: ICreateQuestionnaireRequest["body"]) => {
       const { success, data } = await addQuestionnaireOverviewAPI(request);
 
-      if (success) setFieldValue("id", data?.id);
+      if (success && activeTemplateId !== data?.id)
+        dispatch(actions.callSetActiveTemplateId(data?.id));
     }, 300)
   );
 
@@ -39,23 +43,23 @@ const Overview: FC = () => {
         [key]: formattedValue,
       };
 
-      if (templateId) request.id = templateId;
+      if (activeTemplateId) request.id = activeTemplateId;
 
       debouncedHandleCallAddQuestionnaire.current(request);
     };
 
   return (
-    <div className="mt-12 rounded-lg border-t-8 border-zinc-500 bg-white px-8 py-[26px] shadow-md">
+    <div className="mt-12 rounded-lg border-t-8 border-zinc-500 bg-white px-8 py-[1.625rem] shadow-md">
       <FormInput
         name="title"
         placeholder="Untitled Survey"
         variation={InputVariations.NoBorder}
-        containerClassName="p-0 mb-[11px]"
-        inputClassName="text-[32px] font-bold placeholder:font-bold p-0"
+        containerClassName="p-0 mb-[0.688rem]"
+        inputClassName="text-[2rem] font-bold placeholder:font-bold p-0"
         handleInputChange={handleChange("title")}
       />
 
-      <div className="mb-[17px] flex flex-col gap-[6px] md:flex-row">
+      <div className="mb-[1.063rem] flex flex-col gap-[0.375rem] md:flex-row">
         <Typography variant="label" className="mt-2 font-bold">
           Description:
         </Typography>
@@ -68,7 +72,7 @@ const Overview: FC = () => {
         />
       </div>
 
-      <div className="flex flex-col justify-start gap-[10px] md:flex-row md:items-center md:gap-[30px]">
+      <div className="flex flex-col justify-start gap-[0.625rem] md:flex-row md:items-center md:gap-[1.875rem]">
         <Typography variant="label" className="font-bold">
           Duration:
         </Typography>

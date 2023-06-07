@@ -6,9 +6,12 @@ import { IQuestion, ITemplate } from "@/models/Template/types";
 import { ValidationResult } from "@/types";
 
 import type {
+  AddedQuestionResponse,
   CreatedQuestionnaireResponse,
   IAddQuestionRequest,
   ICreateQuestionnaireRequest,
+  IRemoveQuestionRequest,
+  PickedQuestion,
 } from "@/features/questionnaire/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "./config";
@@ -76,8 +79,9 @@ export const TemplateService = () => {
 
   const addQuestion = async (
     req: IAddQuestionRequest
-  ): Promise<CreatedQuestionnaireResponse> => {
+  ): Promise<AddedQuestionResponse> => {
     const { templateId } = req.query;
+
     const newQuestion = {
       ...req.body,
     };
@@ -85,7 +89,7 @@ export const TemplateService = () => {
     const template = (await Template.findOne({ _id: templateId })) as ITemplate;
 
     const item = template.questions?.find(
-      (x) => x.id.toString() === newQuestion.id
+      (x) => x.id?.toString() === newQuestion.id
     );
 
     if (item) {
@@ -96,39 +100,33 @@ export const TemplateService = () => {
 
     await template.save();
 
-    const {
-      id,
-      title,
-      department,
-      dateFrom,
-      dateTo,
-      description,
-      questions,
-      createdBy,
-      updatedBy,
-      status,
-    } = template;
+    const { id, questions } = template;
 
-    const formattedResponse: CreatedQuestionnaireResponse = {
-      id,
-      title,
-      department,
-      dateFrom,
-      dateTo,
-      description,
-      questions,
-      createdBy,
-      updatedBy,
-      status,
+    const addedQuestion = questions?.find(({ id, title }) =>
+      req.body.id ? id === req.body.id : title === req.body.title
+    );
+
+    const formattedQuestion: PickedQuestion = {
+      id: addedQuestion?.id || "",
+      title: addedQuestion?.title,
+      type: addedQuestion?.type,
+      options: addedQuestion?.options,
+      isRequired: addedQuestion?.isRequired,
+    };
+
+    const formattedResponse: AddedQuestionResponse = {
+      templateId: id,
+      ...formattedQuestion,
     };
 
     return formattedResponse;
   };
 
   const removeQuestion = async (
-    req: NextApiRequest
+    req: IRemoveQuestionRequest
   ): Promise<CreatedQuestionnaireResponse> => {
     const { templateId } = req.query;
+
     const reqQuestion = {
       ...req.body,
     };
@@ -136,7 +134,7 @@ export const TemplateService = () => {
     const template = (await Template.findOne({ _id: templateId })) as ITemplate;
 
     template.questions = template.questions?.filter(
-      (x) => x.id.toString() !== reqQuestion.id
+      (x) => x.id?.toString() !== reqQuestion.id
     );
 
     await template.save();
