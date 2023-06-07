@@ -4,7 +4,7 @@ import React, { FC, useRef } from "react";
 
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
-import { FormDatePicker } from "@/components/Formik/FormDatePicker/FormDatePicker";
+import { FormDatePicker } from "@/components/Formik/FormDatePicker";
 import { FormInput } from "@/components/Formik/FormInput";
 import { FormTextArea } from "@/components/Formik/FormTextArea";
 import { InputVariations } from "@/components/Input/config";
