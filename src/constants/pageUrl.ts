@@ -6,4 +6,5 @@ export const AUTH_PAGE_URL = {
 export const SYSTEM_URL = {
   HOME: "/",
   RESPONSES: "/responses",
+  ADD_QUESTIONNAIRE: "/questionnaire",
 };

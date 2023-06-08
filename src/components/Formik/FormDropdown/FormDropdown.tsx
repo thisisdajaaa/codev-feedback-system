@@ -9,7 +9,7 @@ import type { Option } from "@/components/Dropdown/types";
 import type { FormDropdownProps } from "./types";
 
 const FormDropdown: FC<FormDropdownProps> = (props) => {
-  const { name, onChange, ...rest } = props;
+  const { name, handleDropdownChange, ...rest } = props;
 
   const [field, meta, helpers] = useField(name);
 
@@ -24,9 +24,9 @@ const FormDropdown: FC<FormDropdownProps> = (props) => {
       helpers.setValue(option);
       helpers.setError("");
 
-      if (onChange) onChange(option);
+      if (handleDropdownChange) handleDropdownChange(option);
     },
-    [helpers, onChange]
+    [helpers, handleDropdownChange]
   );
 
   const handleBlur = useCallback(() => {

@@ -11,6 +11,7 @@ const TextArea: FC<TextAreaProps> = (props) => {
     readOnly,
     onFocus,
     className,
+    errorMessage: _errorMessage,
     ...rest
   } = props;
 
@@ -32,7 +33,7 @@ const TextArea: FC<TextAreaProps> = (props) => {
       readOnly={readOnly}
       className={clsxm(
         className,
-        "block w-full rounded-[10px] border-transparent bg-gray-100 text-base leading-[1.813rem] text-black focus:border-transparent focus:outline-none focus:ring-0",
+        "block w-full rounded-[0.625rem] border-transparent bg-gray-100 text-base leading-[1.813rem] text-black focus:border-transparent focus:outline-none focus:ring-0",
         "placeholder-gray-500",
         disabled && "bg-disable",
         readOnly && "cursor-default"

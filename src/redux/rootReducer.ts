@@ -1,9 +1,9 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
-import { sampleReducers } from "./sample/slices";
+import { questionnaireReducers } from "./questionnaire/slices";
 
 const rootReducer = combineReducers({
-  sample: sampleReducers,
+  questionnaire: questionnaireReducers,
 });
 
 export { rootReducer };

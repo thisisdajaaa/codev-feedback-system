@@ -4,5 +4,5 @@ type OmittedKeys = "selectedOption" | "onChange" | "onBlur" | "onFocus";
 
 export type FormDropdownProps = Omit<DropdownProps, OmittedKeys> & {
   name: string;
-  onChange?: (option: Option | Option[]) => void;
+  handleDropdownChange?: (option: Option | Option[]) => void | Promise<void>;
 };

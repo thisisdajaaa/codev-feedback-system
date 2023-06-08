@@ -68,9 +68,12 @@ const Dropdown: FC<DropdownProps> = ({
     if (onFocus) onFocus();
   };
 
-  const formattedSelectedOptions = selectedOptions
-    .map((opt) => opt.label)
-    .join(", ");
+  const formattedSelectedOptions = selectedOptions.map((opt, index) => (
+    <span key={index}>
+      {index > 0 && ", "}
+      {opt.label}
+    </span>
+  ));
 
   return (
     <>
@@ -86,7 +89,9 @@ const Dropdown: FC<DropdownProps> = ({
             className
           )}
         >
-          {formattedSelectedOptions || (
+          {formattedSelectedOptions.length > 0 ? (
+            formattedSelectedOptions
+          ) : (
             <Typography variant="span" size="text-base" color="text-gray-500">
               {placeholder}
             </Typography>
@@ -108,7 +113,7 @@ const Dropdown: FC<DropdownProps> = ({
 
                 return (
                   <li key={groupOption.group}>
-                    <div className="px-[14px] pt-2 pb-1">
+                    <div className="px-[0.875rem] pt-2 pb-1">
                       <Typography
                         variant="p"
                         size="text-sm"

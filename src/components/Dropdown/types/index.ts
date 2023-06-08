@@ -13,7 +13,7 @@ export type GroupOption = {
 export type DropdownProps = {
   options: (Option | GroupOption)[];
   selectedOption: Option | Option[] | null;
-  placeholder: string;
+  placeholder?: string;
   errorMessage?: string;
   onChange: (selected: Option[] | Option) => void;
   onBlur?: () => void;
