@@ -1,16 +1,14 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
+import { SearchBarProps } from "./types";
 import { Button } from "../Button";
 import { Dropdown } from "../Dropdown";
 import type { Option } from "../Dropdown/types";
 
-interface SearchBoxProps {
-  onSearch: (query: string) => void;
-}
-const SearchBar = ({ onSearch }: SearchBoxProps) => {
+const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [query, setQuery] = useState("");
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange2 = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
   const handleSubmit = (e: FormEvent) => {
@@ -20,16 +18,16 @@ const SearchBar = ({ onSearch }: SearchBoxProps) => {
 
   const mockFilter = [
     {
-      label: "ALL SURVEY",
-      value: "ALL",
-    },
-    {
       label: "ACTIVE SURVEY",
       value: "ACTIVE",
     },
     {
       label: "DRAFT SURVEY",
       value: "DRAFT",
+    },
+    {
+      label: "FINISHED SURVEY",
+      value: "FINISHED",
     },
   ];
   const [selectedOption, setSelectedOption] = useState<
@@ -53,9 +51,10 @@ const SearchBar = ({ onSearch }: SearchBoxProps) => {
       />
       <input
         type="text"
+        placeholder="Search for Survey"
         className="w-full border border-gray-400 text-sm placeholder-slate-400 shadow-md focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         value={query}
-        onChange={handleChange}
+        onChange={handleChange2}
       />
 
       <Button className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[6px]">

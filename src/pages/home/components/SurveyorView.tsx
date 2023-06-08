@@ -1,5 +1,7 @@
 import { useSession } from "next-auth/react";
-import React, { FC, Fragment, useMemo, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
+
+import { useMount } from "@/hooks";
 
 import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
@@ -7,8 +9,10 @@ import { Icon } from "@/components/Icon";
 import { Pagination } from "@/components/Pagination";
 import { SearchBar } from "@/components/SearchBar";
 import { SurveyCard } from "@/components/SurveyCard";
-import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
+
+import { getQuestionnaires, searchQuestionnaires } from "@/api/questionnaire";
+import { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { INITIAL_PAGE, PAGE_SIZE } from "../config";
 
@@ -16,19 +20,43 @@ const SurveyorView: FC = () => {
   const { data } = useSession();
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [questionnaires, setQuestionnaires] = useState<
+    GetQuestionnaireResponse[]
+  >([]);
 
-  const firstName = data?.user?.name?.split(" ")[0];
-  const handleSearch = (e: string) => {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  const handleSearch = async (query: string) => {
+    const { success, data: response } = await searchQuestionnaires(query);
+    if (success) {
+      setQuestionnaires(response as GetQuestionnaireResponse[]);
+    }
   };
 
-  const currentSurveyData = useMemo(() => {
-    const firstPageIndex = (currentPage - 1) * PAGE_SIZE;
-    const lastPageIndex = firstPageIndex + PAGE_SIZE;
+  const firstName = data?.user?.name?.split(" ")[0];
 
-    return surveyList.slice(firstPageIndex, lastPageIndex);
-  }, [currentPage]);
+  const handleLoad = useCallback(async () => {
+    setIsLoading(true);
+
+    const { success, data: response } = await getQuestionnaires();
+
+    if (success) {
+      setQuestionnaires(response as GetQuestionnaireResponse[]);
+    }
+
+    setIsLoading(false);
+  }, []);
+
+  useMount(() => {
+    handleLoad();
+  });
+
+  // const currentSurveyData = useMemo(() => {
+  //   const firstPageIndex = (currentPage - 1) * PAGE_SIZE;
+  //   const lastPageIndex = firstPageIndex + PAGE_SIZE;
+
+  //   return surveyList.slice(firstPageIndex, lastPageIndex);
+  // }, [currentPage]);
 
   const renderAlertMessage = (
     <div className="flex flex-col gap-1 sm:flex-row">
@@ -80,11 +108,17 @@ const SurveyorView: FC = () => {
         </Typography>
 
         <div className="gap-8 xs:columns-1 md:columns-2 lg:columns-3">
-          {currentSurveyData.map((survey, i) => (
-            <Fragment key={i}>
-              <SurveyCard {...survey} />
-            </Fragment>
-          ))}
+          {questionnaires.map((survey) => {
+            const surveyData = {
+              id: survey.id,
+              surveyStatus: survey.status,
+              surveyName: survey.title,
+              description: survey.description,
+              startDate: survey.dateFrom,
+              endDate: survey.dateTo,
+            };
+            return <SurveyCard key={survey.id} {...surveyData} />;
+          })}
         </div>
 
         <Pagination

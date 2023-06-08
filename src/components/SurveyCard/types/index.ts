@@ -1,9 +1,10 @@
 export type SurveyProps = {
+  id: string;
   surveyStatus: string;
   surveyName: string;
   description?: string;
-  startDate: Date;
-  endDate: Date;
-  responses: number;
-  totalRespondents: number;
+  startDate: string;
+  endDate: string;
+  responses?: number;
+  totalRespondents?: number;
 };

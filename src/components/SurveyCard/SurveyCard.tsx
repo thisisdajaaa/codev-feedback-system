@@ -8,13 +8,14 @@ import { Button } from "../Button";
 
 const SurveyCard: FC<SurveyProps> = (props) => {
   const {
+    id,
     surveyStatus,
     surveyName,
     description,
     startDate,
     endDate,
-    responses,
-    totalRespondents,
+    responses = 0,
+    totalRespondents = 0,
   } = props;
 
   const isSurveyActive = surveyStatus.toUpperCase() === "ACTIVE";
@@ -47,7 +48,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
       >
         {surveyStatus}
       </div>
-
+      <p className="invisible">{id}</p>
       <p className="mt-[2.375rem] text-sm text-gray-500">Survey Name:</p>
       <p className="text-[1.125rem]">{surveyName}</p>
 
