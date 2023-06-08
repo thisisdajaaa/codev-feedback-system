@@ -8,18 +8,19 @@ import { Button } from "../Button";
 
 const SurveyCard: FC<SurveyProps> = (props) => {
   const {
+    id,
     surveyStatus,
     surveyName,
     description,
     startDate,
     endDate,
-    responses,
-    totalRespondents,
+    responses = 0,
+    totalRespondents = 0,
   } = props;
 
   const isSurveyActive = surveyStatus.toUpperCase() === "ACTIVE";
   const isSurveyDraft = surveyStatus.toUpperCase() === "DRAFT";
-  const isSurveyClosed = surveyStatus.toUpperCase() === "CLOSED";
+  const isSurveyClosed = surveyStatus.toUpperCase() === "FINISHED";
 
   const surveyStatusPercentage = Math.floor(responses * totalRespondents) / 100;
 
@@ -34,8 +35,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
         isSurveyDraft &&
           "before:border-r-[0.063rem] before:border-gray-500 before:bg-white",
         isSurveyClosed && "before:bg-gray-500"
-      )}
-    >
+      )}>
       <div
         className={clsxm(
           "absolute -top-1 -right-1 min-w-[5rem] py-2.5 px-3.5 text-center text-white",
@@ -43,11 +43,10 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           isSurveyDraft &&
             "border-[0.063rem] border-gray-500 bg-white text-gray-500",
           isSurveyClosed && "bg-gray-500"
-        )}
-      >
+        )}>
         {surveyStatus}
       </div>
-
+      <p className="invisible">{id}</p>
       <p className="mt-[2.375rem] text-sm text-gray-500">Survey Name:</p>
       <p className="text-[1.125rem]">{surveyName}</p>
 
@@ -70,16 +69,14 @@ const SurveyCard: FC<SurveyProps> = (props) => {
         className={clsxm(
           "mt-[2.688rem] flex justify-between",
           isSurveyClosed && "justify-end"
-        )}
-      >
+        )}>
         {isSurveyActive && (
           <Button
             variant="primary"
             className={clsxm(
               surveyCardBtnClassNames,
               "border-solid border-gray-500 bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-500 active:bg-gray-100"
-            )}
-          >
+            )}>
             <span className="inline-block w-full text-center text-sm font-normal">
               Invite
             </span>
