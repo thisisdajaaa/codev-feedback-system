@@ -198,8 +198,7 @@ const Question: FC<QuestionProps> = (props) => {
 
       <div
         className="mt-4 flex cursor-pointer justify-end text-2xl"
-        onClick={handleRemoveQuestion}
-      >
+        onClick={handleRemoveQuestion}>
         <Icon src="/assets/red-trash.svg" />
       </div>
     </div>

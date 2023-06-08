@@ -13,7 +13,7 @@ import type { ITemplate } from "@/models/Template/types";
 import type { AdvancedResultsOptions, ApiResponse } from "@/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
-import { TemplateService } from "@/features/questionnaire/templateService";
+import { QuestionnaireService } from "@/features/questionnaire/questionnaireService";
 import type {
   AddedQuestionResponse,
   CreatedQuestionnaireResponse,
@@ -33,7 +33,8 @@ export const QuestionnaireController = () => {
     addQuestion,
     removeQuestion,
     validateTemplate,
-  } = TemplateService();
+    getTemplateById,
+  } = QuestionnaireService();
 
   const handleGetQuestionnaires = catchAsyncErrors(
     async (
@@ -114,7 +115,7 @@ export const QuestionnaireController = () => {
       if (!(await isTemplateExist(templateId as string))) {
         throw new ErrorHandler(
           QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
-          StatusCodes.BAD_REQUEST
+          StatusCodes.NOT_FOUND
         );
       }
 
@@ -135,7 +136,7 @@ export const QuestionnaireController = () => {
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        message: QUESTIONNAIRE_MESSAGES.SUCCESS.DELETED,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.UPDATED_STATUS,
       });
     }
   );
@@ -162,7 +163,7 @@ export const QuestionnaireController = () => {
       return res.status(StatusCodes.OK).json({
         success: true,
         data,
-        message: QUESTIONNAIRE_MESSAGES.SUCCESS.CREATE,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.CREATED_QUESTION,
       });
     }
   );
@@ -199,7 +200,23 @@ export const QuestionnaireController = () => {
       return res.status(StatusCodes.OK).json({
         success: true,
         data,
-        message: QUESTIONNAIRE_MESSAGES.SUCCESS.CREATE,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.DELETED_QUESTION,
+      });
+    }
+  );
+
+  const handleGetTemplateById = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<CreatedQuestionnaireResponse>>,
+      _next: NextHandler
+    ) => {
+      const data = await getTemplateById(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: QUESTIONNAIRE_MESSAGES.SUCCESS.SINGLE,
       });
     }
   );
@@ -210,5 +227,6 @@ export const QuestionnaireController = () => {
     handleQuestionnaireStatus,
     handleAddQuestion,
     handleRemoveQuestion,
+    handleGetTemplateById,
   };
 };

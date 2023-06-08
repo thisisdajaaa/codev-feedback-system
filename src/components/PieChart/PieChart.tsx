@@ -25,6 +25,7 @@ const PieChart: FC<PieChartProps> = (props) => {
     colors.red["500"],
     colors.yellow["500"],
     colors.purple["500"],
+    colors.pink["500"],
   ];
 
   const chartData = {

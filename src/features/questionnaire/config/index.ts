@@ -13,6 +13,10 @@ export const QUESTIONNAIRE_MESSAGES = {
   SUCCESS: {
     ALL: "Successfully retrieve questionnaires!",
     CREATE: "Successfully created questionnaire!",
+    CREATED_QUESTION: "Successfully created question!",
     DELETED: "Successfully deleted questionnaire!",
+    DELETED_QUESTION: "Successfully deleted question!",
+    SINGLE: "Successfully retrieved questionnaire!",
+    UPDATED_STATUS: "Successfully updated questionnaire status!",
   },
 };

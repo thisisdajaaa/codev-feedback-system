@@ -1,6 +1,6 @@
-import { AxiosRequestHeaders } from "axios";
-import { IncomingHttpHeaders } from "http";
-import { GetServerSidePropsContext } from "next";
+import type { AxiosRequestHeaders } from "axios";
+import type { IncomingHttpHeaders } from "http";
+import type { GetServerSidePropsContext } from "next";
 
 import { onParseResponse } from "@/utils/helpers";
 

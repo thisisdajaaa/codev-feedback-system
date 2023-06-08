@@ -7,4 +7,5 @@ export const SYSTEM_URL = {
   HOME: "/",
   RESPONSES: "/responses",
   ADD_QUESTIONNAIRE: "/questionnaire",
+  EDIT_QUESTIONNAIRE: "/questionnaire/[id]",
 };
