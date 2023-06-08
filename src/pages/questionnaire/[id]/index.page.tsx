@@ -29,8 +29,6 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
     dispatch(actions.callSetActiveTemplateId(String(id)));
   });
 
-  console.log(items);
-
   const formattedResponse: QuestionnaireForm = useMemo(() => {
     const { data } = items;
 
@@ -70,11 +68,11 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
 
     const mappedQuestions: Question[] =
       data?.questions?.map(({ isRequired, title, type, _id }) => ({
+        id: _id,
         isRequired: isRequired || false,
         options: [],
         title: title || "",
         type: getType(String(type)) || null,
-        id: _id,
       })) || [];
 
     return {
@@ -82,6 +80,7 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
       title: data?.title || "",
       description: data?.description || "",
       questions: mappedQuestions || [],
+      status: data?.status,
       dateFrom: data?.dateFrom ? new Date(data?.dateFrom) : null,
       dateTo: data?.dateTo ? new Date(data?.dateTo) : null,
     } as QuestionnaireForm;

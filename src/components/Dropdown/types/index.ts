@@ -20,4 +20,5 @@ export type DropdownProps = {
   onFocus?: () => void;
   multiSelect?: boolean;
   className?: string;
+  readOnly?: boolean;
 };

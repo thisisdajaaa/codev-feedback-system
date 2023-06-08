@@ -1,14 +1,17 @@
 import { useFormikContext } from "formik";
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 
 import { noop } from "@/utils/helpers";
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
+import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { Typography } from "@/components/Typography";
 
-import { selectors } from "@/redux/questionnaire";
+import { SurveyStatus } from "@/models/Survey/config";
+
+import { actions, selectors } from "@/redux/questionnaire";
 
 import { removeQuestionByTemplateIdAPI } from "@/api/questionnaire";
 import type { IRemoveQuestionRequest } from "@/features/questionnaire/types";
@@ -19,12 +22,27 @@ import { newQuestion } from "../config";
 import type { QuestionnaireForm } from "../types";
 
 const Content: FC = () => {
+  const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
+  const serverErrorMessage = useAppSelector(selectors.serverErrorMessage);
+
+  useMount(() => {
+    onClearServerErrorMessage();
+  });
+
+  const onClearServerErrorMessage = () => {
+    dispatch(actions.callSetServerErrorMessage(""));
+  };
 
   const {
-    values: { questions, title },
+    values: { questions, title, status },
     setFieldValue,
   } = useFormikContext<QuestionnaireForm>();
+
+  const isEditable = useMemo(
+    () => !status || status === SurveyStatus.DRAFT,
+    [status]
+  );
 
   const isBtnDisabled = () => {
     const hasInvalidQuestions = questions.some(
@@ -59,6 +77,13 @@ const Content: FC = () => {
 
   return (
     <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">
+      <AlertBanner
+        open={!!serverErrorMessage}
+        message={serverErrorMessage}
+        type="error"
+        handleClose={onClearServerErrorMessage}
+      />
+
       <Overview />
 
       {questions.map((_, index) => (
@@ -69,33 +94,40 @@ const Content: FC = () => {
         />
       ))}
 
-      <div className="mt-10 flex justify-end">
-        <Button
-          className="px-2 sm:px-2"
-          onClick={handleAddQuestion}
-          disabled={isBtnDisabled()}>
-          <div className="text-xl">
-            <Icon src="/assets/add.svg" />
+      {isEditable && (
+        <>
+          <div className="mt-10 flex justify-end">
+            <Button
+              className="px-2 sm:px-2"
+              onClick={handleAddQuestion}
+              disabled={isBtnDisabled()}
+            >
+              <div className="text-xl">
+                <Icon src="/assets/add.svg" />
+              </div>
+            </Button>
           </div>
-        </Button>
-      </div>
 
-      <div className="mt-10 flex justify-end">
-        <Button
-          className="rounded-[0.938rem]"
-          onClick={noop}
-          disabled={isBtnDisabled()}>
-          <Typography
-            variant="span"
-            size="text-lg"
-            lineHeight="leading-[1.688rem]"
-            textAlign="text-left"
-            color="text-white"
-            className="font-bold">
-            Publish
-          </Typography>
-        </Button>
-      </div>
+          <div className="mt-10 flex justify-end">
+            <Button
+              className="rounded-[0.938rem]"
+              onClick={noop}
+              disabled={isBtnDisabled()}
+            >
+              <Typography
+                variant="span"
+                size="text-lg"
+                lineHeight="leading-[1.688rem]"
+                textAlign="text-left"
+                color="text-white"
+                className="font-bold"
+              >
+                Publish
+              </Typography>
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

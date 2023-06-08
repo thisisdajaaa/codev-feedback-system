@@ -15,8 +15,6 @@ const Questionnaire: NextPage = () => {
     onSubmit: (values) => logger(values),
   });
 
-  console.log("formikBag", formikBag.values);
-
   return (
     <FormikContext.Provider value={formikBag}>
       <Content />

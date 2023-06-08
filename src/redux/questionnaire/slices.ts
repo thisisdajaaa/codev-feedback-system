@@ -9,6 +9,9 @@ const questionnaireSlice = createSlice({
     setActiveTemplateId: (state, { payload }: PayloadAction<string>) => {
       state.activeTemplateId = payload;
     },
+    setServerErrorMessage: (state, { payload }: PayloadAction<string>) => {
+      state.serverErrorMessage = payload;
+    },
   },
 });
 

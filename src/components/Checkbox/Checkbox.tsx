@@ -4,7 +4,7 @@ import type { CheckboxProps } from "./types";
 import { Typography } from "../Typography";
 
 const Checkbox: FC<CheckboxProps> = (props) => {
-  const { label, checked, name, ...rest } = props;
+  const { label, checked, name, readOnly, ...rest } = props;
 
   return (
     <label
@@ -14,6 +14,7 @@ const Checkbox: FC<CheckboxProps> = (props) => {
       <input
         type="checkbox"
         checked={checked}
+        disabled={readOnly}
         className="form-checkbox h-5 w-5 text-gray-600"
         {...rest}
       />

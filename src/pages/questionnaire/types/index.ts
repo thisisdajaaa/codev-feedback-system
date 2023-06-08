@@ -1,5 +1,7 @@
 import type { Option } from "@/components/CheckboxGroup/types";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import type { ApiResponse } from "@/types";
 
 import type { CreatedQuestionnaireResponse } from "@/features/questionnaire/types";
@@ -11,6 +13,7 @@ export type QuestionnaireForm = {
   dateFrom: Date | null;
   dateTo: Date | null;
   questions: Question[];
+  status?: keyof typeof SurveyStatus;
 };
 
 export type Question = {

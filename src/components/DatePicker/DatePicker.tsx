@@ -8,7 +8,7 @@ import { Icon } from "../Icon";
 import { Solid as InputSolid } from "../Input/Solid";
 
 const DatePicker: FC<DatePickerProps> = (props) => {
-  const { selectedDate, onBlur, onChange, errorMessage } = props;
+  const { selectedDate, onBlur, onChange, readOnly, errorMessage } = props;
 
   return (
     <>
@@ -16,6 +16,7 @@ const DatePicker: FC<DatePickerProps> = (props) => {
         selected={selectedDate}
         onChange={onChange}
         onBlur={onBlur}
+        readOnly={readOnly}
         placeholderText="mm/dd/yyyy"
         className="w-full border-none bg-transparent p-0 focus:border-transparent focus:outline-none focus:ring-0"
         customInput={

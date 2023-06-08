@@ -264,6 +264,7 @@ export const QuestionnaireService = () => {
       dateFrom,
       department,
       questions,
+      status,
     } = template;
 
     const formattedResponse: CreatedQuestionnaireResponse = {
@@ -273,6 +274,7 @@ export const QuestionnaireService = () => {
       dateFrom,
       department,
       questions,
+      status,
     };
 
     return formattedResponse;
