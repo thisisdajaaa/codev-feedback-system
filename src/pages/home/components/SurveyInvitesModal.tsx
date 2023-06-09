@@ -3,6 +3,8 @@ import React, { FC, useRef, useState } from "react";
 
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import { Input } from "@/components/Input";
+import { InputVariations } from "@/components/Input/config";
 import { Modal } from "@/components/Modal";
 import { Typography } from "@/components/Typography";
 
@@ -92,12 +94,16 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
             className="flex flex-col gap-[0.688rem]"
             style={{ display: "inline" }}
           >
-            <input
+            <Input
               type="text"
               name="email"
               value={inviteState.email}
               autoComplete="off"
-              className="p-0 text-[1.2rem]"
+              //variation={InputVariations.Outlined}
+              //className="p-0 text-[1.2rem] border-transparent focus:border-transparent focus:outline-none"
+              variation={InputVariations.NoBorder}
+              containerClassName="p-0 mb-[0.688rem]"
+              inputClassName="text-[1.2rem] font-bold p-0"
               onChange={(e) => {
                 handleEmailChange(e.target.value);
               }}
