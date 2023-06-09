@@ -38,7 +38,7 @@ const questionnaireFormSchema = yup.object().shape({
           message: QUESTIONNAIRE_MESSAGES.ERROR.INCORRECT_DATE_RANGE,
           test: (value: Date | null | undefined) => {
             if (dateFrom && value)
-              return moment(value).isAfter(moment(dateFrom));
+              return moment(value).isSameOrAfter(moment(dateFrom));
 
             return true;
           },
