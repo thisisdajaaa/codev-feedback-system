@@ -5,16 +5,17 @@ import { QuestionType } from "@/constants/questionType";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 
-import { TemplateService } from "../templateService";
+import { QuestionnaireService } from "../questionnaireService";
 
-const { isTemplateExist } = TemplateService();
+const { isTemplateExist } = QuestionnaireService();
+
 const templateIdValidator = yup.string().test({
   name: "template-id",
   message: "$Template ID does not exist",
   test: (id) => (id ? isTemplateExist(id as string) : true),
 });
 
-const optionalDateSchema = yup.string().test({
+export const optionalDateSchema = yup.string().test({
   name: "is-date",
   message: QUESTIONNAIRE_MESSAGES.ERROR.INVALID_DATE_FORMAT,
   test: (value) => {

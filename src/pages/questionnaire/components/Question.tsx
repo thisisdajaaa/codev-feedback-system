@@ -19,6 +19,8 @@ import { Rating } from "@/components/Rating";
 import { TextArea } from "@/components/TextArea";
 import { Typography } from "@/components/Typography";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import { actions, selectors } from "@/redux/questionnaire";
 
 import { addQuestionByTemplateIdAPI } from "@/api/questionnaire";
@@ -33,25 +35,35 @@ const Question: FC<QuestionProps> = (props) => {
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
 
   const {
-    values: { questions },
+    values: { questions, status },
     setFieldValue,
   } = useFormikContext<QuestionnaireForm>();
 
   const currentQuestion = useMemo(() => questions[index], [index, questions]);
 
+  const isEditable = useMemo(
+    () => !status || status === SurveyStatus.DRAFT,
+    [status]
+  );
+
   const debouncedHandleCallAddQuestion = useRef(
     debounce(async (request: IAddQuestionRequest["body"]) => {
-      const { success, data } = await addQuestionByTemplateIdAPI(
+      dispatch(actions.callSetServerErrorMessage(""));
+
+      const { success, data, message } = await addQuestionByTemplateIdAPI(
         activeTemplateId,
         request
       );
 
-      if (success) {
-        if (activeTemplateId !== data?.templateId)
-          dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
-        setFieldValue(`questions.${index}.id`, data?.id);
+      if (!success && message) {
+        dispatch(actions.callSetServerErrorMessage(message));
+        return;
       }
-    }, 300)
+
+      if (activeTemplateId !== data?.templateId)
+        dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
+      setFieldValue(`questions.${index}.id`, data?.id);
+    }, 500)
   );
 
   const handleInputChange = async (value: string) => {
@@ -61,6 +73,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
+    debouncedHandleCallAddQuestion.current.cancel();
     debouncedHandleCallAddQuestion.current(request);
   };
 
@@ -71,6 +84,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
+    debouncedHandleCallAddQuestion.current.cancel();
     debouncedHandleCallAddQuestion.current(request);
   };
 
@@ -81,6 +95,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
+    debouncedHandleCallAddQuestion.current.cancel();
     debouncedHandleCallAddQuestion.current(request);
   };
 
@@ -175,6 +190,7 @@ const Question: FC<QuestionProps> = (props) => {
           variation={InputVariations.Solid}
           containerClassName="max-w-[51.063rem]"
           handleInputChange={handleInputChange}
+          readOnly={!isEditable}
         />
 
         <FormDropdown
@@ -183,25 +199,28 @@ const Question: FC<QuestionProps> = (props) => {
           options={getTypeOptions}
           className="lg:w-[18.75rem]"
           handleDropdownChange={handleDropdownChange}
+          readOnly={!isEditable}
         />
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 w-fit">
         <FormCheckbox
           name={`questions.${index}.isRequired`}
           label="Required"
           handleCheckedChange={handleCheckboxChange}
+          readOnly={!isEditable}
         />
       </div>
 
       <div className="mt-5">{renderQuestionOptions()}</div>
 
-      <div
-        className="mt-4 flex cursor-pointer justify-end text-2xl"
-        onClick={handleRemoveQuestion}
-      >
-        <Icon src="/assets/red-trash.svg" />
-      </div>
+      {isEditable && (
+        <div
+          className="mt-4 flex cursor-pointer justify-end text-2xl"
+          onClick={handleRemoveQuestion}>
+          <Icon src="/assets/red-trash.svg" />
+        </div>
+      )}
     </div>
   );
 };

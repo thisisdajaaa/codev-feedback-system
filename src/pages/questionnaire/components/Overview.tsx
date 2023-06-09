@@ -1,6 +1,7 @@
+import { useFormikContext } from "formik";
 import { debounce } from "lodash";
 import moment from "moment";
-import React, { FC, useRef } from "react";
+import React, { FC, useMemo, useRef } from "react";
 
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
@@ -10,14 +11,27 @@ import { FormTextArea } from "@/components/Formik/FormTextArea";
 import { InputVariations } from "@/components/Input/config";
 import { Typography } from "@/components/Typography";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import { actions, selectors } from "@/redux/questionnaire";
 
 import { addQuestionnaireOverviewAPI } from "@/api/questionnaire";
 import type { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
 
+import type { QuestionnaireForm } from "../types";
+
 const Overview: FC = () => {
   const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
+
+  const {
+    values: { status },
+  } = useFormikContext<QuestionnaireForm>();
+
+  const isEditable = useMemo(
+    () => !status || status === SurveyStatus.DRAFT,
+    [status]
+  );
 
   useMount(() => {
     dispatch(actions.callSetActiveTemplateId(""));
@@ -25,11 +39,20 @@ const Overview: FC = () => {
 
   const debouncedHandleCallAddQuestionnaire = useRef(
     debounce(async (request: ICreateQuestionnaireRequest["body"]) => {
-      const { success, data } = await addQuestionnaireOverviewAPI(request);
+      dispatch(actions.callSetServerErrorMessage(""));
 
-      if (success && activeTemplateId !== data?.id)
+      const { success, data, message } = await addQuestionnaireOverviewAPI(
+        request
+      );
+
+      if (!success && message) {
+        dispatch(actions.callSetServerErrorMessage(message));
+        return;
+      }
+
+      if (activeTemplateId !== data?.id)
         dispatch(actions.callSetActiveTemplateId(data?.id));
-    }, 300)
+    }, 500)
   );
 
   const handleChange =
@@ -55,6 +78,7 @@ const Overview: FC = () => {
         placeholder="Untitled Survey"
         variation={InputVariations.NoBorder}
         containerClassName="p-0 mb-[0.688rem]"
+        readOnly={!isEditable}
         inputClassName="text-[2rem] font-bold placeholder:font-bold p-0"
         handleInputChange={handleChange("title")}
       />
@@ -68,6 +92,7 @@ const Overview: FC = () => {
           name="description"
           placeholder="Enter your description here..."
           rows={3}
+          readOnly={!isEditable}
           handleInputChange={handleChange("description")}
         />
       </div>
@@ -85,6 +110,7 @@ const Overview: FC = () => {
 
             <FormDatePicker
               name="dateFrom"
+              readOnly={!isEditable}
               handleDateChange={handleChange("dateFrom")}
             />
           </div>
@@ -96,6 +122,7 @@ const Overview: FC = () => {
 
             <FormDatePicker
               name="dateTo"
+              readOnly={!isEditable}
               handleDateChange={handleChange("dateTo")}
             />
           </div>

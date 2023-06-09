@@ -1,4 +1,10 @@
+import type { AxiosRequestHeaders } from "axios";
+import type { IncomingHttpHeaders } from "http";
+import type { GetServerSidePropsContext } from "next";
+
 import { onParseResponse } from "@/utils/helpers";
+
+import { SurveyStatus } from "@/models/Survey/config";
 
 import type { ApiResponse } from "@/types";
 
@@ -43,6 +49,38 @@ export const removeQuestionByTemplateIdAPI = async (
     method: "post",
     data,
     url: `/api/questionnaire/remove-question?templateId=${templateId}`,
+  });
+
+  return response;
+};
+
+export const getQuestionnaireByIdAPI = async (
+  templateId?: string,
+  context?: GetServerSidePropsContext
+): Promise<ApiResponse<CreatedQuestionnaireResponse>> => {
+  const headers: AxiosRequestHeaders = {};
+
+  if (context) {
+    const incomingHeaders: IncomingHttpHeaders = context.req.headers;
+    headers.cookie = incomingHeaders.cookie ?? "";
+  }
+
+  const response = await onParseResponse<CreatedQuestionnaireResponse>({
+    method: "get",
+    url: `/api/questionnaire/${templateId}`,
+    headers,
+  });
+
+  return response;
+};
+
+export const updateQuestionnaireStatusAPI = async (
+  status: keyof typeof SurveyStatus,
+  templateId: string
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}`,
   });
 
   return response;

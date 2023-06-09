@@ -1,9 +1,13 @@
-import { NextApiRequest } from "next";
+import type { NextApiRequest } from "next";
+
+import ErrorHandler from "@/utils/errorHandler";
+
+import { StatusCodes } from "@/constants/statusCode";
 
 import Template from "@/models/Template";
-import { IQuestion, ITemplate } from "@/models/Template/types";
+import type { IQuestion, ITemplate } from "@/models/Template/types";
 
-import { ValidationResult } from "@/types";
+import type { ValidationResult } from "@/types";
 
 import type {
   AddedQuestionResponse,
@@ -16,7 +20,7 @@ import type {
 
 import { QUESTIONNAIRE_MESSAGES } from "./config";
 
-export const TemplateService = () => {
+export const QuestionnaireService = () => {
   const createTemplate = async (
     req: ICreateQuestionnaireRequest
   ): Promise<CreatedQuestionnaireResponse> => {
@@ -188,6 +192,7 @@ export const TemplateService = () => {
 
   const isTemplateExist = async (templateId: string): Promise<boolean> => {
     let found = false;
+
     try {
       found =
         (await Template.findOne({
@@ -196,6 +201,7 @@ export const TemplateService = () => {
     } catch {
       found = false;
     }
+
     return found;
   };
 
@@ -213,26 +219,58 @@ export const TemplateService = () => {
       };
     }
 
-    if (!template.department) {
-      return {
-        isValid: false,
-        message: QUESTIONNAIRE_MESSAGES.ERROR.DEPARTMENT_IS_REQUIRED,
-      };
-    }
-
     if (!(template.dateFrom && template.dateTo)) {
       return {
         isValid: false,
         message: QUESTIONNAIRE_MESSAGES.ERROR.MISSING_DATE,
       };
     }
+
     if (template.questions?.length === 0) {
       return {
         isValid: false,
         message: QUESTIONNAIRE_MESSAGES.ERROR.EMPTY_QUESTIONNAIRE,
       };
     }
+
     return { isValid: true };
+  };
+
+  const getTemplateById = async (
+    req: NextApiRequest
+  ): Promise<CreatedQuestionnaireResponse> => {
+    const { id } = req.query;
+
+    const template = (await Template.findOne({ _id: id }).lean()) as ITemplate;
+
+    if (!template) {
+      throw new ErrorHandler(
+        QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+    }
+
+    const {
+      id: templateId,
+      title,
+      description,
+      dateFrom,
+      department,
+      questions,
+      status,
+    } = template;
+
+    const formattedResponse: CreatedQuestionnaireResponse = {
+      id: templateId,
+      title,
+      description,
+      dateFrom,
+      department,
+      questions,
+      status,
+    };
+
+    return formattedResponse;
   };
 
   return {
@@ -240,6 +278,7 @@ export const TemplateService = () => {
     setTemplateStatus,
     isQuestionExistInTemplate,
     isTemplateExist,
+    getTemplateById,
     addQuestion,
     removeQuestion,
     validateTemplate,

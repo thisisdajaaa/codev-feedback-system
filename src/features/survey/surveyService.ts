@@ -386,7 +386,12 @@ export const SurveyService = () => {
         (tq) => String(tq._id) === questionId
       );
 
-      if (!questionInfo || !questionInfo?.options?.length) continue;
+      if (!questionInfo) continue;
+
+      // If question options are not defined, find it in QuestionType
+      const questionOptions = QuestionType[questionInfo.type as string].options;
+
+      if (!questionOptions?.length) continue;
 
       const responseCounts: Record<string, number> = {};
       let totalResponses = 0;
@@ -403,12 +408,17 @@ export const SurveyService = () => {
       const totalPossibleResponses = totalSurveyCount;
 
       // Convert to array format with percentage
-      const responseData: QuestionAnalyticsData[] = Object.entries(
-        responseCounts
-      ).map(([answer, count]) => ({
-        value: answer,
-        answers: `${(count / totalPossibleResponses) * 100}%`,
-      }));
+      const responseData: QuestionAnalyticsData[] = Array.isArray(
+        questionOptions
+      )
+        ? questionOptions.map((option) => {
+            const count = responseCounts[option.name] || 0;
+            return {
+              value: option.name,
+              answers: `${(count / totalPossibleResponses) * 100}%`,
+            };
+          })
+        : [];
 
       // If question is not required, consider "yet to respond"
       if (!questionInfo.isRequired) {

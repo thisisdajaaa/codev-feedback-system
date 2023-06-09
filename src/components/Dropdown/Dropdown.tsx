@@ -8,17 +8,20 @@ import type { DropdownProps, GroupOption, Option } from "./types";
 import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
-const Dropdown: FC<DropdownProps> = ({
-  options,
-  placeholder,
-  onChange,
-  onFocus,
-  onBlur,
-  errorMessage,
-  selectedOption: selectedOptionProp,
-  multiSelect = false,
-  className,
-}) => {
+const Dropdown: FC<DropdownProps> = (props) => {
+  const {
+    options,
+    placeholder,
+    onChange,
+    onFocus,
+    onBlur,
+    errorMessage,
+    selectedOption: selectedOptionProp,
+    multiSelect = false,
+    className,
+    readOnly,
+  } = props;
+
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -75,11 +78,17 @@ const Dropdown: FC<DropdownProps> = ({
     </span>
   ));
 
+  const onToggleDropdown = () => {
+    if (readOnly) return;
+
+    toggleDropdown();
+  };
+
   return (
     <>
       <div className="relative" ref={ref}>
         <button
-          onClick={toggleDropdown}
+          onClick={onToggleDropdown}
           className={clsxm(
             "flex min-h-[2.5rem] w-full flex-grow appearance-none items-center justify-between px-[0.875rem] py-2 text-base leading-[1.813rem]",
             "rounded-[0.25rem] border text-black",

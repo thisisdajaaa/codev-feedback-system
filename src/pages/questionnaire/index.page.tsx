@@ -1,115 +1,55 @@
 import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useCallback } from "react";
 
-import { noop } from "@/utils/helpers";
-import logger from "@/utils/logger";
 import { withAuth } from "@/utils/withAuth";
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 
-import { Button } from "@/components/Button";
-import { Icon } from "@/components/Icon";
-import { Typography } from "@/components/Typography";
+import { SYSTEM_URL } from "@/constants/pageUrl";
 
-import { selectors } from "@/redux/questionnaire";
+import { SurveyStatus } from "@/models/Survey/config";
 
-import { removeQuestionByTemplateIdAPI } from "@/api/questionnaire";
-import type { IRemoveQuestionRequest } from "@/features/questionnaire/types";
+import { actions, selectors } from "@/redux/questionnaire";
 
-import { Overview } from "./components/Overview";
-import { Question } from "./components/Question";
-import { initialQuestionnaireValues, newQuestion } from "./config";
+import { updateQuestionnaireStatusAPI } from "@/api/questionnaire";
+
+import { Content } from "./components/Content";
+import { initialQuestionnaireValues } from "./config";
 import type { QuestionnaireForm } from "./types";
+import { questionnaireFormSchema } from "./validations/questionnaireFormSchema";
 
 const Questionnaire: NextPage = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
+
+  const handleSubmit = useCallback(async () => {
+    const { success, message } = await updateQuestionnaireStatusAPI(
+      SurveyStatus.ACTIVE,
+      activeTemplateId
+    );
+
+    if (!success && message) {
+      dispatch(actions.callSetServerErrorMessage(message));
+      return;
+    }
+
+    router.push(SYSTEM_URL.HOME);
+  }, [activeTemplateId, dispatch, router]);
 
   const formikBag = useFormik<QuestionnaireForm>({
     initialValues: initialQuestionnaireValues,
-    onSubmit: (values) => logger(values),
+    validateOnBlur: false,
+    validateOnChange: false,
+    enableReinitialize: true,
+    validationSchema: questionnaireFormSchema,
+    onSubmit: handleSubmit,
   });
-
-  const isBtnDisabled = () => {
-    const { questions, title } = formikBag.values;
-
-    const hasInvalidQuestions = questions.some(
-      ({ title, type }) => !title || !type
-    );
-
-    return hasInvalidQuestions || !title;
-  };
-
-  const handleAddQuestion = () => {
-    const { questions } = formikBag.values;
-
-    if (isBtnDisabled()) return;
-
-    formikBag.setFieldValue("questions", [...questions, { ...newQuestion }]);
-  };
-
-  const handleDeleteQuestion = async (questionId: string, index: number) => {
-    const request: IRemoveQuestionRequest["body"] = {
-      id: questionId,
-    };
-
-    const { success } = await removeQuestionByTemplateIdAPI(
-      activeTemplateId,
-      request
-    );
-
-    const { questions } = formikBag.values;
-
-    const filteredQuestions = questions.filter((_, key) => key !== index);
-
-    if (success) formikBag.setFieldValue("questions", filteredQuestions);
-
-    return success;
-  };
 
   return (
     <FormikContext.Provider value={formikBag}>
-      <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">
-        <Overview />
-
-        {formikBag.values.questions.map((_, index) => (
-          <Question
-            key={index}
-            index={index}
-            handleDeleteQuestion={handleDeleteQuestion}
-          />
-        ))}
-
-        <div className="mt-10 flex justify-end">
-          <Button
-            className="px-2 sm:px-2"
-            onClick={handleAddQuestion}
-            disabled={isBtnDisabled()}
-          >
-            <div className="text-xl">
-              <Icon src="/assets/add.svg" />
-            </div>
-          </Button>
-        </div>
-
-        <div className="mt-10 flex justify-end">
-          <Button
-            className="rounded-[0.938rem]"
-            onClick={noop}
-            disabled={isBtnDisabled()}
-          >
-            <Typography
-              variant="span"
-              size="text-lg"
-              lineHeight="leading-[1.688rem]"
-              textAlign="text-left"
-              color="text-white"
-              className="font-bold"
-            >
-              Publish
-            </Typography>
-          </Button>
-        </div>
-      </div>
+      <Content />
     </FormikContext.Provider>
   );
 };
