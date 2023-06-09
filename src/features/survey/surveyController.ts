@@ -9,6 +9,7 @@ import { SurveyStatus } from "@/models/Survey/config";
 
 import { ApiResponse } from "@/types";
 
+import { QuestionnaireService } from "@/features/questionnaire/questionnaireService";
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
@@ -33,7 +34,10 @@ export const SurveyController = () => {
     setSurveyStatus,
     validateSurvey,
     getSurveyById,
+    sendInvites
   } = SurveyService();
+
+  const { isTemplateExist } = QuestionnaireService();
 
   const handleAnswerSurvey = catchAsyncErrors(
     async (
@@ -182,6 +186,26 @@ export const SurveyController = () => {
     }
   );
 
+  const handleSendInvites = catchAsyncErrors(
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
+      const { templateId } = req.query;
+
+      if (!(await isTemplateExist(templateId as string))) {
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      await sendInvites(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: SURVEY_MESSAGES.SUCCESS.GENERIC,
+      });
+    }
+  );
+
   return {
     handleCreateSurvey,
     handleAnswerSurvey,
@@ -191,5 +215,6 @@ export const SurveyController = () => {
     handleGetSurveyDetailsByUser,
     handleSurveyStatus,
     handleGetSurveyById,
+    handleSendInvites
   };
 };

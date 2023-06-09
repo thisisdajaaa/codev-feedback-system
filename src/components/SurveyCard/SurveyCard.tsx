@@ -6,9 +6,12 @@ import clsxm from "@/utils/clsxm";
 import { SurveyProps } from "./types";
 import { Button } from "../Button";
 
-const SurveyCard: FC<SurveyProps> = (props) => {
+const SurveyCard: FC<SurveyProps & { onInvite: (surveyId: string) => void }> = (
+  props
+) => {
   const {
     id,
+    templateId,
     surveyStatus,
     surveyName,
     description,
@@ -89,6 +92,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
               surveyCardBtnClassNames,
               "border-solid border-gray-500 bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-500 active:bg-gray-100"
             )}
+            onClick={() => onInvite(templateId)}
           >
             <span className="inline-block w-full text-center text-sm font-normal">
               Invite

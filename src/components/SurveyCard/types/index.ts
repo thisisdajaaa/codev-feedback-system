@@ -1,5 +1,6 @@
 export type SurveyProps = {
   id: string;
+  templateId: string;
   surveyStatus: string;
   surveyName: string;
   description?: string;
@@ -9,7 +10,7 @@ export type SurveyProps = {
   totalRespondents?: number;
   primaryAction?: string;
   isOwnSurvey?: boolean;
-  onInvite?: () => void;
+  onInvite?: (id:string) => void;
   onDelete?: () => void;
   onPrimaryAction?: () => void;
 };
