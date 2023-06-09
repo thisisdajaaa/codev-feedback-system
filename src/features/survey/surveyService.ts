@@ -156,7 +156,7 @@ export const SurveyService = () => {
   ): Promise<ISurvey | null> => {
     const { templateId, answer, questionId, comment } = req.body;
 
-    const userId = "646c55b90c517d6adc6d7c00";
+    const userId = req.user.id;
 
     const template = (await Template.findOne({
       _id: templateId,
