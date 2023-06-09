@@ -52,7 +52,7 @@ const Overview: FC = () => {
 
       if (activeTemplateId !== data?.id)
         dispatch(actions.callSetActiveTemplateId(data?.id));
-    }, 300)
+    }, 500)
   );
 
   const handleChange =

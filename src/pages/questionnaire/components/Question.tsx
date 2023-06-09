@@ -63,7 +63,7 @@ const Question: FC<QuestionProps> = (props) => {
       if (activeTemplateId !== data?.templateId)
         dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
       setFieldValue(`questions.${index}.id`, data?.id);
-    }, 200)
+    }, 500)
   );
 
   const handleInputChange = async (value: string) => {
@@ -73,6 +73,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
+    debouncedHandleCallAddQuestion.current.cancel();
     debouncedHandleCallAddQuestion.current(request);
   };
 
@@ -83,6 +84,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
+    debouncedHandleCallAddQuestion.current.cancel();
     debouncedHandleCallAddQuestion.current(request);
   };
 
@@ -93,6 +95,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
+    debouncedHandleCallAddQuestion.current.cancel();
     debouncedHandleCallAddQuestion.current(request);
   };
 
@@ -214,8 +217,7 @@ const Question: FC<QuestionProps> = (props) => {
       {isEditable && (
         <div
           className="mt-4 flex cursor-pointer justify-end text-2xl"
-          onClick={handleRemoveQuestion}
-        >
+          onClick={handleRemoveQuestion}>
           <Icon src="/assets/red-trash.svg" />
         </div>
       )}

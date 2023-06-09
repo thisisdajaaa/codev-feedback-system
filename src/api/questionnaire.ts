@@ -4,6 +4,8 @@ import type { GetServerSidePropsContext } from "next";
 
 import { onParseResponse } from "@/utils/helpers";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import type { ApiResponse } from "@/types";
 
 import type {
@@ -67,6 +69,18 @@ export const getQuestionnaireByIdAPI = async (
     method: "get",
     url: `/api/questionnaire/${templateId}`,
     headers,
+  });
+
+  return response;
+};
+
+export const updateQuestionnaireStatusAPI = async (
+  status: keyof typeof SurveyStatus,
+  templateId: string
+): Promise<ApiResponse<CreatedQuestionnaireResponse>> => {
+  const response = await onParseResponse<CreatedQuestionnaireResponse>({
+    method: "post",
+    url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}`,
   });
 
   return response;

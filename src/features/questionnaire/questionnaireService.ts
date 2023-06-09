@@ -219,13 +219,6 @@ export const QuestionnaireService = () => {
       };
     }
 
-    if (!template.department) {
-      return {
-        isValid: false,
-        message: QUESTIONNAIRE_MESSAGES.ERROR.DEPARTMENT_IS_REQUIRED,
-      };
-    }
-
     if (!(template.dateFrom && template.dateTo)) {
       return {
         isValid: false,

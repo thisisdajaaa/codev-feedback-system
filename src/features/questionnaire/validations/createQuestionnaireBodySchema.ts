@@ -15,7 +15,7 @@ const templateIdValidator = yup.string().test({
   test: (id) => (id ? isTemplateExist(id as string) : true),
 });
 
-const optionalDateSchema = yup.string().test({
+export const optionalDateSchema = yup.string().test({
   name: "is-date",
   message: QUESTIONNAIRE_MESSAGES.ERROR.INVALID_DATE_FORMAT,
   test: (value) => {

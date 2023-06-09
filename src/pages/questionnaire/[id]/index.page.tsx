@@ -2,28 +2,48 @@ import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
-import logger from "@/utils/logger";
 import { withAuth } from "@/utils/withAuth";
 import { useAppDispatch, useMount } from "@/hooks";
 
+import { SYSTEM_URL } from "@/constants/pageUrl";
 import { QuestionType } from "@/constants/questionType";
 
 import { Icon } from "@/components/Icon";
 import { Typography } from "@/components/Typography";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import { actions } from "@/redux/questionnaire";
 
-import { getQuestionnaireByIdAPI } from "@/api/questionnaire";
+import {
+  getQuestionnaireByIdAPI,
+  updateQuestionnaireStatusAPI,
+} from "@/api/questionnaire";
 
 import { Content } from "../components/Content";
 import type { Question, QuestionnaireForm, QuestionnaireProps } from "../types";
+import { questionnaireFormSchema } from "../validations/questionnaireFormSchema";
 
 const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
   const router = useRouter();
   const { id } = router.query;
   const dispatch = useAppDispatch();
+
+  const handleSubmit = useCallback(async () => {
+    const { success, message } = await updateQuestionnaireStatusAPI(
+      SurveyStatus.ACTIVE,
+      String(id)
+    );
+
+    if (!success && message) {
+      dispatch(actions.callSetServerErrorMessage(message));
+      return;
+    }
+
+    router.push(SYSTEM_URL.HOME);
+  }, [dispatch, id, router]);
 
   useMount(() => {
     dispatch(actions.callSetActiveTemplateId(String(id)));
@@ -88,7 +108,11 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
 
   const formikBag = useFormik<QuestionnaireForm>({
     initialValues: formattedResponse,
-    onSubmit: (values) => logger(values),
+    validateOnBlur: false,
+    validateOnChange: false,
+    enableReinitialize: true,
+    validationSchema: questionnaireFormSchema,
+    onSubmit: handleSubmit,
   });
 
   return (

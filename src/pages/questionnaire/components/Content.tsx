@@ -1,7 +1,6 @@
 import { useFormikContext } from "formik";
 import React, { FC, useMemo } from "react";
 
-import { noop } from "@/utils/helpers";
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
 import { AlertBanner } from "@/components/AlertBanner";
@@ -37,6 +36,8 @@ const Content: FC = () => {
   const {
     values: { questions, title, status },
     setFieldValue,
+    submitForm,
+    isSubmitting,
   } = useFormikContext<QuestionnaireForm>();
 
   const isEditable = useMemo(
@@ -100,8 +101,7 @@ const Content: FC = () => {
             <Button
               className="px-2 sm:px-2"
               onClick={handleAddQuestion}
-              disabled={isBtnDisabled()}
-            >
+              disabled={isBtnDisabled()}>
               <div className="text-xl">
                 <Icon src="/assets/add.svg" />
               </div>
@@ -111,17 +111,16 @@ const Content: FC = () => {
           <div className="mt-10 flex justify-end">
             <Button
               className="rounded-[0.938rem]"
-              onClick={noop}
-              disabled={isBtnDisabled()}
-            >
+              onClick={submitForm}
+              isLoading={isSubmitting}
+              disabled={isBtnDisabled()}>
               <Typography
                 variant="span"
                 size="text-lg"
                 lineHeight="leading-[1.688rem]"
                 textAlign="text-left"
                 color="text-white"
-                className="font-bold"
-              >
+                className="font-bold">
                 Publish
               </Typography>
             </Button>
