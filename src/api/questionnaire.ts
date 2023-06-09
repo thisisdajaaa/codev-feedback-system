@@ -77,8 +77,8 @@ export const getQuestionnaireByIdAPI = async (
 export const updateQuestionnaireStatusAPI = async (
   status: keyof typeof SurveyStatus,
   templateId: string
-): Promise<ApiResponse<CreatedQuestionnaireResponse>> => {
-  const response = await onParseResponse<CreatedQuestionnaireResponse>({
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
     method: "post",
     url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}`,
   });
