@@ -12,9 +12,13 @@ import { SurveyCard } from "@/components/SurveyCard";
 import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
 
+import { SurveyInvitesModal } from "./SurveyInvitesModal";
 import { INITIAL_PAGE, PAGE_SIZE } from "../config";
+import { SurveyInvitesModalProps } from "../types";
 
 const SurveyorView: FC = () => {
+  const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
+  const [currentTemplateId, setCurrentTemplateId] = useState<string>("");
   const { data } = useSession();
   const router = useRouter();
   const [showAlert, setShowAlert] = useState<boolean>(true);
@@ -37,6 +41,16 @@ const SurveyorView: FC = () => {
       <Typography preset="regular">Welcome to the Feedback System</Typography>
     </div>
   );
+
+  const surveyInvitesModalProps: SurveyInvitesModalProps = {
+    open: true,
+    templateId: "",
+    setShowInviteDialog,
+  };
+  const onInvite = (templateId: string) => {
+    setCurrentTemplateId(templateId);
+    setShowInviteDialog(true);
+  };
 
   return (
     <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
@@ -84,7 +98,7 @@ const SurveyorView: FC = () => {
         <div className="gap-8 xs:columns-1 md:columns-2 lg:columns-3">
           {currentSurveyData.map((survey, i) => (
             <Fragment key={i}>
-              <SurveyCard {...survey} />
+              <SurveyCard {...{ ...survey, onInvite }} />
             </Fragment>
           ))}
         </div>
@@ -95,6 +109,11 @@ const SurveyorView: FC = () => {
           pageSize={PAGE_SIZE}
           onPageChange={(page) => setCurrentPage(page)}
         />
+        {showInviteDialog && (
+          <SurveyInvitesModal
+            {...{ ...surveyInvitesModalProps, templateId: currentTemplateId }}
+          />
+        )}
       </div>
     </div>
   );

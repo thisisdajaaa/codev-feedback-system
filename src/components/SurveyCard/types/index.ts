@@ -1,4 +1,5 @@
 export type SurveyProps = {
+  templateId: string;
   surveyStatus: string;
   surveyName: string;
   description?: string;

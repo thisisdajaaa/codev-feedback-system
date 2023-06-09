@@ -68,3 +68,16 @@ export const getSurveyDetailsByUserAPI = async (
 
   return response;
 };
+
+export const sendSurveyInvitesAPI = async (
+  templateId: string,
+  data: string[]
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<string>({
+    method: "post",
+    data,
+    url: `/api/survey/send-invites?templateId=${templateId}`,
+  });
+
+  return response;
+};
