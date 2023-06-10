@@ -36,18 +36,11 @@ const SurveyorView: FC = () => {
   const handleSearch = async (query: string, filter: string) => {
     setSearchStr(query);
     setFilterStr(filter);
-
-    const queryParams = {
-      page: currentPage,
-      limit: PAGE_SIZE,
-      title: query,
-      status: filter,
-    };
     const {
       success,
       data: response,
       count,
-    } = await searchQuestionnaires(queryParams);
+    } = await searchQuestionnaires(query, filter, currentPage, PAGE_SIZE);
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
       setItemCount(count || INITIAL_ITEM_COUNT);
@@ -60,17 +53,12 @@ const SurveyorView: FC = () => {
     async (page: number) => {
       setCurrentPage(page);
       setIsLoading(true);
-      const queryParams = {
-        page,
-        limit: PAGE_SIZE,
-        title: searchStr,
-        status: filterStr,
-      };
+
       const {
         success,
         data: response,
         count,
-      } = await searchQuestionnaires(queryParams);
+      } = await searchQuestionnaires(searchStr, filterStr, page, PAGE_SIZE);
 
       if (success) {
         setQuestionnaires(response as GetQuestionnaireResponse[]);
@@ -87,13 +75,6 @@ const SurveyorView: FC = () => {
   useMount(() => {
     handleLoad(currentPage);
   });
-
-  // const currentSurveyData = useMemo(() => {
-  //   const firstPageIndex = (currentPage - 1) * PAGE_SIZE;
-  //   const lastPageIndex = firstPageIndex + PAGE_SIZE;
-
-  //   return surveyList.slice(firstPageIndex, lastPageIndex);
-  // }, [currentPage]);
 
   const renderAlertMessage = (
     <div className="flex flex-col gap-1 sm:flex-row">
@@ -163,7 +144,8 @@ const SurveyorView: FC = () => {
           currentPage={currentPage}
           totalCount={itemCount}
           pageSize={itemCount}
-          onPageChange={(page) => setCurrentPage(page)}
+          //onPageChange={(page) => setCurrentPage(page)}
+          onPageChange={handleLoad}
         />
       </div>
     </div>
