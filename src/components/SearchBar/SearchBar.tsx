@@ -7,13 +7,13 @@ import type { Option } from "../Dropdown/types";
 
 const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [query, setQuery] = useState("");
-
+  const [filter, setFilter] = useState("");
   const handleChange2 = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSearch(query);
+    onSearch(query, filter);
   };
 
   const mockFilter = [
@@ -36,6 +36,9 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
 
   const handleOptionChange = (selectedOptions: Option | Option[]) => {
     setSelectedOption(selectedOptions);
+    const optionStr = JSON.stringify(selectedOptions);
+    const optionObj = JSON.parse(optionStr);
+    setFilter(optionObj.value);
   };
   return (
     <form

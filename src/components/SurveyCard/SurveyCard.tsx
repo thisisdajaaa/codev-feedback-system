@@ -20,7 +20,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
 
   const isSurveyActive = surveyStatus.toUpperCase() === "ACTIVE";
   const isSurveyDraft = surveyStatus.toUpperCase() === "DRAFT";
-  const isSurveyClosed = surveyStatus.toUpperCase() === "CLOSED";
+  const isSurveyClosed = surveyStatus.toUpperCase() === "FINISHED";
 
   const surveyStatusPercentage = Math.floor(responses * totalRespondents) / 100;
 

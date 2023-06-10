@@ -9,16 +9,27 @@ export const getQuestionnaires = async (): Promise<
 > => {
   const response = await onParseResponse<GetQuestionnaireResponse[]>({
     method: "get",
-    url: "api/questionnaire",
+    url: "api/questionnaire?",
   });
   return response;
 };
 export const searchQuestionnaires = async (
-  query: string
+  query: string,
+  filter: string,
+  page: number,
+  limit: number
 ): Promise<ApiResponse<GetQuestionnaireResponse[]>> => {
   const response = await onParseResponse<GetQuestionnaireResponse[]>({
     method: "get",
-    url: "api/questionnaire?title=" + query,
+    url:
+      "api/questionnaire?title=" +
+      query +
+      "&status=" +
+      filter +
+      "&page=" +
+      page +
+      "&limit=" +
+      limit,
   });
   return response;
 };

@@ -11,10 +11,10 @@ import { SearchBar } from "@/components/SearchBar";
 import { SurveyCard } from "@/components/SurveyCard";
 import { Typography } from "@/components/Typography";
 
-import { getQuestionnaires, searchQuestionnaires } from "@/api/questionnaire";
+import { searchQuestionnaires } from "@/api/questionnaire";
 import { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
-import { INITIAL_PAGE, PAGE_SIZE } from "../config";
+import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
 
 const SurveyorView: FC = () => {
   const { data } = useSession();
@@ -25,38 +25,52 @@ const SurveyorView: FC = () => {
   const [questionnaires, setQuestionnaires] = useState<
     GetQuestionnaireResponse[]
   >([]);
+  const [searchStr, setSearchStr] = useState("");
+  const [filterStr, setFilterStr] = useState("");
+  const [itemCount, setItemCount] = useState<number>(INITIAL_ITEM_COUNT);
 
-  const handleSearch = async (query: string) => {
-    const { success, data: response } = await searchQuestionnaires(query);
+  const handleSearch = async (query: string, filter: string) => {
+    setSearchStr(query);
+    setFilterStr(filter);
+    const {
+      success,
+      data: response,
+      count,
+    } = await searchQuestionnaires(query, filter, currentPage, PAGE_SIZE);
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
+      setItemCount(count || INITIAL_ITEM_COUNT);
     }
   };
 
   const firstName = data?.user?.name?.split(" ")[0];
 
-  const handleLoad = useCallback(async () => {
-    setIsLoading(true);
+  const handleLoad = useCallback(
+    async (page: number) => {
+      setCurrentPage(page);
+      setIsLoading(true);
 
-    const { success, data: response } = await getQuestionnaires();
+      const {
+        success,
+        data: response,
+        count,
+      } = await searchQuestionnaires(searchStr, filterStr, page, PAGE_SIZE);
 
-    if (success) {
-      setQuestionnaires(response as GetQuestionnaireResponse[]);
-    }
+      if (success) {
+        setQuestionnaires(response as GetQuestionnaireResponse[]);
+        setItemCount(count || INITIAL_ITEM_COUNT);
 
-    setIsLoading(false);
-  }, []);
+        setCurrentPage(page);
+      }
+
+      setIsLoading(false);
+    },
+    [filterStr, searchStr]
+  );
 
   useMount(() => {
-    handleLoad();
+    handleLoad(currentPage);
   });
-
-  // const currentSurveyData = useMemo(() => {
-  //   const firstPageIndex = (currentPage - 1) * PAGE_SIZE;
-  //   const lastPageIndex = firstPageIndex + PAGE_SIZE;
-
-  //   return surveyList.slice(firstPageIndex, lastPageIndex);
-  // }, [currentPage]);
 
   const renderAlertMessage = (
     <div className="flex flex-col gap-1 sm:flex-row">
@@ -123,9 +137,10 @@ const SurveyorView: FC = () => {
 
         <Pagination
           currentPage={currentPage}
-          totalCount={100}
-          pageSize={PAGE_SIZE}
-          onPageChange={(page) => setCurrentPage(page)}
+          totalCount={itemCount}
+          pageSize={itemCount}
+          //onPageChange={(page) => setCurrentPage(page)}
+          onPageChange={handleLoad}
         />
       </div>
     </div>
