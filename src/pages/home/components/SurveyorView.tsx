@@ -36,11 +36,19 @@ const SurveyorView: FC = () => {
   const handleSearch = async (query: string, filter: string) => {
     setSearchStr(query);
     setFilterStr(filter);
+
+    const queryParams = {
+      page: currentPage,
+      limit: PAGE_SIZE,
+      title: query,
+      status: filter,
+    };
+
     const {
       success,
       data: response,
       count,
-    } = await searchQuestionnaires(query, filter, currentPage, PAGE_SIZE);
+    } = await searchQuestionnaires(queryParams);
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
       setItemCount(count || INITIAL_ITEM_COUNT);
@@ -54,11 +62,18 @@ const SurveyorView: FC = () => {
       setCurrentPage(page);
       setIsLoading(true);
 
+      const queryParams = {
+        page,
+        limit: PAGE_SIZE,
+        title: searchStr,
+        status: filterStr,
+      };
+
       const {
         success,
         data: response,
         count,
-      } = await searchQuestionnaires(searchStr, filterStr, page, PAGE_SIZE);
+      } = await searchQuestionnaires(queryParams);
 
       if (success) {
         setQuestionnaires(response as GetQuestionnaireResponse[]);
