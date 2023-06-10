@@ -14,22 +14,16 @@ export const getQuestionnaires = async (): Promise<
   return response;
 };
 export const searchQuestionnaires = async (
-  query: string,
-  filter: string,
-  page: number,
-  limit: number
+  params?: Record<string, unknown>
+  // query: string,
+  // filter: string,
+  // page: number,
+  // limit: number
 ): Promise<ApiResponse<GetQuestionnaireResponse[]>> => {
   const response = await onParseResponse<GetQuestionnaireResponse[]>({
     method: "get",
-    url:
-      "api/questionnaire?title=" +
-      query +
-      "&status=" +
-      filter +
-      "&page=" +
-      page +
-      "&limit=" +
-      limit,
+    url: "api/questionnaire",
+    params,
   });
   return response;
 };
