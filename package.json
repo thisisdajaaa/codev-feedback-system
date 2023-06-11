@@ -1,5 +1,5 @@
 {
-  "name": "sample-project",
+  "name": "codev-feedback-system",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -122,5 +122,5 @@
     ]
   },
   "readme": "ERROR: No README data found!",
-  "_id": "sample-project@0.1.0"
+  "_id": "codev-feedback-system@0.1.0"
 }
