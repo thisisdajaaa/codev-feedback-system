@@ -8,7 +8,7 @@ import { QuestionType } from "@/constants/questionType";
 
 import { FormInput } from "@/components/Formik/FormInput";
 import { FormRadioGroup } from "@/components/Formik/FormRadioGroup";
-import { FormRating } from "@/components/Formik/FormRating/FormRating";
+import { FormRating } from "@/components/Formik/FormRating";
 import { FormTextArea } from "@/components/Formik/FormTextArea";
 import { InputVariations } from "@/components/Input/config";
 import type { Option } from "@/components/RadioGroup/types";
@@ -137,8 +137,7 @@ const Question: FC<QuestionProps> = (props) => {
           variant="p"
           size="text-xl"
           lineHeight="leading-[1.875rem]"
-          className="font-semibold"
-        >
+          className="font-semibold">
           Q{index + 1}. {currentQuestion.title}
         </Typography>
 
