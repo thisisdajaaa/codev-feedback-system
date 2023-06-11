@@ -25,3 +25,11 @@ export type SurveyProps = {
 };
 
 export type SurveyQuestionnaireForm = SurveyByIdResponse;
+
+export type OverviewProps = {
+  data: SurveyByIdResponse;
+};
+
+export type QuestionProps = {
+  index: number;
+};

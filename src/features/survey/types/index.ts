@@ -1,5 +1,7 @@
 import type { NextApiRequest } from "next";
 
+import type { Option } from "@/components/RadioGroup/types";
+
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import type { IQuestion } from "@/models/Template/types";
 
@@ -111,12 +113,13 @@ export type SurveyByIdQuestion = {
   title: string;
   type: string;
   isRequired: boolean;
-  answer: string;
+  answer: string | number | Option;
   comment: string;
   id: string;
 };
 
 export type SurveyByIdResponse = {
+  templateId: string;
   title: string;
   description: string;
   isAnonymous: boolean;

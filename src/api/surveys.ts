@@ -8,6 +8,8 @@ import type { ApiResponse } from "@/types";
 
 import type {
   AnalyticsResponse,
+  IAnswerSurveyRequest,
+  ICreateSurveyRequest,
   SurveyByIdResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
@@ -85,6 +87,30 @@ export const getSurveyByIdAPI = async (
     method: "get",
     url: `/api/surveys/${surveyId}`,
     headers,
+  });
+
+  return response;
+};
+
+export const answerSurveyQuestionAPI = async (
+  data: IAnswerSurveyRequest["body"]
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    data,
+    url: "/api/surveys/answer",
+  });
+
+  return response;
+};
+
+export const createSurveyAPI = async (
+  data: ICreateSurveyRequest["body"]
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    data,
+    url: "/api/surveys",
   });
 
   return response;

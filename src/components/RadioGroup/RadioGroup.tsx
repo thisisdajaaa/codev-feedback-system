@@ -30,7 +30,7 @@ const RadioGroup: FC<RadioGroupProps> = (props) => {
     <>
       <div
         className={clsxm(
-          "flex flex-col md:flex-row md:justify-between",
+          "flex flex-col md:flex-row md:justify-evenly",
           className,
           isColumnLayout && "md:flex-col"
         )}

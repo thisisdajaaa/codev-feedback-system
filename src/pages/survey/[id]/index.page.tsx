@@ -1,27 +1,68 @@
 import { FormikContext, useFormik } from "formik";
-import moment from "moment";
 import { GetServerSideProps, NextPage } from "next";
 import React, { useMemo } from "react";
 
 import logger from "@/utils/logger";
 import { withAuth } from "@/utils/withAuth";
+import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
-import { Typography } from "@/components/Typography";
+import { QuestionType } from "@/constants/questionType";
+
+import { AlertBanner } from "@/components/AlertBanner";
+
+import { actions, selectors } from "@/redux/surveys";
 
 import { getSurveyByIdAPI } from "@/api/surveys";
+import type { SurveyByIdResponse } from "@/features/survey/types";
 
+import { Overview } from "./components/Overview";
+import { Question } from "./components/Question";
 import type { SurveyProps, SurveyQuestionnaireForm } from "./types";
-import { FormCheckbox } from "@/components/Formik/FormCheckbox";
 
 const ViewSurvey: NextPage<SurveyProps> = ({ items: { data } }) => {
+  const dispatch = useAppDispatch();
+  const serverErrorMessage = useAppSelector(selectors.serverErrorMessage);
+
+  useMount(() => {
+    onClearServerErrorMessage();
+  });
+
+  const onClearServerErrorMessage = () => {
+    dispatch(actions.callSetServerErrorMessage(""));
+  };
+
   const initialValues: SurveyQuestionnaireForm = useMemo(() => {
+    const flatTypes = ["Text-Input", "Text-Area", "Rating"];
+
+    const mappedQuestions = data?.questions.map((item) => {
+      if (!flatTypes.includes(item.type)) {
+        const questionOptions = QuestionType[item.type]?.options;
+        const foundOption = questionOptions.find(
+          ({ name }) => name === item.answer
+        );
+
+        const mappedAnswer = {
+          label: foundOption?.name || "",
+          value: foundOption?.name || "",
+        };
+
+        return {
+          ...item,
+          answer: mappedAnswer || "",
+        };
+      }
+
+      return { ...item };
+    });
+
     return {
+      templateId: data?.templateId || "",
       title: data?.title || "",
       description: data?.description || "",
       isAnonymous: data?.isAnonymous || false,
       dateFrom: data?.dateFrom || "",
       dateTo: data?.dateTo || "",
-      questions: data?.questions || [],
+      questions: mappedQuestions || [],
     };
   }, [data]);
 
@@ -33,47 +74,18 @@ const ViewSurvey: NextPage<SurveyProps> = ({ items: { data } }) => {
   return (
     <FormikContext.Provider value={formikBag}>
       <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">
-        <div className="mt-12 rounded-lg border-t-8 border-zinc-500 bg-white px-8 py-[1.625rem] shadow-md">
-          <Typography
-            variant="h1"
-            size="text-3xl"
-            lineHeight="leading-[3rem]"
-            className="mb-4 rounded-[2rem] font-bold">
-            {data?.title || "--"}
-          </Typography>
+        <AlertBanner
+          open={!!serverErrorMessage}
+          message={serverErrorMessage}
+          type="error"
+          handleClose={onClearServerErrorMessage}
+        />
 
-          <div className="mb-[1.063rem] grid gap-[0.375rem]">
-            <Typography variant="p" className="min-w-[98px] font-bold">
-              Description:
-            </Typography>
+        <Overview data={data as SurveyByIdResponse} />
 
-            <Typography variant="p">{data?.description || "--"}</Typography>
-          </div>
-
-          <div className="mb-[1.063rem] flex flex-col gap-[0.375rem] md:flex-row">
-            <Typography variant="p" className="min-w-[98px] font-bold">
-              Duration:
-            </Typography>
-
-            <Typography variant="p" className="flex items-center gap-1">
-              From{" "}
-              <Typography variant="p" className="font-semibold">
-                {moment(data?.dateFrom).format("MM/DD/YYYY")}
-              </Typography>{" "}
-              To{" "}
-              <Typography variant="p" className="font-semibold">
-                {moment(data?.dateFrom).format("MM/DD/YYYY")}
-              </Typography>
-            </Typography>
-          </div>
-
-          <div>
-            <FormCheckbox
-              name="isAnonymous"
-              label="Set name and email address to Anonymous"
-            />
-          </div>
-        </div>
+        {formikBag.values.questions.map((_, index) => (
+          <Question key={index} index={index} />
+        ))}
       </div>
     </FormikContext.Provider>
   );

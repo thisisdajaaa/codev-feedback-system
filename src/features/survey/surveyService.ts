@@ -570,11 +570,12 @@ export const SurveyService = () => {
     const mappedQuestions: SurveyByIdQuestion[] =
       template.questions?.map((item) => {
         const foundSurvey = survey.surveyAnswers.find(
-          (surveyAnswer) => surveyAnswer.questionId === item.id
+          (surveyAnswer) =>
+            surveyAnswer.questionId.toString() === item._id.toString()
         );
 
         return {
-          id: item.id || "",
+          id: item._id || "",
           title: item.title || "",
           type: item.type || "",
           isRequired: item.isRequired || false,
@@ -584,6 +585,7 @@ export const SurveyService = () => {
       }) || [];
 
     const formattedResponse: SurveyByIdResponse = {
+      templateId: template._id,
       title: template.title || "",
       description: template.description || "",
       isAnonymous: survey.isAnonymous,
