@@ -1,3 +1,7 @@
+import type { ApiResponse } from "@/types";
+
+import type { SurveyByIdResponse } from "@/features/survey/types";
+
 export type Questions = {
   isRequired: boolean;
   question: string;
@@ -15,3 +19,9 @@ export type SurveyQuestions = {
   duration: Duration;
   questions: Questions[];
 };
+
+export type SurveyProps = {
+  items: ApiResponse<SurveyByIdResponse>;
+};
+
+export type SurveyQuestionnaireForm = SurveyByIdResponse;

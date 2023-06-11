@@ -27,6 +27,8 @@ import type {
   IViewSurveAnswer,
   QuestionAnalyticsData,
   SingleSurveyResponse,
+  SurveyByIdQuestion,
+  SurveyByIdResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -276,7 +278,8 @@ export const SurveyService = () => {
   const getAnsweredSurveysByTemplateId = async (
     req: NextApiRequest
   ): Promise<GetSurveysResponse> => {
-    const { templateId } = req.query;
+    const { id } = req.query;
+    const templateId = id;
 
     // Fetch the template once since we already have the templateId
     const template = (await Template.findOne({
@@ -532,6 +535,66 @@ export const SurveyService = () => {
 
     return { isValid: true };
   };
+
+  const getSurveyById = async (
+    req: NextApiRequest
+  ): Promise<SurveyByIdResponse> => {
+    const { id } = req.query;
+
+    if (!id)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.BAD_REQUEST
+      );
+
+    const survey = (await Survey.findOne({
+      _id: String(id),
+    }).lean()) as ISurvey;
+
+    if (!survey)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.SURVEY_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const template = (await Template.findById(
+      survey.templateId
+    ).lean()) as ITemplate;
+
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const mappedQuestions: SurveyByIdQuestion[] =
+      template.questions?.map((item) => {
+        const foundSurvey = survey.surveyAnswers.find(
+          (surveyAnswer) => surveyAnswer.questionId === item.id
+        );
+
+        return {
+          id: item.id || "",
+          title: item.title || "",
+          type: item.type || "",
+          isRequired: item.isRequired || false,
+          answer: foundSurvey?.answer || "",
+          comment: foundSurvey?.comment || "",
+        };
+      }) || [];
+
+    const formattedResponse: SurveyByIdResponse = {
+      title: template.title || "",
+      description: template.description || "",
+      isAnonymous: survey.isAnonymous,
+      dateFrom: template.dateFrom || "",
+      dateTo: template.dateTo || "",
+      questions: mappedQuestions || [],
+    };
+
+    return formattedResponse;
+  };
+
   return {
     createSurvey,
     answerSurvey,
@@ -543,5 +606,6 @@ export const SurveyService = () => {
     isSurveyExist,
     setSurveyStatus,
     validateSurvey,
+    getSurveyById,
   };
 };

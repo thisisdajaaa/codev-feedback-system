@@ -106,3 +106,21 @@ export type AnalyticsQuestion = {
   answer: string;
   comment?: string;
 };
+
+export type SurveyByIdQuestion = {
+  title: string;
+  type: string;
+  isRequired: boolean;
+  answer: string;
+  comment: string;
+  id: string;
+};
+
+export type SurveyByIdResponse = {
+  title: string;
+  description: string;
+  isAnonymous: boolean;
+  dateFrom: string;
+  dateTo: string;
+  questions: SurveyByIdQuestion[];
+};

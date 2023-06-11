@@ -8,6 +8,7 @@ import type { ApiResponse } from "@/types";
 
 import type {
   AnalyticsResponse,
+  SurveyByIdResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -64,6 +65,26 @@ export const getSurveyDetailsByUserAPI = async (
   const response = await onParseResponse<SurveyDetailsByUserResponse>({
     method: "get",
     url: `/api/surveys/details?userId=${userId}&templateId=${templateId}`,
+  });
+
+  return response;
+};
+
+export const getSurveyByIdAPI = async (
+  surveyId: string,
+  context?: GetServerSidePropsContext
+): Promise<ApiResponse<SurveyByIdResponse>> => {
+  const headers: AxiosRequestHeaders = {};
+
+  if (context) {
+    const incomingHeaders: IncomingHttpHeaders = context.req.headers;
+    headers.cookie = incomingHeaders.cookie ?? "";
+  }
+
+  const response = await onParseResponse<SurveyByIdResponse>({
+    method: "get",
+    url: `/api/surveys/${surveyId}`,
+    headers,
   });
 
   return response;
