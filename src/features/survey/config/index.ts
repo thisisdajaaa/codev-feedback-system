@@ -3,6 +3,7 @@ export const SURVEY_MESSAGES = {
     TEMPLATE_NOT_FOUND: "Template not found!",
     MISSING_TEMPLATEID_USERID: "Missing template id and user id!",
     MISSING_SURVEY_ID: "Missing survey id!",
+    MISSING_QUESTION_ANSWER: "Answer is a required field!",
     SURVEY_USER_NOT_FOUND: "Survey or user not found!",
     MISSING_TEMPLATEID: "Missing template id!",
     SURVEY_NOT_FOUND: "Survey not found!",

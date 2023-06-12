@@ -1,27 +1,36 @@
 import { FormikContext, useFormik } from "formik";
 import { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 
-import logger from "@/utils/logger";
 import { withAuth } from "@/utils/withAuth";
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
+import { SYSTEM_URL } from "@/constants/pageUrl";
 import { QuestionType } from "@/constants/questionType";
 
 import { AlertBanner } from "@/components/AlertBanner";
+import { Button } from "@/components/Button";
+import { Typography } from "@/components/Typography";
+
+import { SurveyStatus } from "@/models/Survey/config";
 
 import { actions, selectors } from "@/redux/surveys";
 
-import { getSurveyByIdAPI } from "@/api/surveys";
+import { getSurveyByIdAPI, updateSurveyStatusAPI } from "@/api/surveys";
 import type { SurveyByIdResponse } from "@/features/survey/types";
 
 import { Overview } from "./components/Overview";
 import { Question } from "./components/Question";
 import type { SurveyProps, SurveyQuestionnaireForm } from "./types";
+import { surveyFormSchema } from "./validations/surveyFormSchema";
 
-const ViewSurvey: NextPage<SurveyProps> = ({ items: { data } }) => {
+const Survey: NextPage<SurveyProps> = ({ items: { data } }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const serverErrorMessage = useAppSelector(selectors.serverErrorMessage);
+
+  const { id } = router.query;
 
   useMount(() => {
     onClearServerErrorMessage();
@@ -63,13 +72,37 @@ const ViewSurvey: NextPage<SurveyProps> = ({ items: { data } }) => {
       dateFrom: data?.dateFrom || "",
       dateTo: data?.dateTo || "",
       questions: mappedQuestions || [],
+      status: data?.status || SurveyStatus.ACTIVE,
     };
   }, [data]);
 
+  const handleSubmit = async () => {
+    const { success, message } = await updateSurveyStatusAPI(
+      SurveyStatus.FINISHED,
+      String(id)
+    );
+
+    if (!success && message) {
+      dispatch(actions.callSetServerErrorMessage(message));
+      return;
+    }
+
+    router.push(SYSTEM_URL.HOME);
+  };
+
   const formikBag = useFormik<SurveyQuestionnaireForm>({
     initialValues,
-    onSubmit: (values) => logger(values),
+    validateOnBlur: false,
+    validateOnChange: false,
+    enableReinitialize: true,
+    validationSchema: surveyFormSchema,
+    onSubmit: handleSubmit,
   });
+
+  const isEditable = formikBag.values.status === SurveyStatus.ACTIVE;
+
+  const isBtnDisabled =
+    !!serverErrorMessage || !surveyFormSchema.isValidSync(formikBag.values);
 
   return (
     <FormikContext.Provider value={formikBag}>
@@ -86,6 +119,28 @@ const ViewSurvey: NextPage<SurveyProps> = ({ items: { data } }) => {
         {formikBag.values.questions.map((_, index) => (
           <Question key={index} index={index} />
         ))}
+
+        {isEditable && (
+          <div className="mt-10 flex justify-end">
+            <Button
+              className="rounded-[0.938rem]"
+              onClick={formikBag.submitForm}
+              isLoading={formikBag.isSubmitting}
+              disabled={isBtnDisabled}
+            >
+              <Typography
+                variant="span"
+                size="text-lg"
+                lineHeight="leading-[1.688rem]"
+                textAlign="text-left"
+                color="text-white"
+                className="font-bold"
+              >
+                Submit
+              </Typography>
+            </Button>
+          </div>
+        )}
       </div>
     </FormikContext.Provider>
   );
@@ -110,4 +165,4 @@ export const getServerSideProps: GetServerSideProps<SurveyProps> = async (
   };
 };
 
-export default withAuth(ViewSurvey);
+export default withAuth(Survey);

@@ -4,6 +4,8 @@ import type { GetServerSidePropsContext } from "next";
 
 import { onParseResponse } from "@/utils/helpers";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import type { ApiResponse } from "@/types";
 
 import type {
@@ -111,6 +113,18 @@ export const createSurveyAPI = async (
     method: "post",
     data,
     url: "/api/surveys",
+  });
+
+  return response;
+};
+
+export const updateSurveyStatusAPI = async (
+  status: keyof typeof SurveyStatus,
+  surveyId: string
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    url: `/api/surveys/set-status?status=${status}&surveyId=${surveyId}`,
   });
 
   return response;

@@ -10,7 +10,7 @@ export const SurveyAnswerSchema = new Schema<ISurveyAnswer>({
   },
   answer: {
     type: String,
-    required: true,
+    required: false,
   },
   comment: {
     type: String,

@@ -195,6 +195,16 @@ export const SurveyService = () => {
         (x) => x.questionId.toString() === questionId
       );
 
+      const foundQuestion = template.questions?.find(
+        ({ _id }) => _id.toString() === item?.questionId.toString()
+      );
+
+      if (foundQuestion?.isRequired && !answer)
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.MISSING_QUESTION_ANSWER,
+          StatusCodes.BAD_REQUEST
+        );
+
       if (item) {
         item.answer = answer;
         item.comment = comment;
@@ -524,6 +534,7 @@ export const SurveyService = () => {
           const hasAnswer = survey.surveyAnswers.some(
             (a) => a.questionId.toString() === q._id.toString() && a.answer
           );
+
           return !hasAnswer;
         })
     ) {
@@ -592,6 +603,7 @@ export const SurveyService = () => {
       dateFrom: template.dateFrom || "",
       dateTo: template.dateTo || "",
       questions: mappedQuestions || [],
+      status: survey.status,
     };
 
     return formattedResponse;

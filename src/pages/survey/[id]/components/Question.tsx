@@ -14,10 +14,12 @@ import { InputVariations } from "@/components/Input/config";
 import type { Option } from "@/components/RadioGroup/types";
 import { Typography } from "@/components/Typography";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import { actions } from "@/redux/surveys";
 
 import { answerSurveyQuestionAPI } from "@/api/surveys";
-import { IAnswerSurveyRequest } from "@/features/survey/types";
+import type { IAnswerSurveyRequest } from "@/features/survey/types";
 
 import type { QuestionProps, SurveyQuestionnaireForm } from "../types";
 
@@ -27,13 +29,15 @@ const Question: FC<QuestionProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const {
-    values: { questions, templateId },
+    values: { questions, templateId, status },
   } = useFormikContext<SurveyQuestionnaireForm>();
 
   const currentQuestion = useMemo(() => questions[index], [index, questions]);
 
   const debouncedHandleCallAnswerQuestion = useRef(
     debounce(async (request: IAnswerSurveyRequest["body"]) => {
+      dispatch(actions.callSetServerErrorMessage(""));
+
       const { success, message } = await answerSurveyQuestionAPI(request);
 
       if (!success && message) {
@@ -77,6 +81,8 @@ const Question: FC<QuestionProps> = (props) => {
       debouncedHandleCallAnswerQuestion.current(request);
     };
 
+    const isEditable = status === SurveyStatus.ACTIVE;
+
     const mappedOptions: { [key: string]: ReactNode } = {
       ["Text-Input"]: (
         <FormInput
@@ -84,6 +90,7 @@ const Question: FC<QuestionProps> = (props) => {
           variation={InputVariations.Solid}
           placeholder="Type your answer here"
           handleInputChange={handleInputChange}
+          readOnly={!isEditable}
         />
       ),
       ["Text-Area"]: (
@@ -91,12 +98,14 @@ const Question: FC<QuestionProps> = (props) => {
           name={`questions.${index}.answer`}
           placeholder="Type your answer here"
           handleInputChange={handleInputChange}
+          readOnly={!isEditable}
         />
       ),
       ["Rating"]: (
         <FormRating
           name={`questions.${index}.answer`}
           handleRatingChange={handleRatingChange}
+          readOnly={!isEditable}
         />
       ),
     };
@@ -114,6 +123,7 @@ const Question: FC<QuestionProps> = (props) => {
           <FormRadioGroup
             name={`questions.${index}.answer`}
             handleRadioGroupChange={handleRadioChange}
+            readOnly={!isEditable}
             options={questionOptions.map((option) => ({
               label: option.name,
               value: option.name,
@@ -128,7 +138,7 @@ const Question: FC<QuestionProps> = (props) => {
     ) : (
       <Fragment />
     );
-  }, [currentQuestion.id, currentQuestion.type, index, templateId]);
+  }, [currentQuestion.id, currentQuestion.type, index, status, templateId]);
 
   return (
     <div className="rounded-lg bg-white px-7 pt-[13px] pb-[72px] shadow-md">
@@ -137,7 +147,8 @@ const Question: FC<QuestionProps> = (props) => {
           variant="p"
           size="text-xl"
           lineHeight="leading-[1.875rem]"
-          className="font-semibold">
+          className="font-semibold"
+        >
           Q{index + 1}. {currentQuestion.title}
         </Typography>
 

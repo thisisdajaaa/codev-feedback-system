@@ -8,6 +8,8 @@ import { useAppDispatch } from "@/hooks";
 import { FormCheckbox } from "@/components/Formik/FormCheckbox";
 import { Typography } from "@/components/Typography";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import { actions } from "@/redux/surveys";
 
 import { createSurveyAPI } from "@/api/surveys";
@@ -21,11 +23,13 @@ const Overview: FC<OverviewProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const {
-    values: { templateId },
+    values: { templateId, status },
   } = useFormikContext<SurveyQuestionnaireForm>();
 
   const debouncedHandleCallCreateSurvey = useRef(
     debounce(async (request: ICreateSurveyRequest["body"]) => {
+      dispatch(actions.callSetServerErrorMessage(""));
+
       const { success, message } = await createSurveyAPI(request);
 
       if (!success && message) {
@@ -44,6 +48,8 @@ const Overview: FC<OverviewProps> = (props) => {
     debouncedHandleCallCreateSurvey.current.cancel();
     debouncedHandleCallCreateSurvey.current(request);
   };
+
+  const isEditable = status === SurveyStatus.ACTIVE;
 
   return (
     <div className="mt-10 rounded-lg bg-white px-8 py-[1.625rem] shadow-md">
@@ -88,6 +94,7 @@ const Overview: FC<OverviewProps> = (props) => {
         label="Set name and email address to Anonymous"
         containerClassName="gap-[15px]"
         labelClassName="text-blue-500 font-semibold"
+        readOnly={!isEditable}
         handleCheckedChange={handleCheckboxChange}
       />
     </div>

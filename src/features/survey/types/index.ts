@@ -126,4 +126,5 @@ export type SurveyByIdResponse = {
   dateFrom: string;
   dateTo: string;
   questions: SurveyByIdQuestion[];
+  status: string;
 };
