@@ -49,7 +49,9 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   const handleEmailChange = async (value: string) => {
     setInviteState({ ...inviteState, email: value });
     debouncedHandleCall.current.cancel();
-    debouncedHandleCall.current(value);
+    if (value.length > "@codev.com".length) {
+      debouncedHandleCall.current(value);
+    }
   };
 
   const handleAddEmail = () => {
@@ -77,41 +79,34 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
       className="max-h-[40rem] min-h-[25rem] bg-gray-100"
     >
       <div className="flex flex-col px-7 pt-8 pb-[1.813rem]">
-        <div className="mb-[0.688rem] flex gap-2 rounded-2xl bg-white px-[0.938rem] py-5">
-          <div className="flex flex-col gap-[0.688rem]">
+        <div className="mb-[0.688rem] flex gap-20 rounded-2xl bg-white px-[0.938rem] py-5">
+          <div className="flex w-16 gap-[0.688rem]">
             <Typography
               variant="h4"
               color="text-gray-700"
               size="text-base"
               lineHeight="leading-[1.5rem]"
-              className="font-semibold sm:px-0"
+              className="text-base font-semibold sm:px-0"
             >
               Email
             </Typography>
           </div>
-
-          <div
-            className="flex flex-col gap-[0.688rem]"
-            style={{ display: "inline" }}
-          >
+          <div className="flex w-80 flex-row gap-[0.688rem]">
             <Input
               type="text"
               name="email"
               value={inviteState.email}
               autoComplete="off"
-              //variation={InputVariations.Outlined}
-              //className="p-0 text-[1.2rem] border-transparent focus:border-transparent focus:outline-none"
-              variation={InputVariations.NoBorder}
+              variation={InputVariations.Solid}
               containerClassName="p-0 mb-[0.688rem]"
               inputClassName="text-[1.2rem] font-bold p-0"
               onChange={(e) => {
                 handleEmailChange(e.target.value);
               }}
             />
-
-            <div style={{ display: "inline" }}>
+            <div>
               <Button
-                className="px-2 sm:px-2"
+                className="border-none px-2 sm:px-2"
                 onClick={handleAddEmail}
                 disabled={!allowAdd}
               >
@@ -122,16 +117,35 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
             </div>
           </div>
         </div>
+        {inviteState.addedEmails.length > 0 && (
+          <div className="flex gap-6 rounded-2xl bg-white px-5 py-[1.125rem]">
+            <div className="flex w-28 flex-col gap-[0.688rem]">
+              <Typography
+                variant="h4"
+                color="text-gray-700"
+                size="text-base"
+                lineHeight="leading-[1.5rem]"
+                className="text-base font-semibold sm:px-0"
+              >
+                Mailing List
+              </Typography>
+            </div>
 
-        <div className="flex flex-col gap-[0.688rem] rounded-2xl bg-white px-5 py-[1.125rem]">
-          <div>
-            <ul>
+            <div className="flex flex-col gap-1">
               {inviteState.addedEmails.map((item, index) => (
-                <li key={index} style={{ width: "100%" }}>
-                  {item}
-                  <div style={{ display: "inline" }}>
+                <div key={index} className="flex w-80 flex-row gap-6">
+                  <Typography
+                    variant="div"
+                    color="text-gray-700"
+                    size="text-base"
+                    lineHeight="leading-[1.5rem]"
+                    className="mt-1 w-80 text-base font-semibold sm:px-0"
+                  >
+                    {item}
+                  </Typography>
+                  <div>
                     <Button
-                      className="px-2 sm:px-2"
+                      className="border-none bg-red-500 px-2 sm:px-2"
                       onClick={() => handleRemoveEmail(item)}
                     >
                       <div className="text-xl">
@@ -139,11 +153,11 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
                       </div>
                     </Button>
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
-        </div>
+        )}
         <div>
           <div className="mt-10 flex justify-end">
             <Button
