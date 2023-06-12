@@ -72,8 +72,8 @@ export const SurveyService = () => {
               templateId,
               answeredBy: user._id,
             };
-            await Survey.create(newSurvey);
-            const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/survey/${templateId}`;
+            const survey = (await Survey.create(newSurvey)) as ISurvey;
+            const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/survey/${survey._id}`;
             await sendEmail({
               email,
               subject: `Survey notification ${template.title}`,
