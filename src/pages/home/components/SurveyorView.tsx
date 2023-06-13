@@ -87,15 +87,15 @@ const SurveyorView: FC = () => {
     handleLoad(currentPage);
   });
 
-    const surveyInvitesModalProps: SurveyInvitesModalProps = {
-        open: true,
-        templateId: "",
-        setShowInviteDialog,
-    };
-    const onInvite = (templateId: string) => {
-        setCurrentTemplateId(templateId);
-        setShowInviteDialog(true);
-    };
+  const surveyInvitesModalProps: SurveyInvitesModalProps = {
+    open: true,
+    templateId: "",
+    setShowInviteDialog,
+  };
+  const onInvite = (templateId: string) => {
+    setCurrentTemplateId(templateId);
+    setShowInviteDialog(true);
+  };
 
   return (
     <>
@@ -142,6 +142,7 @@ const SurveyorView: FC = () => {
               description: survey.description,
               startDate: survey.dateFrom as string,
               endDate: survey.dateTo as string,
+              onInvite: onInvite,
             };
 
             const handlePrimaryAction = () => {
