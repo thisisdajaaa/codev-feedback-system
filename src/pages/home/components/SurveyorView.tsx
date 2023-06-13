@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import React, { FC, Fragment, useMemo, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
+
+import { useMount } from "@/hooks";
 
 import { SYSTEM_URL } from "@/constants/pageUrl";
 
@@ -8,26 +10,81 @@ import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { Pagination } from "@/components/Pagination";
+import { SearchBar } from "@/components/SearchBar";
 import { SurveyCard } from "@/components/SurveyCard";
-import { surveyList } from "@/components/SurveyCard/config";
 import { Typography } from "@/components/Typography";
 
-import { INITIAL_PAGE, PAGE_SIZE } from "../config";
+import { searchQuestionnaires } from "@/api/questionnaire";
+import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
+
+import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
 
 const SurveyorView: FC = () => {
   const { data } = useSession();
   const router = useRouter();
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
+  const [questionnaires, setQuestionnaires] = useState<
+    GetQuestionnaireResponse[]
+  >([]);
+  const [searchStr, setSearchStr] = useState<string>("");
+  const [filterStr, setFilterStr] = useState<string>("");
+  const [itemCount, setItemCount] = useState<number>(INITIAL_ITEM_COUNT);
+
+  const handleSearch = async (query: string, filter: string) => {
+    setSearchStr(query);
+    setFilterStr(filter);
+
+    const queryParams = {
+      page: currentPage,
+      limit: PAGE_SIZE,
+      title: query,
+      status: filter,
+    };
+
+    const {
+      success,
+      data: response,
+      count,
+    } = await searchQuestionnaires(queryParams);
+    if (success) {
+      setQuestionnaires(response as GetQuestionnaireResponse[]);
+      setItemCount(count || INITIAL_ITEM_COUNT);
+    }
+  };
 
   const firstName = data?.user?.name?.split(" ")[0];
 
-  const currentSurveyData = useMemo(() => {
-    const firstPageIndex = (currentPage - 1) * PAGE_SIZE;
-    const lastPageIndex = firstPageIndex + PAGE_SIZE;
+  const handleLoad = useCallback(
+    async (page: number) => {
+      setCurrentPage(page);
 
-    return surveyList.slice(firstPageIndex, lastPageIndex);
-  }, [currentPage]);
+      const queryParams = {
+        page,
+        limit: PAGE_SIZE,
+        title: searchStr,
+        status: filterStr,
+      };
+
+      const {
+        success,
+        data: response,
+        count,
+      } = await searchQuestionnaires(queryParams);
+
+      if (success) {
+        setQuestionnaires(response as GetQuestionnaireResponse[]);
+        setItemCount(count || INITIAL_ITEM_COUNT);
+
+        setCurrentPage(page);
+      }
+    },
+    [filterStr, searchStr]
+  );
+
+  useMount(() => {
+    handleLoad(currentPage);
+  });
 
   const renderAlertMessage = (
     <div className="flex flex-col gap-1 sm:flex-row">
@@ -48,7 +105,6 @@ const SurveyorView: FC = () => {
           handleClose={() => setShowAlert(false)}
         />
       </div>
-
       <div className="mt-7 mb-[27px] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => router.push(SYSTEM_URL.ADD_QUESTIONNAIRE)}
@@ -70,6 +126,7 @@ const SurveyorView: FC = () => {
           </Typography>
         </Button>
       </div>
+      <SearchBar onSearch={handleSearch} />
 
       <div className="mx-auto mt-16 w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
         <Typography
@@ -82,18 +139,24 @@ const SurveyorView: FC = () => {
         </Typography>
 
         <div className="gap-8 xs:columns-1 md:columns-2 lg:columns-3">
-          {currentSurveyData.map((survey, i) => (
-            <Fragment key={i}>
-              <SurveyCard {...survey} />
-            </Fragment>
-          ))}
+          {questionnaires.map((survey) => {
+            const surveyData = {
+              id: survey.id,
+              surveyStatus: survey.status as string,
+              surveyName: survey.title as string,
+              description: survey.description,
+              startDate: survey.dateFrom as string,
+              endDate: survey.dateTo as string,
+            };
+            return <SurveyCard key={survey.id} {...surveyData} />;
+          })}
         </div>
 
         <Pagination
           currentPage={currentPage}
-          totalCount={100}
-          pageSize={PAGE_SIZE}
-          onPageChange={(page) => setCurrentPage(page)}
+          totalCount={itemCount}
+          pageSize={itemCount}
+          onPageChange={handleLoad}
         />
       </div>
     </div>

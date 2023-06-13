@@ -8,6 +8,7 @@ import { SurveyStatus } from "@/models/Survey/config";
 
 import type { ApiResponse } from "@/types";
 
+import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 import type {
   AddedQuestionResponse,
   CreatedQuestionnaireResponse,
@@ -82,6 +83,25 @@ export const updateQuestionnaireStatusAPI = async (
     method: "post",
     url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}`,
   });
+  return response;
+};
 
+export const getQuestionnaires = async (): Promise<
+  ApiResponse<GetQuestionnaireResponse[]>
+> => {
+  const response = await onParseResponse<GetQuestionnaireResponse[]>({
+    method: "get",
+    url: "api/questionnaire?",
+  });
+  return response;
+};
+export const searchQuestionnaires = async (
+  params?: Record<string, unknown>
+): Promise<ApiResponse<GetQuestionnaireResponse[]>> => {
+  const response = await onParseResponse<GetQuestionnaireResponse[]>({
+    method: "get",
+    url: "api/questionnaire",
+    params,
+  });
   return response;
 };
