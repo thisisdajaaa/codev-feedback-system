@@ -1,4 +1,3 @@
-
 import type { AxiosRequestHeaders } from "axios";
 import type { IncomingHttpHeaders } from "http";
 import type { GetServerSidePropsContext } from "next";
@@ -9,6 +8,7 @@ import { SurveyStatus } from "@/models/Survey/config";
 
 import type { ApiResponse } from "@/types";
 
+import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 import type {
   AddedQuestionResponse,
   CreatedQuestionnaireResponse,
@@ -84,9 +84,7 @@ export const updateQuestionnaireStatusAPI = async (
     url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}`,
   });
   return response;
-}  
-
-import { GetQuestionnaireResponse } from "@/features/questionnaire/types";
+};
 
 export const getQuestionnaires = async (): Promise<
   ApiResponse<GetQuestionnaireResponse[]>
@@ -99,10 +97,6 @@ export const getQuestionnaires = async (): Promise<
 };
 export const searchQuestionnaires = async (
   params?: Record<string, unknown>
-  // query: string,
-  // filter: string,
-  // page: number,
-  // limit: number
 ): Promise<ApiResponse<GetQuestionnaireResponse[]>> => {
   const response = await onParseResponse<GetQuestionnaireResponse[]>({
     method: "get",

@@ -15,7 +15,7 @@ import { SurveyCard } from "@/components/SurveyCard";
 import { Typography } from "@/components/Typography";
 
 import { searchQuestionnaires } from "@/api/questionnaire";
-import { GetQuestionnaireResponse } from "@/features/questionnaire/types";
+import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
 
@@ -24,13 +24,11 @@ const SurveyorView: FC = () => {
   const router = useRouter();
   const [showAlert, setShowAlert] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [questionnaires, setQuestionnaires] = useState<
     GetQuestionnaireResponse[]
   >([]);
-  const [searchStr, setSearchStr] = useState("");
-  const [filterStr, setFilterStr] = useState("");
+  const [searchStr, setSearchStr] = useState<string>("");
+  const [filterStr, setFilterStr] = useState<string>("");
   const [itemCount, setItemCount] = useState<number>(INITIAL_ITEM_COUNT);
 
   const handleSearch = async (query: string, filter: string) => {
@@ -60,7 +58,6 @@ const SurveyorView: FC = () => {
   const handleLoad = useCallback(
     async (page: number) => {
       setCurrentPage(page);
-      setIsLoading(true);
 
       const queryParams = {
         page,
@@ -81,8 +78,6 @@ const SurveyorView: FC = () => {
 
         setCurrentPage(page);
       }
-
-      setIsLoading(false);
     },
     [filterStr, searchStr]
   );
@@ -161,7 +156,6 @@ const SurveyorView: FC = () => {
           currentPage={currentPage}
           totalCount={itemCount}
           pageSize={itemCount}
-          //onPageChange={(page) => setCurrentPage(page)}
           onPageChange={handleLoad}
         />
       </div>
