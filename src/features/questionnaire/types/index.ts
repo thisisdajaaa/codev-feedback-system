@@ -2,6 +2,8 @@ import type { NextApiRequest } from "next";
 
 import type { IQuestion, ITemplate } from "@/models/Template/types";
 
+import type { ApiResponse } from "@/types";
+
 export type PickedTemplateDetails =
   | "id"
   | "title"
@@ -26,6 +28,11 @@ export type CreatedQuestionnaireResponse = PickedTemplate & { id: string };
 export type AddedQuestionResponse = PickedQuestion & {
   templateId: string;
 };
+
+export type GetQuestionnaireApiResponse = Omit<
+  ApiResponse<GetQuestionnaireResponse[]>,
+  "success"
+>;
 
 export type GetQuestionnaireResponse = PickedTemplate & { id: string };
 

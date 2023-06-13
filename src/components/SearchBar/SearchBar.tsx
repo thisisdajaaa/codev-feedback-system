@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 
 import type { SearchBarProps } from "./types";
 import { Button } from "../Button";
@@ -7,13 +7,14 @@ import type { Option } from "../Dropdown/types";
 import { Icon } from "../Icon";
 
 const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("");
+  const [query, setQuery] = useState<string>("");
+  const [filter, setFilter] = useState<string>("");
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+
+  const handleSubmit = () => {
     onSearch(query, filter);
   };
 
@@ -31,21 +32,23 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       value: "FINISHED",
     },
   ];
+
   const [selectedOption, setSelectedOption] = useState<
     Option | Option[] | null
   >(null);
 
-  const handleOptionChange = (selectedOptions: Option | Option[]) => {
-    setSelectedOption(selectedOptions);
-    const optionStr = JSON.stringify(selectedOptions);
-    const optionObj = JSON.parse(optionStr);
-    setFilter(optionObj.value);
-  };
+  const handleOptionChange = useCallback(
+    (selectedOptions: Option | Option[]) => {
+      setSelectedOption(selectedOptions);
+      const optionStr = JSON.stringify(selectedOptions);
+      const optionObj = JSON.parse(optionStr);
+      setFilter(optionObj.value);
+    },
+    []
+  );
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto mb-[1.5rem] flex w-screen max-w-3xl items-center px-4"
-    >
+    <div className="mx-auto mb-[1.5rem] flex w-screen max-w-3xl items-center px-4">
       <Dropdown
         options={mockFilter}
         selectedOption={selectedOption as Option[]}
@@ -61,10 +64,13 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
         onChange={handleInputChange}
       />
 
-      <Button className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[0.625rem]">
+      <Button
+        onClick={handleSubmit}
+        className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[0.625rem]"
+      >
         <Icon src="/assets/search.svg" />
       </Button>
-    </form>
+    </div>
   );
 };
 

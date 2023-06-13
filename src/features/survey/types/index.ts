@@ -28,15 +28,14 @@ export type CreatedSurveyResponse = {
   survey: PickedSurvey & { id: string };
 };
 
-export type SingleSurveyResponse = PickedSurvey &
-  PickedTemplate & {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    isAnonymous: boolean;
-    status: string;
-    templateId: string;
-  };
+export type SingleSurveyResponse = PickedSurvey & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  isAnonymous: boolean;
+  status: string;
+  templateId: PickedTemplate;
+};
 
 export type SurveysResponse = SingleSurveyResponse[];
 

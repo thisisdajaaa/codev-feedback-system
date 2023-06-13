@@ -86,22 +86,23 @@ export const updateQuestionnaireStatusAPI = async (
   return response;
 };
 
-export const getQuestionnaires = async (): Promise<
-  ApiResponse<GetQuestionnaireResponse[]>
-> => {
-  const response = await onParseResponse<GetQuestionnaireResponse[]>({
-    method: "get",
-    url: "api/questionnaire?",
-  });
-  return response;
-};
 export const searchQuestionnaires = async (
-  params?: Record<string, unknown>
+  params?: Record<string, unknown>,
+  context?: GetServerSidePropsContext
 ): Promise<ApiResponse<GetQuestionnaireResponse[]>> => {
+  const headers: AxiosRequestHeaders = {};
+
+  if (context) {
+    const incomingHeaders: IncomingHttpHeaders = context.req.headers;
+    headers.cookie = incomingHeaders.cookie ?? "";
+  }
+
   const response = await onParseResponse<GetQuestionnaireResponse[]>({
     method: "get",
     url: "api/questionnaire",
     params,
+    headers,
   });
+
   return response;
 };

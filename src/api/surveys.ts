@@ -30,7 +30,7 @@ export const getSurveyListAPI = async (
 
   const response = await onParseResponse<SurveysResponse>({
     method: "get",
-    url: "/api/surveys",
+    url: "/api/surveys/list",
     params,
     headers,
   });
@@ -44,7 +44,7 @@ export const getAnsweredSurveysByTemplateAPI = async (
 ): Promise<ApiResponse<SurveysResponse>> => {
   const response = await onParseResponse<SurveysResponse>({
     method: "get",
-    url: `/api/surveys/${templateId}`,
+    url: `/api/surveys/template/${templateId}`,
     params,
   });
 

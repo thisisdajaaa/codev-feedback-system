@@ -141,8 +141,8 @@ const Question: FC<QuestionProps> = (props) => {
   }, [currentQuestion.id, currentQuestion.type, index, status, templateId]);
 
   return (
-    <div className="rounded-lg bg-white px-7 pt-[13px] pb-[72px] shadow-md">
-      <div className="flex border-b border-b-nero px-[15px] pb-3">
+    <div className="rounded-lg bg-white px-7 pt-[0.813rem] pb-[4.5rem] shadow-md">
+      <div className="flex border-b border-b-nero px-[0.938rem] pb-3">
         <Typography
           variant="p"
           size="text-xl"

@@ -227,11 +227,10 @@ export const SurveyService = () => {
   ): Promise<GetSurveysResponse> => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 25;
-    const createdBy = (req.query.createdBy as string) || req.user.email;
-    const title = req.query.title as string;
+    const answeredBy = req.user.email;
 
     const user = await User.findOne({
-      $or: [{ email: createdBy }],
+      $or: [{ email: answeredBy }],
     });
 
     if (!user)
@@ -241,28 +240,27 @@ export const SurveyService = () => {
       );
 
     const filter = {
-      createdBy: user._id,
-      ...(title && { title: { $regex: title, $options: "i" } }),
+      answeredBy: user._id,
     };
 
     // Constructing initial query.
-    const query = Template.find();
+    const query = Survey.find();
 
-    const total = await Template.countDocuments(filter);
+    const total = await Survey.countDocuments(filter);
 
     // Building query with QueryBuilder
-    const builder = new QueryBuilder(query, Template.schema, total);
+    const builder = new QueryBuilder(query, Survey.schema, total);
 
     const populate: Populate[] = [
       {
-        path: "createdBy",
+        path: "answeredBy",
         model: "User",
         select: "email name",
       },
       {
-        path: "surveys",
-        model: "Survey",
-        select: "answeredBy surveyAnswers isAnonymous status dateSubmitted",
+        path: "templateId",
+        model: "Template",
+        select: "title description dateFrom dateTo status",
       },
     ];
 
@@ -293,7 +291,7 @@ export const SurveyService = () => {
 
     // Fetch the template once since we already have the templateId
     const template = (await Template.findOne({
-      id: templateId,
+      _id: templateId,
     })) as ITemplate | null;
 
     if (!template)

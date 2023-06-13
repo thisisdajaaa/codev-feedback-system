@@ -10,6 +10,7 @@ import { SYSTEM_URL } from "@/constants/pageUrl";
 import { QuestionType } from "@/constants/questionType";
 
 import { AlertBanner } from "@/components/AlertBanner";
+import { BackArrow } from "@/components/BackArrow";
 import { Button } from "@/components/Button";
 import { Typography } from "@/components/Typography";
 
@@ -46,7 +47,7 @@ const Survey: NextPage<SurveyProps> = ({ items: { data } }) => {
     const mappedQuestions = data?.questions.map((item) => {
       if (!flatTypes.includes(item.type)) {
         const questionOptions = QuestionType[item.type]?.options;
-        const foundOption = questionOptions.find(
+        const foundOption = questionOptions?.find(
           ({ name }) => name === item.answer
         );
 
@@ -114,7 +115,11 @@ const Survey: NextPage<SurveyProps> = ({ items: { data } }) => {
           handleClose={onClearServerErrorMessage}
         />
 
-        <Overview data={data as SurveyByIdResponse} />
+        <div>
+          <BackArrow />
+
+          <Overview data={data as SurveyByIdResponse} />
+        </div>
 
         {formikBag.values.questions.map((_, index) => (
           <Question key={index} index={index} />

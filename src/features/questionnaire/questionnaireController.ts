@@ -1,16 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 
-import { advancedResults } from "@/utils/advancedResults";
 import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
 import { SurveyStatus } from "@/models/Survey/config";
-import Template from "@/models/Template";
-import type { ITemplate } from "@/models/Template/types";
 
-import type { AdvancedResultsOptions, ApiResponse } from "@/types";
+import type { ApiResponse } from "@/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 import { QuestionnaireService } from "@/features/questionnaire/questionnaireService";
@@ -34,6 +31,7 @@ export const QuestionnaireController = () => {
     removeQuestion,
     validateTemplate,
     getTemplateById,
+    getQuestionnaires,
   } = QuestionnaireService();
 
   const handleGetQuestionnaires = catchAsyncErrors(
@@ -42,45 +40,11 @@ export const QuestionnaireController = () => {
       res: NextApiResponse<ApiResponse<GetQuestionnaireResponse[]>>,
       _next: NextHandler
     ) => {
-      const populateFields = [
-        { path: "createdBy", select: "name email" },
-        { path: "updatedBy", select: "name email" },
-      ];
-
-      const options: AdvancedResultsOptions<ITemplate> = {
-        model: Template,
-        req,
-        strict: false,
-        populate: populateFields,
-        discardQueryList: ["question"],
-      };
-
-      const { count, pagination, data } = await advancedResults<
-        ITemplate,
-        GetQuestionnaireResponse[]
-      >(options);
-
-      //Let's filter out question if question query is available.
-      const { question } = req.query;
-      if (question) {
-        data.forEach((x) => {
-          const datum = x as any;
-          const { questions } = x as any;
-
-          const items: any[] = Array.isArray(questions)
-            ? questions
-            : [questions];
-          datum.questions = items.filter((q) =>
-            q.title.toLowerCase().includes(question.toString().toLowerCase())
-          );
-        });
-      }
+      const questionnaires = await getQuestionnaires(req);
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        count,
-        pagination,
-        data,
+        ...questionnaires,
         message: QUESTIONNAIRE_MESSAGES.SUCCESS.ALL,
       });
     }

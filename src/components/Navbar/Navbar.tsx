@@ -15,7 +15,7 @@ import { Typography } from "../Typography";
 const Navbar: FC = () => {
   const { data } = useSession();
   const router = useRouter();
-  const { isSurveyor } = useUserRole();
+  const { isAdmin, isSurveyor } = useUserRole();
 
   const { pathname } = router;
 
@@ -43,30 +43,36 @@ const Navbar: FC = () => {
 
         <ul className="ml-[3.625rem] flex h-full">
           <li
+            onClick={() => router.push(SYSTEM_URL.HOME)}
             className={clsxm(
               "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
               pathname === SYSTEM_URL.HOME && "bg-gray-100"
             )}
           >
-            <Link href={SYSTEM_URL.HOME}>
-              <a>
-                <Typography preset="heading2">Home</Typography>
-              </a>
-            </Link>
+            <Typography preset="heading2">Home</Typography>
           </li>
 
           {isSurveyor && (
             <li
+              onClick={() => router.push(SYSTEM_URL.RESPONSES)}
               className={clsxm(
                 "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
                 pathname === SYSTEM_URL.RESPONSES && "bg-gray-100"
               )}
             >
-              <Link href={SYSTEM_URL.RESPONSES}>
-                <a>
-                  <Typography preset="heading2">Responses</Typography>
-                </a>
-              </Link>
+              <Typography preset="heading2">Responses</Typography>
+            </li>
+          )}
+
+          {(isAdmin || isSurveyor) && (
+            <li
+              onClick={() => router.push(SYSTEM_URL.MY_SURVEYS)}
+              className={clsxm(
+                "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
+                pathname === SYSTEM_URL.MY_SURVEYS && "bg-gray-100"
+              )}
+            >
+              <Typography preset="heading2">My Surveys</Typography>
             </li>
           )}
         </ul>
@@ -108,9 +114,10 @@ const Navbar: FC = () => {
               {navLinks.map((nav, index) => (
                 <li
                   key={index}
+                  onClick={() => router.push(nav.url)}
                   className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
                 >
-                  <Link href={nav.url}>{nav.label}</Link>
+                  {nav.label}
                 </li>
               ))}
 

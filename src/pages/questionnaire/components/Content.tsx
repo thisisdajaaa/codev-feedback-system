@@ -4,6 +4,7 @@ import React, { FC, useMemo } from "react";
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
 import { AlertBanner } from "@/components/AlertBanner";
+import { BackArrow } from "@/components/BackArrow";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { Typography } from "@/components/Typography";
@@ -87,7 +88,11 @@ const Content: FC = () => {
         handleClose={onClearServerErrorMessage}
       />
 
-      <Overview />
+      <div>
+        <BackArrow />
+
+        <Overview />
+      </div>
 
       {questions.map((_, index) => (
         <Question
