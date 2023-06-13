@@ -23,6 +23,7 @@ import type { Populate, ValidationResult } from "@/types";
 import type {
   AnalyticsQuestion,
   AnalyticsResponse,
+  GetInvitedResponse,
   GetSurveysResponse,
   IAnswerSurveyRequest,
   ICreateSurveyRequest,
@@ -307,6 +308,27 @@ export const SurveyService = () => {
     return { count: results.length, total, pagination, data: results };
   };
 
+  const getInvitedByTemplateId = async (
+    req: NextApiRequest
+  ): Promise<GetInvitedResponse[]> => {
+    const { templateId } = req.query;
+
+    const surveys = await Survey.find({ templateId }).populate({
+      path: "answeredBy",
+      model: "User",
+      select: "email name",
+    });
+
+    const formattedResult: GetInvitedResponse[] = surveys.map((x) => {
+      return {
+        templateId: x.templateId,
+        answeredBy: x.id,
+        answeredByEmail: x.answeredBy?.email,
+      } as GetInvitedResponse;
+    });
+    return formattedResult;
+  };
+
   const getAnsweredSurveysByTemplateId = async (
     req: NextApiRequest
   ): Promise<GetSurveysResponse> => {
@@ -578,5 +600,6 @@ export const SurveyService = () => {
     isSurveyExist,
     setSurveyStatus,
     validateSurvey,
+    getInvitedByTemplateId,
   };
 };

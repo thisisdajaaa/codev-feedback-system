@@ -10,11 +10,9 @@ export type InviteFormProps = {
   handleClose: () => void;
   handleRefetch: () => void;
 };
-
-export type SurveyInviteState = {
-  allowAdd: boolean;
+export type SurveyeeAddInfo = {
   email: string;
-  addedEmails: string[];
+  isAdded: boolean;
 };
 
 export type SurveyInvitesModalProps = {

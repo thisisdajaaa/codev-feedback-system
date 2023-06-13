@@ -8,6 +8,7 @@ import type { ApiResponse } from "@/types";
 
 import type {
   AnalyticsResponse,
+  GetInvitedResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -77,6 +78,17 @@ export const sendSurveyInvitesAPI = async (
     method: "post",
     data,
     url: `/api/survey/send-invites?templateId=${templateId}`,
+  });
+
+  return response;
+};
+
+export const getInvitedByTemplateIdAPI = async (
+  templateId: string
+): Promise<ApiResponse<GetInvitedResponse[]>> => {
+  const response = await onParseResponse<GetInvitedResponse[]>({
+    method: "get",
+    url: `/api/survey/get-invited?templateId=${templateId}`,
   });
 
   return response;

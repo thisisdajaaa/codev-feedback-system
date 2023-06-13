@@ -106,3 +106,7 @@ export type AnalyticsQuestion = {
   answer: string;
   comment?: string;
 };
+
+export type GetInvitedResponse = Pick<ISurvey, "templateId" | "answeredBy"> & {
+  answeredByEmail: string;
+};
