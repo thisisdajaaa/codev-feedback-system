@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";
 
+import { noop } from "@/utils/helpers";
 import { useMount } from "@/hooks";
 
 import { SYSTEM_URL } from "@/constants/pageUrl";
@@ -82,7 +83,9 @@ const SurveyeeView: FC = () => {
                 key={survey.id}
                 isOwnSurvey
                 onPrimaryAction={handlePrimaryAction}
-                onInvite={() => {}}
+                onInvite={() => {
+                  noop;
+                }}
                 {...surveyData}
               />
             );
