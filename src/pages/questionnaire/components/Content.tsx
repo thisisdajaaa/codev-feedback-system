@@ -19,6 +19,7 @@ import { Overview } from "./Overview";
 import { Question } from "./Question";
 import { newQuestion } from "../config";
 import type { QuestionnaireForm } from "../types";
+import { questionnaireFormSchema } from "../validations/questionnaireFormSchema";
 
 const Content: FC = () => {
   const dispatch = useAppDispatch();
@@ -33,12 +34,10 @@ const Content: FC = () => {
     dispatch(actions.callSetServerErrorMessage(""));
   };
 
-  const {
-    values: { questions, title, status },
-    setFieldValue,
-    submitForm,
-    isSubmitting,
-  } = useFormikContext<QuestionnaireForm>();
+  const { values, setFieldValue, submitForm, isSubmitting } =
+    useFormikContext<QuestionnaireForm>();
+
+  const { questions, title, status } = values;
 
   const isEditable = useMemo(
     () => !status || status === SurveyStatus.DRAFT,
@@ -50,7 +49,7 @@ const Content: FC = () => {
       ({ title, type }) => !title || !type
     );
 
-    return hasInvalidQuestions || !title;
+    return hasInvalidQuestions || !title || !!serverErrorMessage;
   };
 
   const handleAddQuestion = () => {
@@ -75,6 +74,9 @@ const Content: FC = () => {
 
     return success;
   };
+
+  const isPublishDisabled =
+    !questionnaireFormSchema.isValidSync(values) || isBtnDisabled();
 
   return (
     <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">
@@ -101,7 +103,8 @@ const Content: FC = () => {
             <Button
               className="px-2 sm:px-2"
               onClick={handleAddQuestion}
-              disabled={isBtnDisabled()}>
+              disabled={isBtnDisabled()}
+            >
               <div className="text-xl">
                 <Icon src="/assets/add.svg" />
               </div>
@@ -113,14 +116,16 @@ const Content: FC = () => {
               className="rounded-[0.938rem]"
               onClick={submitForm}
               isLoading={isSubmitting}
-              disabled={isBtnDisabled()}>
+              disabled={isPublishDisabled}
+            >
               <Typography
                 variant="span"
                 size="text-lg"
                 lineHeight="leading-[1.688rem]"
                 textAlign="text-left"
                 color="text-white"
-                className="font-bold">
+                className="font-bold"
+              >
                 Publish
               </Typography>
             </Button>

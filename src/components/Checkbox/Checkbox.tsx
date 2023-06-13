@@ -1,16 +1,28 @@
 import React, { FC } from "react";
 
+import clsxm from "@/utils/clsxm";
+
 import type { CheckboxProps } from "./types";
 import { Typography } from "../Typography";
 
 const Checkbox: FC<CheckboxProps> = (props) => {
-  const { label, checked, name, readOnly, ...rest } = props;
+  const {
+    label,
+    checked,
+    name,
+    readOnly,
+    containerClassName,
+    labelClassName,
+    ...rest
+  } = props;
 
   return (
     <label
       htmlFor={name}
-      className="flex cursor-pointer items-center gap-[1.563rem]"
-    >
+      className={clsxm(
+        "flex cursor-pointer items-center gap-[1.563rem]",
+        containerClassName
+      )}>
       <input
         type="checkbox"
         checked={checked}
@@ -19,7 +31,7 @@ const Checkbox: FC<CheckboxProps> = (props) => {
         {...rest}
       />
 
-      <Typography variant="span" size="text-base">
+      <Typography variant="span" size="text-base" className={labelClassName}>
         {label}
       </Typography>
     </label>
