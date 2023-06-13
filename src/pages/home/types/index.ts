@@ -12,6 +12,7 @@ export type InviteFormProps = {
 };
 
 export type SurveyInviteState = {
+  allowAdd: boolean;
   email: string;
   addedEmails: string[];
 };

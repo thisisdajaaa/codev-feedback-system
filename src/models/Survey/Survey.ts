@@ -54,6 +54,13 @@ export const SurveySchema = new Schema<ISurvey>(
   }
 );
 
+SurveySchema.virtual("answeredUser", {
+  ref: "User",
+  localField: "answeredBy",
+  foreignField: "answeredUser",
+  justOne: true,
+});
+
 const Survey =
   mongoose.models?.Survey || mongoose.model<ISurvey>("Survey", SurveySchema);
 

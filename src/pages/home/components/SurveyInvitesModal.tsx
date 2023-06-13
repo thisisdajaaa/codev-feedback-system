@@ -1,5 +1,4 @@
-import { debounce } from "lodash";
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
@@ -16,26 +15,37 @@ import type { SurveyInvitesModalProps, SurveyInviteState } from "../types";
 const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   const { open, templateId, setShowInviteDialog } = props;
   const [inviteState, setInviteState] = useState<SurveyInviteState>({
+    allowAdd: false,
     email: "",
     addedEmails: [],
   });
-  const [allowAdd, setAllowAdd] = useState<boolean>(false);
 
-  const debouncedHandleCall = useRef(
-    debounce(async (email: string) => {
-      if (email) {
-        const result = await getUserAPI(email);
-        const user = result.data?.find((x) => x.email === email);
-        if (user) {
-          setAllowAdd(true);
-        } else {
-          setAllowAdd(false);
-        }
+  useEffect(() => {
+    const search = async (email: string) => {
+      const result = await getUserAPI(email);
+      const user = result.data?.find((x) => x.email === email);
+      if (user) {
+        setInviteState({ ...inviteState, allowAdd: true });
       } else {
-        setAllowAdd(false);
+        setInviteState({ ...inviteState, allowAdd: false });
       }
-    }, 500)
-  );
+    };
+
+    const timeoutId = setTimeout(() => {
+      if (
+        inviteState.email.length > "@codev.com".length &&
+        !inviteState.addedEmails.includes(inviteState.email)
+      ) {
+        search(inviteState.email);
+      } else {
+        setInviteState({ ...inviteState, allowAdd: false });
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [inviteState]);
 
   const handleSendInvites = async () => {
     const result = await sendSurveyInvitesAPI(
@@ -46,20 +56,19 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
       setShowInviteDialog(false);
     }
   };
+
   const handleEmailChange = async (value: string) => {
     setInviteState({ ...inviteState, email: value });
-    debouncedHandleCall.current.cancel();
-    if (value.length > "@codev.com".length) {
-      debouncedHandleCall.current(value);
-    }
   };
 
   const handleAddEmail = () => {
     const { email, addedEmails } = inviteState;
     if (email) {
       addedEmails.push(email);
-      setInviteState({ ...inviteState, ...{ addedEmails, email: "" } });
-      setAllowAdd(false);
+      setInviteState({
+        ...inviteState,
+        ...{ allowAdd: false, addedEmails, email: "" },
+      });
     }
   };
 
@@ -108,10 +117,10 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
               <Button
                 className="border-none px-2 sm:px-2"
                 onClick={handleAddEmail}
-                disabled={!allowAdd}
+                disabled={!inviteState.allowAdd}
               >
                 <div className="text-xl">
-                  <Icon src="/assets/add.svg" />
+                  <Icon src="/assets/add-thick.svg" />
                 </div>
               </Button>
             </div>
@@ -145,7 +154,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
                   </Typography>
                   <div>
                     <Button
-                      className="border-none bg-red-500 px-2 sm:px-2"
+                      className="border-none bg-red-500 px-2 hover:bg-red-500 sm:px-2"
                       onClick={() => handleRemoveEmail(item)}
                     >
                       <div className="text-xl">
