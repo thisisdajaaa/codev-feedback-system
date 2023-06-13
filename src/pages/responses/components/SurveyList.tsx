@@ -9,8 +9,8 @@ import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { getSurveyListAPI } from "@/api/surveys";
-import type { SurveysResponse } from "@/features/survey/types";
+import { searchQuestionnaires } from "@/api/questionnaire";
+import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { INITIAL_PAGE, INITIAL_TOTAL, PAGE_SIZE } from "../config";
 import type { ResponsesProps, SurveyListProps } from "../types";
@@ -36,7 +36,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
       const queryParams = { page, limit: PAGE_SIZE };
 
-      const { success, data, count } = await getSurveyListAPI(queryParams);
+      const { success, data, count } = await searchQuestionnaires(queryParams);
 
       if (success) setSurveyList(data || []);
 
@@ -51,9 +51,10 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   const handleDownloadCSV = useCallback(async () => {
     setIsCSVLoading(true);
 
-    const { success, data } = await getSurveyListAPI();
+    const { success, data } = await searchQuestionnaires();
 
-    if (success && data) downloadCSV<SurveysResponse>(data, "surveyList");
+    if (success && data)
+      downloadCSV<GetQuestionnaireResponse[]>(data, "surveyList");
 
     setIsCSVLoading(false);
   }, []);
@@ -108,7 +109,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
     const tableData = (surveyList || [])?.map(({ id, title, status }) => ({
       id,
       surveyor: renderTitle(id, title || ""),
-      chip: renderChip(status),
+      chip: renderChip(String(status)),
     }));
 
     const tableColumns = [

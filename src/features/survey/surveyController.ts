@@ -17,6 +17,7 @@ import type {
   GetInvitedResponse,
   IAnswerSurveyRequest,
   ICreateSurveyRequest,
+  SurveyByIdResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -33,6 +34,7 @@ export const SurveyController = () => {
     isSurveyExist,
     setSurveyStatus,
     validateSurvey,
+    getSurveyById,
     sendInvites,
     getInvitedByTemplateId,
   } = SurveyService();
@@ -170,6 +172,22 @@ export const SurveyController = () => {
     }
   );
 
+  const handleGetSurveyById = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<SurveyByIdResponse>>,
+      _next: NextHandler
+    ) => {
+      const data = await getSurveyById(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data,
+        message: SURVEY_MESSAGES.SUCCESS.USER_SURVEY_DETAILS,
+      });
+    }
+  );
+
   const handleSendInvites = catchAsyncErrors(
     async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
       const { templateId } = req.query;
@@ -223,6 +241,7 @@ export const SurveyController = () => {
     handleGetTemplateAnalytics,
     handleGetSurveyDetailsByUser,
     handleSurveyStatus,
+    handleGetSurveyById,
     handleSendInvites,
     handleGetInvitedByTemplateId,
   };

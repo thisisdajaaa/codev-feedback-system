@@ -10,7 +10,7 @@ export const SurveyAnswerSchema = new Schema<ISurveyAnswer>({
   },
   answer: {
     type: String,
-    required: true,
+    required: false,
   },
   comment: {
     type: String,
@@ -43,7 +43,7 @@ export const SurveySchema = new Schema<ISurvey>(
     status: {
       type: String,
       enum: surveyStatusList,
-      default: SurveyStatus.DRAFT,
+      default: SurveyStatus.ACTIVE,
     },
   },
   {

@@ -4,11 +4,16 @@ import type { GetServerSidePropsContext } from "next";
 
 import { onParseResponse } from "@/utils/helpers";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import type { ApiResponse } from "@/types";
 
 import type {
   AnalyticsResponse,
   GetInvitedResponse,
+  IAnswerSurveyRequest,
+  ICreateSurveyRequest,
+  SurveyByIdResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -26,7 +31,7 @@ export const getSurveyListAPI = async (
 
   const response = await onParseResponse<SurveysResponse>({
     method: "get",
-    url: "/api/surveys",
+    url: "/api/surveys/list",
     params,
     headers,
   });
@@ -40,7 +45,7 @@ export const getAnsweredSurveysByTemplateAPI = async (
 ): Promise<ApiResponse<SurveysResponse>> => {
   const response = await onParseResponse<SurveysResponse>({
     method: "get",
-    url: `/api/surveys/${templateId}`,
+    url: `/api/surveys/template/${templateId}`,
     params,
   });
 
@@ -65,6 +70,62 @@ export const getSurveyDetailsByUserAPI = async (
   const response = await onParseResponse<SurveyDetailsByUserResponse>({
     method: "get",
     url: `/api/surveys/details?userId=${userId}&templateId=${templateId}`,
+  });
+
+  return response;
+};
+
+export const getSurveyByIdAPI = async (
+  surveyId: string,
+  context?: GetServerSidePropsContext
+): Promise<ApiResponse<SurveyByIdResponse>> => {
+  const headers: AxiosRequestHeaders = {};
+
+  if (context) {
+    const incomingHeaders: IncomingHttpHeaders = context.req.headers;
+    headers.cookie = incomingHeaders.cookie ?? "";
+  }
+
+  const response = await onParseResponse<SurveyByIdResponse>({
+    method: "get",
+    url: `/api/surveys/${surveyId}`,
+    headers,
+  });
+
+  return response;
+};
+
+export const answerSurveyQuestionAPI = async (
+  data: IAnswerSurveyRequest["body"]
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    data,
+    url: "/api/surveys/answer",
+  });
+
+  return response;
+};
+
+export const createSurveyAPI = async (
+  data: ICreateSurveyRequest["body"]
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    data,
+    url: "/api/surveys",
+  });
+
+  return response;
+};
+
+export const updateSurveyStatusAPI = async (
+  status: keyof typeof SurveyStatus,
+  surveyId: string
+): Promise<ApiResponse<unknown>> => {
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    url: `/api/surveys/set-status?status=${status}&surveyId=${surveyId}`,
   });
 
   return response;

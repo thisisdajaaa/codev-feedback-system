@@ -5,7 +5,7 @@ import { withAuth } from "@/utils/withAuth";
 
 import type { TableRow } from "@/components/Table/types";
 
-import { getSurveyListAPI } from "@/api/surveys";
+import { searchQuestionnaires } from "@/api/questionnaire";
 
 import { ResponseList } from "./components/ResponseList";
 import { SummaryList } from "./components/SummaryList";
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<ResponsesProps> = async (
 ) => {
   const queryParams = { page: INITIAL_PAGE, limit: PAGE_SIZE };
 
-  const response = await getSurveyListAPI(queryParams, context);
+  const response = await searchQuestionnaires(queryParams, context);
 
   return {
     props: {

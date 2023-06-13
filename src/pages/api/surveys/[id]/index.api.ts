@@ -1,0 +1,29 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import nextConnect from "next-connect";
+
+import { ROLES } from "@/models/User/config";
+
+import type { ApiResponse } from "@/types";
+
+import { SurveyController } from "@/features/survey";
+import type { SurveyByIdResponse } from "@/features/survey/types";
+import { onError } from "@/middlewares/errors";
+import { isAuthenticatedUser } from "@/middlewares/isAuthenticatedUser";
+import { mongoHandler } from "@/middlewares/mongodb";
+import { roleAtLeast } from "@/middlewares/roleAtLeast";
+
+const handler = nextConnect<
+  NextApiRequest,
+  NextApiResponse<ApiResponse<SurveyByIdResponse>>
+>({
+  onError,
+});
+
+const { handleGetSurveyById } = SurveyController();
+
+handler
+  .use(isAuthenticatedUser)
+  .use(roleAtLeast(ROLES.SURVEYEE))
+  .get(mongoHandler(handleGetSurveyById));
+
+export default handler;

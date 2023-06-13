@@ -1,5 +1,7 @@
 import type { NextApiRequest } from "next";
 
+import type { Option } from "@/components/RadioGroup/types";
+
 import type { ISurvey, ISurveyAnswer } from "@/models/Survey/types";
 import type { IQuestion } from "@/models/Template/types";
 
@@ -26,15 +28,14 @@ export type CreatedSurveyResponse = {
   survey: PickedSurvey & { id: string };
 };
 
-export type SingleSurveyResponse = PickedSurvey &
-  PickedTemplate & {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    isAnonymous: boolean;
-    status: string;
-    templateId: string;
-  };
+export type SingleSurveyResponse = PickedSurvey & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  isAnonymous: boolean;
+  status: string;
+  templateId: PickedTemplate;
+};
 
 export type SurveysResponse = SingleSurveyResponse[];
 
@@ -105,6 +106,26 @@ export type AnalyticsQuestion = {
   questionId: string;
   answer: string;
   comment?: string;
+};
+
+export type SurveyByIdQuestion = {
+  title: string;
+  type: string;
+  isRequired: boolean;
+  answer: string | number | Option;
+  comment: string;
+  id: string;
+};
+
+export type SurveyByIdResponse = {
+  templateId: string;
+  title: string;
+  description: string;
+  isAnonymous: boolean;
+  dateFrom: string;
+  dateTo: string;
+  questions: SurveyByIdQuestion[];
+  status: string;
 };
 
 export type GetInvitedResponse = Pick<ISurvey, "templateId" | "answeredBy"> & {

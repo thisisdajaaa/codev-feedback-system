@@ -31,6 +31,8 @@ import type {
   IViewSurveAnswer,
   QuestionAnalyticsData,
   SingleSurveyResponse,
+  SurveyByIdQuestion,
+  SurveyByIdResponse,
   SurveyDetailsByUserResponse,
   SurveysResponse,
 } from "@/features/survey/types";
@@ -228,6 +230,16 @@ export const SurveyService = () => {
         (x) => x.questionId.toString() === questionId
       );
 
+      const foundQuestion = template.questions?.find(
+        ({ _id }) => _id.toString() === item?.questionId.toString()
+      );
+
+      if (foundQuestion?.isRequired && !answer)
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.MISSING_QUESTION_ANSWER,
+          StatusCodes.BAD_REQUEST
+        );
+
       if (item) {
         item.answer = answer;
         item.comment = comment;
@@ -250,11 +262,10 @@ export const SurveyService = () => {
   ): Promise<GetSurveysResponse> => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 25;
-    const createdBy = (req.query.createdBy as string) || req.user.email;
-    const title = req.query.title as string;
+    const answeredBy = req.user.email;
 
     const user = await User.findOne({
-      $or: [{ email: createdBy }],
+      $or: [{ email: answeredBy }],
     });
 
     if (!user)
@@ -264,28 +275,27 @@ export const SurveyService = () => {
       );
 
     const filter = {
-      createdBy: user._id,
-      ...(title && { title: { $regex: title, $options: "i" } }),
+      answeredBy: user._id,
     };
 
     // Constructing initial query.
-    const query = Template.find();
+    const query = Survey.find();
 
-    const total = await Template.countDocuments(filter);
+    const total = await Survey.countDocuments(filter);
 
     // Building query with QueryBuilder
-    const builder = new QueryBuilder(query, Template.schema, total);
+    const builder = new QueryBuilder(query, Survey.schema, total);
 
     const populate: Populate[] = [
       {
-        path: "createdBy",
+        path: "answeredBy",
         model: "User",
         select: "email name",
       },
       {
-        path: "surveys",
-        model: "Survey",
-        select: "answeredBy surveyAnswers isAnonymous status dateSubmitted",
+        path: "templateId",
+        model: "Template",
+        select: "title description dateFrom dateTo status",
       },
     ];
 
@@ -332,11 +342,12 @@ export const SurveyService = () => {
   const getAnsweredSurveysByTemplateId = async (
     req: NextApiRequest
   ): Promise<GetSurveysResponse> => {
-    const { templateId } = req.query;
+    const { id } = req.query;
+    const templateId = id;
 
     // Fetch the template once since we already have the templateId
     const template = (await Template.findOne({
-      id: templateId,
+      _id: templateId,
     })) as ITemplate | null;
 
     if (!template)
@@ -577,6 +588,7 @@ export const SurveyService = () => {
           const hasAnswer = survey.surveyAnswers.some(
             (a) => a.questionId.toString() === q._id.toString() && a.answer
           );
+
           return !hasAnswer;
         })
     ) {
@@ -588,6 +600,69 @@ export const SurveyService = () => {
 
     return { isValid: true };
   };
+
+  const getSurveyById = async (
+    req: NextApiRequest
+  ): Promise<SurveyByIdResponse> => {
+    const { id } = req.query;
+
+    if (!id)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.BAD_REQUEST
+      );
+
+    const survey = (await Survey.findOne({
+      _id: String(id),
+    }).lean()) as ISurvey;
+
+    if (!survey)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.SURVEY_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const template = (await Template.findById(
+      survey.templateId
+    ).lean()) as ITemplate;
+
+    if (!template)
+      throw new ErrorHandler(
+        SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const mappedQuestions: SurveyByIdQuestion[] =
+      template.questions?.map((item) => {
+        const foundSurvey = survey.surveyAnswers.find(
+          (surveyAnswer) =>
+            surveyAnswer.questionId.toString() === item._id.toString()
+        );
+
+        return {
+          id: item._id || "",
+          title: item.title || "",
+          type: item.type || "",
+          isRequired: item.isRequired || false,
+          answer: foundSurvey?.answer || "",
+          comment: foundSurvey?.comment || "",
+        };
+      }) || [];
+
+    const formattedResponse: SurveyByIdResponse = {
+      templateId: template._id,
+      title: template.title || "",
+      description: template.description || "",
+      isAnonymous: survey.isAnonymous,
+      dateFrom: template.dateFrom || "",
+      dateTo: template.dateTo || "",
+      questions: mappedQuestions || [],
+      status: survey.status,
+    };
+
+    return formattedResponse;
+  };
+
   return {
     sendInvites,
     createSurvey,
@@ -600,6 +675,7 @@ export const SurveyService = () => {
     isSurveyExist,
     setSurveyStatus,
     validateSurvey,
+    getSurveyById,
     getInvitedByTemplateId,
   };
 };
