@@ -1,12 +1,10 @@
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import React, { FC, useCallback, useState } from "react";
 
 import { useMount } from "@/hooks";
 
 import { SYSTEM_URL } from "@/constants/pageUrl";
 
-import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { Pagination } from "@/components/Pagination";
@@ -14,15 +12,16 @@ import { SearchBar } from "@/components/SearchBar";
 import { SurveyCard } from "@/components/SurveyCard";
 import { Typography } from "@/components/Typography";
 
+import { SurveyStatus } from "@/models/Survey/config";
+
 import { searchQuestionnaires } from "@/api/questionnaire";
 import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
 
 const SurveyorView: FC = () => {
-  const { data } = useSession();
   const router = useRouter();
-  const [showAlert, setShowAlert] = useState<boolean>(true);
+
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
   const [questionnaires, setQuestionnaires] = useState<
     GetQuestionnaireResponse[]
@@ -52,8 +51,6 @@ const SurveyorView: FC = () => {
       setItemCount(count || INITIAL_ITEM_COUNT);
     }
   };
-
-  const firstName = data?.user?.name?.split(" ")[0];
 
   const handleLoad = useCallback(
     async (page: number) => {
@@ -86,26 +83,9 @@ const SurveyorView: FC = () => {
     handleLoad(currentPage);
   });
 
-  const renderAlertMessage = (
-    <div className="flex flex-col gap-1 sm:flex-row">
-      <Typography preset="regular" className="text-center">
-        Hi {firstName}!
-      </Typography>
-      <Typography preset="regular">Welcome to the Feedback System</Typography>
-    </div>
-  );
-
   return (
-    <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
-      <div className="sm:px-[6.25rem]">
-        <AlertBanner
-          open={showAlert}
-          message={renderAlertMessage}
-          type="info"
-          handleClose={() => setShowAlert(false)}
-        />
-      </div>
-      <div className="mt-7 mb-[27px] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
+    <>
+      <div className="mt-7 mb-[1.688rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => router.push(SYSTEM_URL.ADD_QUESTIONNAIRE)}
           className="flex gap-0"
@@ -148,7 +128,23 @@ const SurveyorView: FC = () => {
               startDate: survey.dateFrom as string,
               endDate: survey.dateTo as string,
             };
-            return <SurveyCard key={survey.id} {...surveyData} />;
+
+            const handlePrimaryAction = () => {
+              if (survey.status === SurveyStatus.DRAFT) {
+                router.push(`${SYSTEM_URL.QUESTIONNAIRE}/${survey.id}`);
+                return;
+              }
+
+              router.push(SYSTEM_URL.RESPONSES);
+            };
+
+            return (
+              <SurveyCard
+                key={survey.id}
+                onPrimaryAction={handlePrimaryAction}
+                {...surveyData}
+              />
+            );
           })}
         </div>
 
@@ -159,7 +155,7 @@ const SurveyorView: FC = () => {
           onPageChange={handleLoad}
         />
       </div>
-    </div>
+    </>
   );
 };
 

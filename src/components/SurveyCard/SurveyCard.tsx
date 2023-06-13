@@ -16,6 +16,10 @@ const SurveyCard: FC<SurveyProps> = (props) => {
     endDate,
     responses = 0,
     totalRespondents = 0,
+    onInvite,
+    onDelete,
+    onPrimaryAction,
+    isOwnSurvey,
   } = props;
 
   const isSurveyActive = surveyStatus.toUpperCase() === "ACTIVE";
@@ -30,12 +34,13 @@ const SurveyCard: FC<SurveyProps> = (props) => {
   return (
     <div
       className={clsxm(
-        "relative mb-8 w-1/3 min-w-full overflow-hidden rounded-[1rem] border-[0.063rem] border-solid border-gray-500 p-3 pl-[1.688rem] before:absolute before:left-0 before:top-0 before:h-full before:w-[0.75rem] before:content-['']",
+        "relative mb-8 flex w-1/3 min-w-full flex-col gap-[2.688rem] overflow-hidden rounded-[1rem] border-[0.063rem] border-solid border-gray-500 p-3 pl-[1.688rem] before:absolute before:left-0 before:top-0 before:h-full before:w-[0.75rem] before:content-['']",
         isSurveyActive && "before:bg-blue-500",
         isSurveyDraft &&
           "before:border-r-[0.063rem] before:border-gray-500 before:bg-white",
         isSurveyClosed && "before:bg-gray-500"
-      )}>
+      )}
+    >
       <div
         className={clsxm(
           "absolute -top-1 -right-1 min-w-[5rem] py-2.5 px-3.5 text-center text-white",
@@ -43,40 +48,48 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           isSurveyDraft &&
             "border-[0.063rem] border-gray-500 bg-white text-gray-500",
           isSurveyClosed && "bg-gray-500"
-        )}>
+        )}
+      >
         {surveyStatus}
       </div>
-      <p className="invisible">{id}</p>
-      <p className="mt-[2.375rem] text-sm text-gray-500">Survey Name:</p>
-      <p className="text-[1.125rem]">{surveyName}</p>
 
-      <p className="text-sm text-gray-500">Description:</p>
-      <p className="text-sm">{description || "No description provided"}</p>
+      <div>
+        <p className="invisible">{id}</p>
+        <p className="text-xs text-gray-500">Survey Name:</p>
+        <p className="text-[1.125rem]">{surveyName}</p>
 
-      <p className="text-sm text-gray-500">Closing Date:</p>
-      <p className="text-sm">
-        {moment(startDate).format("MM/DD/YYYY")} -{" "}
-        {moment(endDate).format("MM/DD/YYYY")}
-      </p>
+        <p className="mt-2 text-xs text-gray-500">Description:</p>
+        <p className="overflow-hidden text-xs line-clamp-1">
+          {description || "No description provided"}
+        </p>
 
-      <p className="text-sm text-gray-500">Survey Status:</p>
-      <p className="text-sm">
-        {surveyStatusPercentage}% - {responses} of {totalRespondents}{" "}
-        participants
-      </p>
+        <p className="mt-2 text-xs text-gray-500">Closing Date:</p>
+        <p className="text-xs">
+          {moment(startDate).format("MMMM DD, YYYY")} -{" "}
+          {moment(endDate).format("MMMM DD, YYYY")}
+        </p>
+
+        <p className="mt-2 text-xs text-gray-500">Survey Status:</p>
+        <p className="text-xs">
+          {surveyStatusPercentage}% - {responses} of {totalRespondents}{" "}
+          participants
+        </p>
+      </div>
 
       <div
         className={clsxm(
-          "mt-[2.688rem] flex justify-between",
+          "flex flex-col gap-[0.938rem] md:flex-row md:justify-between",
           isSurveyClosed && "justify-end"
-        )}>
-        {isSurveyActive && (
+        )}
+      >
+        {isSurveyActive && onInvite && (
           <Button
             variant="primary"
             className={clsxm(
               surveyCardBtnClassNames,
               "border-solid border-gray-500 bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-500 active:bg-gray-100"
-            )}>
+            )}
+          >
             <span className="inline-block w-full text-center text-sm font-normal">
               Invite
             </span>
@@ -84,18 +97,40 @@ const SurveyCard: FC<SurveyProps> = (props) => {
         )}
 
         {isSurveyDraft && (
-          <Button variant="warning" className={surveyCardBtnClassNames}>
+          <Button
+            variant="warning"
+            onClick={onDelete}
+            className={surveyCardBtnClassNames}
+          >
             <span className="inline-block w-full text-center text-sm font-normal">
               Delete
             </span>
           </Button>
         )}
 
-        <Button variant="primary" className={surveyCardBtnClassNames}>
-          <span className="inline-block w-full text-center text-sm font-normal">
-            {isSurveyActive || isSurveyClosed ? "Responses" : "Edit"}
-          </span>
-        </Button>
+        {isOwnSurvey && (
+          <Button
+            variant="primary"
+            onClick={onPrimaryAction}
+            className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}
+          >
+            <span className="inline-block w-full text-center text-sm font-normal">
+              {isSurveyActive ? "Answer" : "View"}
+            </span>
+          </Button>
+        )}
+
+        {!isOwnSurvey && (
+          <Button
+            variant="primary"
+            onClick={onPrimaryAction}
+            className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}
+          >
+            <span className="inline-block w-full text-center text-sm font-normal">
+              {isSurveyActive || isSurveyClosed ? "Responses" : "Edit"}
+            </span>
+          </Button>
+        )}
       </div>
     </div>
   );

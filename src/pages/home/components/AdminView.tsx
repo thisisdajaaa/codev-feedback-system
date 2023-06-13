@@ -1,10 +1,8 @@
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { FC, useCallback, useMemo, useState } from "react";
 
 import { useMount } from "@/hooks";
 
-import { AlertBanner } from "@/components/AlertBanner";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import DeleteModal from "@/components/Modal/DeleteModal";
@@ -18,9 +16,7 @@ import type { SingleUserResponse, UserResponse } from "@/features/user/types";
 import { InviteForm } from "../forms/InviteForm";
 
 const AdminView: FC = () => {
-  const { data } = useSession();
   const [users, setUsers] = useState<UserResponse>([]);
-  const [showAlert, setShowAlert] = useState<boolean>(true);
   const [showInvite, setShowInvite] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showRevokeModal, setShowRevokeModal] = useState<boolean>(false);
@@ -39,17 +35,6 @@ const AdminView: FC = () => {
   useMount(() => {
     handleLoad();
   });
-
-  const firstName = data?.user?.name?.split(" ")[0];
-
-  const renderAlertMessage = (
-    <div className="flex flex-col gap-1 sm:flex-row">
-      <Typography preset="regular" className="text-center">
-        Hi {firstName}!
-      </Typography>
-      <Typography preset="regular">Welcome to the Feedback System</Typography>
-    </div>
-  );
 
   const handleRevoke = useCallback(
     async (userId: string) => {
@@ -137,16 +122,7 @@ const AdminView: FC = () => {
   }, [users]);
 
   return (
-    <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
-      <div className="sm:px-[6.25rem]">
-        <AlertBanner
-          open={showAlert}
-          message={renderAlertMessage}
-          type="info"
-          handleClose={() => setShowAlert(false)}
-        />
-      </div>
-
+    <>
       <div className="mt-7 mb-[1.125rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => setShowInvite(true)}
@@ -192,7 +168,7 @@ const AdminView: FC = () => {
           isLoading={isLoading}
         />
       </div>
-    </div>
+    </>
   );
 };
 

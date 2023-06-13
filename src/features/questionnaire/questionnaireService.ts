@@ -1,17 +1,21 @@
 import type { NextApiRequest } from "next";
 
+import { QueryBuilder } from "@/utils/advancedResults";
 import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
 import Template from "@/models/Template";
 import type { IQuestion, ITemplate } from "@/models/Template/types";
+import User from "@/models/User";
 
-import type { ValidationResult } from "@/types";
+import type { Populate, ValidationResult } from "@/types";
 
 import type {
   AddedQuestionResponse,
   CreatedQuestionnaireResponse,
+  GetQuestionnaireApiResponse,
+  GetQuestionnaireResponse,
   IAddQuestionRequest,
   ICreateQuestionnaireRequest,
   IRemoveQuestionRequest,
@@ -19,6 +23,7 @@ import type {
 } from "@/features/questionnaire/types";
 
 import { QUESTIONNAIRE_MESSAGES } from "./config";
+import { USER_MESSAGES } from "../user/config";
 
 export const QuestionnaireService = () => {
   const createTemplate = async (
@@ -275,6 +280,66 @@ export const QuestionnaireService = () => {
     return formattedResponse;
   };
 
+  const getQuestionnaires = async (
+    req: NextApiRequest
+  ): Promise<GetQuestionnaireApiResponse> => {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 25;
+    const createdBy = (req.query.createdBy as string) || req.user.email;
+    const title = req.query.title as string;
+    const status = req.query.status as string;
+
+    const user = await User.findOne({
+      $or: [{ email: createdBy }],
+    });
+
+    if (!user)
+      throw new ErrorHandler(
+        USER_MESSAGES.ERROR.USER_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+
+    const filter = {
+      createdBy: user._id,
+      ...(title && { title: { $regex: title, $options: "i" } }),
+      ...(status && { status }),
+    };
+
+    // Constructing initial query.
+    const query = Template.find();
+
+    const total = await Template.countDocuments(filter);
+
+    // Building query with QueryBuilder
+    const builder = new QueryBuilder(query, Template.schema, total);
+
+    const populate: Populate[] = [
+      {
+        path: "createdBy",
+        model: "User",
+        select: "email name",
+      },
+    ];
+
+    // Populate fields
+    builder.populateFields(populate);
+
+    // Filtering
+    await builder.filtering(filter);
+
+    // Sorting
+    builder.sorting(req.query.sort as string);
+
+    // Pagination
+    builder.pagination({ page, limit });
+
+    // Execute query
+    const { query: buildQuery, pagination } = builder.build();
+    const results = (await buildQuery.exec()) as GetQuestionnaireResponse[];
+
+    return { count: results.length, total, pagination, data: results };
+  };
+
   return {
     createTemplate,
     setTemplateStatus,
@@ -284,5 +349,6 @@ export const QuestionnaireService = () => {
     addQuestion,
     removeQuestion,
     validateTemplate,
+    getQuestionnaires,
   };
 };

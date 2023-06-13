@@ -63,7 +63,7 @@ const Overview: FC<OverviewProps> = (props) => {
       </Typography>
 
       <div className="mb-[1.063rem] flex flex-col gap-[0.375rem] md:flex-row">
-        <Typography variant="p" className="mt-1 min-w-[98px] font-bold">
+        <Typography variant="p" className="mt-1 min-w-[6.125rem] font-bold">
           Description:
         </Typography>
 
@@ -73,7 +73,7 @@ const Overview: FC<OverviewProps> = (props) => {
       </div>
 
       <div className="mb-6 flex flex-col gap-[0.375rem] md:flex-row">
-        <Typography variant="p" className="min-w-[98px] font-bold">
+        <Typography variant="p" className="min-w-[6.125rem] font-bold">
           Duration:
         </Typography>
 
@@ -92,7 +92,7 @@ const Overview: FC<OverviewProps> = (props) => {
       <FormCheckbox
         name="isAnonymous"
         label="Set name and email address to Anonymous"
-        containerClassName="gap-[15px]"
+        containerClassName="gap-[0.938rem]"
         labelClassName="text-blue-500 font-semibold"
         readOnly={!isEditable}
         handleCheckedChange={handleCheckboxChange}

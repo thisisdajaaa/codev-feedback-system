@@ -68,7 +68,8 @@ const SurveyorInvitation: NextPage = () => {
                         size="text-2xl"
                         lineHeight="leading-[1.816rem]"
                         color="text-green-500"
-                        className="font-bold">
+                        className="font-bold"
+                      >
                         Account Verified
                       </Typography>
                     ) : (
@@ -77,7 +78,8 @@ const SurveyorInvitation: NextPage = () => {
                         size="text-2xl"
                         lineHeight="leading-[1.816rem]"
                         color="text-red-400"
-                        className="font-bold">
+                        className="font-bold"
+                      >
                         Verification Failed
                       </Typography>
                     )}
@@ -100,7 +102,8 @@ const SurveyorInvitation: NextPage = () => {
                         size="text-2xl"
                         lineHeight="leading-[1.816rem]"
                         color="text-gray-600"
-                        className="my-[2.875rem] font-semibold">
+                        className="my-[2.875rem] font-semibold"
+                      >
                         Hi, {email}!
                       </Typography>
 
@@ -110,7 +113,8 @@ const SurveyorInvitation: NextPage = () => {
                         lineHeight="leading-[1.501rem]"
                         textAlign="text-center"
                         color="text-gray-600"
-                        className="mb-[4.125rem] px-5">
+                        className="mb-[4.125rem] px-5"
+                      >
                         Your email has been successfully verified and your
                         account is now active. Please use the link below to
                         login to your account. Thank you!
@@ -118,14 +122,16 @@ const SurveyorInvitation: NextPage = () => {
 
                       <Button
                         className="rounded-none"
-                        onClick={() => router.push(AUTH_PAGE_URL.LOGIN)}>
+                        onClick={() => router.push(AUTH_PAGE_URL.LOGIN)}
+                      >
                         <Typography
                           variant="p"
                           size="text-xl"
                           lineHeight="leading-[1.361rem]"
                           textAlign="text-center"
                           color="text-white"
-                          className="font-semibold uppercase">
+                          className="font-semibold uppercase"
+                        >
                           Login to your account
                         </Typography>
                       </Button>
@@ -137,7 +143,8 @@ const SurveyorInvitation: NextPage = () => {
                       lineHeight="leading-[1.501rem]"
                       textAlign="text-center"
                       color="text-gray-600"
-                      className="my-[2.875rem] px-5">
+                      className="my-[2.875rem] px-5"
+                    >
                       There was a problem verifying your email. Please{" "}
                       <Typography
                         variant="span"
@@ -145,7 +152,8 @@ const SurveyorInvitation: NextPage = () => {
                         lineHeight="leading-[1.501rem]"
                         textAlign="text-center"
                         color="text-gray-600"
-                        className="font-bold">
+                        className="font-bold"
+                      >
                         Contact Support.
                       </Typography>
                     </Typography>
