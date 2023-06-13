@@ -5,5 +5,6 @@ export { default as useFirstMountState } from "./useFirstMountState";
 export { default as useMount } from "./useMount";
 export { default as useOnClickOutsideElement } from "./useOnClickOutsideElement";
 export { default as useRouteTracking } from "./useRouteTracking";
+export { default as useScreenSize } from "./useScreenSize";
 export { default as useUpdateEffect } from "./useUpdateEffect";
 export { default as useUserRole } from "./useUserRole";

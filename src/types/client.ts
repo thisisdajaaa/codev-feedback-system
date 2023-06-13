@@ -13,3 +13,8 @@ export type NextAppProps<P, T> = {
 export type PagePropsWithAuth<P, T> = P & {
   data?: T;
 };
+
+export type ScreenSize = {
+  isMobile: boolean;
+  isLargeScreen: boolean;
+};

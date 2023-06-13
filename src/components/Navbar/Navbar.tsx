@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import React, { FC, useState } from "react";
@@ -105,7 +104,7 @@ const Navbar: FC = () => {
           <div className="absolute top-[4.5rem] -right-6 z-20 border bg-white">
             <ul className="min-w-[13.5rem]">
               <li className="bg-gray-100 p-4">
-                <Link href="#">{data?.user.name}</Link>
+                {data?.user.name}
                 <small className="block text-ellipsis whitespace-nowrap text-xs text-gray-500">
                   signed in as {data?.user.email}
                 </small>
