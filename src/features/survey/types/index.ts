@@ -127,3 +127,7 @@ export type SurveyByIdResponse = {
   questions: SurveyByIdQuestion[];
   status: string;
 };
+
+export type GetInvitedResponse = Pick<ISurvey, "templateId" | "answeredBy"> & {
+    answeredByEmail: string;
+};

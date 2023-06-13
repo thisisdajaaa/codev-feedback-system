@@ -7,50 +7,68 @@ import { InputVariations } from "@/components/Input/config";
 import { Modal } from "@/components/Modal";
 import { Typography } from "@/components/Typography";
 
-import { sendSurveyInvitesAPI } from "@/api/surveys";
+import { getInvitedByTemplateIdAPI, sendSurveyInvitesAPI } from "@/api/surveys";
 import { getUserAPI } from "@/api/users";
 
-import type { SurveyInvitesModalProps, SurveyInviteState } from "../types";
+import type { SurveyeeAddInfo, SurveyInvitesModalProps } from "../types";
+
+export type SurveyInviteState = {
+  allowAdd: boolean;
+  email: string;
+  surveyeeInfos: SurveyeeAddInfo[];
+};
 
 const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   const { open, templateId, setShowInviteDialog } = props;
-  const [inviteState, setInviteState] = useState<SurveyInviteState>({
-    allowAdd: false,
-    email: "",
-    addedEmails: [],
-  });
+  const [allowAdd, setAllowAdd] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [surveyees, setSurveyees] = useState<SurveyeeAddInfo[]>([]);
+
+  useEffect(() => {
+    const getInvited = async () => {
+      const { data } = await getInvitedByTemplateIdAPI(templateId);
+      const addedSurveyees = data
+        ?.filter((x) => x.answeredByEmail?.length > 0)
+        .map((x) => {
+          return { email: x.answeredByEmail, isAdded: true } as SurveyeeAddInfo;
+        });
+      setSurveyees(addedSurveyees || []);
+    };
+
+    getInvited();
+  }, [templateId]);
 
   useEffect(() => {
     const search = async (email: string) => {
       const result = await getUserAPI(email);
       const user = result.data?.find((x) => x.email === email);
       if (user) {
-        setInviteState({ ...inviteState, allowAdd: true });
+        setAllowAdd(true);
       } else {
-        setInviteState({ ...inviteState, allowAdd: false });
+        setAllowAdd(false);
       }
     };
 
     const timeoutId = setTimeout(() => {
       if (
-        inviteState.email.length > "@codev.com".length &&
-        !inviteState.addedEmails.includes(inviteState.email)
+        email.length > "@codev.com".length &&
+        !surveyees.some((x) => x.email === email)
       ) {
-        search(inviteState.email);
+        search(email);
       } else {
-        setInviteState({ ...inviteState, allowAdd: false });
+        setAllowAdd(false);
       }
     }, 500);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [inviteState]);
+  }, [email, surveyees]);
 
   const handleSendInvites = async () => {
     const result = await sendSurveyInvitesAPI(
       templateId,
-      inviteState.addedEmails
+      surveyees.map((x) => x.email)
     );
     if (result.success) {
       setShowInviteDialog(false);
@@ -58,23 +76,18 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   };
 
   const handleEmailChange = async (value: string) => {
-    setInviteState({ ...inviteState, email: value });
+    setEmail(value);
   };
 
   const handleAddEmail = () => {
-    const { email, addedEmails } = inviteState;
     if (email) {
-      addedEmails.push(email);
-      setInviteState({
-        ...inviteState,
-        ...{ allowAdd: false, addedEmails, email: "" },
-      });
+      setEmail("");
+      setSurveyees(surveyees.concat({ email, isAdded: false }));
     }
   };
 
   const handleRemoveEmail = (email: string) => {
-    const addedEmails = inviteState.addedEmails.filter((x) => x !== email);
-    setInviteState({ ...inviteState, addedEmails });
+    setSurveyees(surveyees.filter((x) => x.email !== email));
   };
 
   return (
@@ -104,7 +117,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
             <Input
               type="text"
               name="email"
-              value={inviteState.email}
+              value={email}
               autoComplete="off"
               variation={InputVariations.Solid}
               containerClassName="p-0 mb-[0.688rem]"
@@ -117,7 +130,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
               <Button
                 className="border-none px-2 sm:px-2"
                 onClick={handleAddEmail}
-                disabled={!inviteState.allowAdd}
+                disabled={!allowAdd}
               >
                 <div className="text-xl">
                   <Icon src="/assets/add-thick.svg" />
@@ -126,7 +139,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
             </div>
           </div>
         </div>
-        {inviteState.addedEmails.length > 0 && (
+        {surveyees.length > 0 && (
           <div className="flex gap-6 rounded-2xl bg-white px-5 py-[1.125rem]">
             <div className="flex w-28 flex-col gap-[0.688rem]">
               <Typography
@@ -141,7 +154,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
             </div>
 
             <div className="flex flex-col gap-1">
-              {inviteState.addedEmails.map((item, index) => (
+              {surveyees.map((item, index) => (
                 <div key={index} className="flex w-80 flex-row gap-6">
                   <Typography
                     variant="div"
@@ -150,17 +163,29 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
                     lineHeight="leading-[1.5rem]"
                     className="mt-1 w-80 text-base font-semibold sm:px-0"
                   >
-                    {item}
+                    {item.email}
                   </Typography>
                   <div>
-                    <Button
-                      className="border-none bg-red-500 px-2 hover:bg-red-500 sm:px-2"
-                      onClick={() => handleRemoveEmail(item)}
-                    >
-                      <div className="text-xl">
-                        <Icon src="/assets/trash.svg" />
-                      </div>
-                    </Button>
+                    {item.isAdded && (
+                      <Button
+                        className="border-none px-2 hover:cursor-default disabled:cursor-default sm:px-2"
+                        disabled={true}
+                      >
+                        <div className="text-xl">
+                          <Icon src="/assets/check.svg" />
+                        </div>
+                      </Button>
+                    )}
+                    {!item.isAdded && (
+                      <Button
+                        className="border-none bg-red-500 px-2 hover:bg-red-500 sm:px-2"
+                        onClick={() => handleRemoveEmail(item.email)}
+                      >
+                        <div className="text-xl">
+                          <Icon src="/assets/trash.svg" />
+                        </div>
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -172,7 +197,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
             <Button
               className="rounded-[0.938rem]"
               onClick={handleSendInvites}
-              disabled={inviteState.addedEmails.length === 0}
+              disabled={!surveyees.some((x) => !x.isAdded)}
             >
               <Typography
                 variant="span"
