@@ -65,6 +65,7 @@ const SurveyeeView: FC = () => {
           {surveys.map((survey) => {
             const surveyData = {
               id: survey.id,
+              templateId: survey.templateId as string,
               surveyStatus: survey.status as string,
               surveyName: survey.templateId.title as string,
               description: survey.templateId.description,

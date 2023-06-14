@@ -17,10 +17,14 @@ import { SurveyStatus } from "@/models/Survey/config";
 import { searchQuestionnaires } from "@/api/questionnaire";
 import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
+import { SurveyInvitesModal } from "./SurveyInvitesModal";
 import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
+import type { SurveyInvitesModalProps } from "../types";
 
 const SurveyorView: FC = () => {
   const router = useRouter();
+  const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
+  const [currentTemplateId, setCurrentTemplateId] = useState<string>("");
 
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
   const [questionnaires, setQuestionnaires] = useState<
@@ -83,6 +87,16 @@ const SurveyorView: FC = () => {
     handleLoad(currentPage);
   });
 
+  const surveyInvitesModalProps: SurveyInvitesModalProps = {
+    open: true,
+    templateId: "",
+    setShowInviteDialog,
+  };
+  const onInvite = (templateId: string) => {
+    setCurrentTemplateId(templateId);
+    setShowInviteDialog(true);
+  };
+
   return (
     <>
       <div className="mt-7 mb-[1.688rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
@@ -122,11 +136,13 @@ const SurveyorView: FC = () => {
           {questionnaires.map((survey) => {
             const surveyData = {
               id: survey.id,
+              templateId: survey.id,
               surveyStatus: survey.status as string,
               surveyName: survey.title as string,
               description: survey.description,
               startDate: survey.dateFrom as string,
               endDate: survey.dateTo as string,
+              onInvite,
             };
 
             const handlePrimaryAction = () => {
@@ -154,6 +170,11 @@ const SurveyorView: FC = () => {
           pageSize={itemCount}
           onPageChange={handleLoad}
         />
+        {showInviteDialog && (
+          <SurveyInvitesModal
+            {...{ ...surveyInvitesModalProps, templateId: currentTemplateId }}
+          />
+        )}
       </div>
     </>
   );

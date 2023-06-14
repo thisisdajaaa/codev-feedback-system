@@ -3,6 +3,7 @@ import type { NextApiRequest } from "next/types";
 
 import { QueryBuilder } from "@/utils/advancedResults";
 import ErrorHandler from "@/utils/errorHandler";
+import { sendEmail } from "@/utils/sendEmail";
 
 import { QuestionType } from "@/constants/questionType";
 import { StatusCodes } from "@/constants/statusCode";
@@ -15,11 +16,14 @@ import type { IQuestion, ITemplate } from "@/models/Template/types";
 import User from "@/models/User";
 import type { IUser } from "@/models/User/types";
 
+import { SurveyInvitesNotification } from "@/templates/SurveyorVerification";
+
 import type { Populate, ValidationResult } from "@/types";
 
 import type {
   AnalyticsQuestion,
   AnalyticsResponse,
+  GetInvitedResponse,
   GetSurveysResponse,
   IAnswerSurveyRequest,
   ICreateSurveyRequest,
@@ -48,6 +52,37 @@ export const SurveyService = () => {
       );
     } else {
       await Survey.findOneAndUpdate({ _id: surveyId }, { status: status });
+    }
+  };
+
+  const sendInvites = async (req: NextApiRequest): Promise<void> => {
+    const { templateId } = req.query;
+    const emails: string[] = req.body;
+
+    const template = await Template.findById(templateId).lean();
+    if (template) {
+      emails.forEach(async (email) => {
+        const user = await User.findOne({ email }).lean();
+        if (user) {
+          const survey = await Survey.findOne({
+            templateId,
+            answeredBy: user._id,
+          }).lean();
+          if (!survey) {
+            const newSurvey = {
+              templateId,
+              answeredBy: user._id,
+            };
+            const survey = (await Survey.create(newSurvey)) as ISurvey;
+            const invitationURL = `${process.env.NEXT_PUBLIC_BASE_URL}/survey/${survey._id}`;
+            await sendEmail({
+              email,
+              subject: `Survey notification ${template.title}`,
+              html: SurveyInvitesNotification(invitationURL),
+            });
+          }
+        }
+      });
     }
   };
 
@@ -281,6 +316,27 @@ export const SurveyService = () => {
     const results = (await buildQuery.exec()) as SingleSurveyResponse[];
 
     return { count: results.length, total, pagination, data: results };
+  };
+
+  const getInvitedByTemplateId = async (
+    req: NextApiRequest
+  ): Promise<GetInvitedResponse[]> => {
+    const { templateId } = req.query;
+
+    const surveys = await Survey.find({ templateId }).populate({
+      path: "answeredBy",
+      model: "User",
+      select: "email name",
+    });
+
+    const formattedResult: GetInvitedResponse[] = surveys.map((x) => {
+      return {
+        templateId: x.templateId,
+        answeredBy: x.id,
+        answeredByEmail: x.answeredBy?.email,
+      } as GetInvitedResponse;
+    });
+    return formattedResult;
   };
 
   const getAnsweredSurveysByTemplateId = async (
@@ -608,6 +664,7 @@ export const SurveyService = () => {
   };
 
   return {
+    sendInvites,
     createSurvey,
     answerSurvey,
     getSurveyByTemplateId,
@@ -619,5 +676,6 @@ export const SurveyService = () => {
     setSurveyStatus,
     validateSurvey,
     getSurveyById,
+    getInvitedByTemplateId
   };
 };

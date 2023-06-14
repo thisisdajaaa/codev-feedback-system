@@ -108,7 +108,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
         const txtTimestamp = moment(createdAt).format("YYYY-MM-DD HH:mm:ss");
 
         return {
-          id: String(answeredBy.id) || "",
+          id: String(answeredBy?.id) || "",
           item: renderCellItem(id, index + 1, "text-center"),
           visibility: renderCellItem(
             id,

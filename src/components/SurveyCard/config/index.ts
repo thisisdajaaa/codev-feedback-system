@@ -3,6 +3,7 @@ import type { SurveyProps } from "../types";
 export const surveyList: SurveyProps[] = [
   {
     id: "",
+    templateId: "648286d990ba2e20dc64f47e",
     surveyStatus: "Active",
     surveyName: "Working Environment Survey",
     description: "A survey for working environment",
@@ -13,6 +14,7 @@ export const surveyList: SurveyProps[] = [
   },
   {
     id: "",
+    templateId: "",
     surveyStatus: "Draft",
     surveyName: "Working Environment Survey",
     description: "A survey for working environment",
@@ -23,6 +25,7 @@ export const surveyList: SurveyProps[] = [
   },
   {
     id: "",
+    templateId: "",
     surveyStatus: "Closed",
     surveyName: "Working Environment Survey",
     description: "A survey for working environment",

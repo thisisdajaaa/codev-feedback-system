@@ -10,3 +10,13 @@ export type InviteFormProps = {
   handleClose: () => void;
   handleRefetch: () => void;
 };
+export type SurveyeeAddInfo = {
+  email: string;
+  isAdded: boolean;
+};
+
+export type SurveyInvitesModalProps = {
+  open: boolean;
+  templateId: string;
+  setShowInviteDialog: (b: boolean) => void;
+};

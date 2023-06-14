@@ -14,6 +14,17 @@ export const getSurveyorsAPI = async (): Promise<ApiResponse<UserResponse>> => {
   return response;
 };
 
+export const getUserAPI = async (
+  email: string
+): Promise<ApiResponse<UserResponse>> => {
+  const response = await onParseResponse<UserResponse>({
+    method: "get",
+    url: `/api/users?email=${email}`,
+  });
+
+  return response;
+};
+
 export const revokeSurveyorAPI = async (
   data: ICommonSurveyorRequest["body"]
 ): Promise<ApiResponse<unknown>> => {

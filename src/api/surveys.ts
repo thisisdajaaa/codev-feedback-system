@@ -10,6 +10,7 @@ import type { ApiResponse } from "@/types";
 
 import type {
   AnalyticsResponse,
+  GetInvitedResponse,
   IAnswerSurveyRequest,
   ICreateSurveyRequest,
   SurveyByIdResponse,
@@ -128,4 +129,28 @@ export const updateSurveyStatusAPI = async (
   });
 
   return response;
+};
+
+export const sendSurveyInvitesAPI = async (
+    templateId: string,
+    data: string[]
+): Promise<ApiResponse<unknown>> => {
+    const response = await onParseResponse<string>({
+        method: "post",
+        data,
+        url: `/api/survey/send-invites?templateId=${templateId}`,
+    });
+
+    return response;
+};
+
+export const getInvitedByTemplateIdAPI = async (
+    templateId: string
+): Promise<ApiResponse<GetInvitedResponse[]>> => {
+    const response = await onParseResponse<GetInvitedResponse[]>({
+        method: "get",
+        url: `/api/survey/get-invited?templateId=${templateId}`,
+    });
+
+    return response;
 };

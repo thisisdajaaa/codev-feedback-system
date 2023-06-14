@@ -9,10 +9,12 @@ import { SurveyStatus } from "@/models/Survey/config";
 
 import { ApiResponse } from "@/types";
 
+import { QuestionnaireService } from "@/features/questionnaire/questionnaireService";
 import { SURVEY_MESSAGES } from "@/features/survey/config";
 import { SurveyService } from "@/features/survey/surveyService";
 import type {
   AnalyticsResponse,
+  GetInvitedResponse,
   IAnswerSurveyRequest,
   ICreateSurveyRequest,
   SurveyByIdResponse,
@@ -33,7 +35,11 @@ export const SurveyController = () => {
     setSurveyStatus,
     validateSurvey,
     getSurveyById,
+    sendInvites,
+    getInvitedByTemplateId
   } = SurveyService();
+
+  const { isTemplateExist } = QuestionnaireService();
 
   const handleAnswerSurvey = catchAsyncErrors(
     async (
@@ -182,6 +188,51 @@ export const SurveyController = () => {
     }
   );
 
+  const handleSendInvites = catchAsyncErrors(
+    async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
+      const { templateId } = req.query;
+
+      if (!(await isTemplateExist(templateId as string))) {
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      await sendInvites(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: SURVEY_MESSAGES.SUCCESS.GENERIC,
+      });
+    }
+  );
+
+  const handleGetInvitedByTemplateId = catchAsyncErrors(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ApiResponse<GetInvitedResponse[]>>,
+      _next: NextHandler
+    ) => {
+      const { templateId } = req.query;
+
+      if (!(await isTemplateExist(templateId as string))) {
+        throw new ErrorHandler(
+          SURVEY_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      const surveys = await getInvitedByTemplateId(req);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data: surveys,
+        message: SURVEY_MESSAGES.SUCCESS.GENERIC,
+      });
+    }
+  );
+
   return {
     handleCreateSurvey,
     handleAnswerSurvey,
@@ -191,5 +242,7 @@ export const SurveyController = () => {
     handleGetSurveyDetailsByUser,
     handleSurveyStatus,
     handleGetSurveyById,
+    handleSendInvites,
+    handleGetInvitedByTemplateId,
   };
 };
