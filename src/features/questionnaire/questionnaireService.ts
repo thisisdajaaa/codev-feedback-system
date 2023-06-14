@@ -304,10 +304,11 @@ export const QuestionnaireService = () => {
       createdBy: user._id,
       ...(title && { title: { $regex: title, $options: "i" } }),
       ...(status && { status }),
+      ...{ status: { $ne: SurveyStatus.DELETED } },
     };
 
     // Constructing initial query.
-    const query = Template.find({ status: { $ne: SurveyStatus.DELETED } });
+    const query = Template.find();
 
     const total = await Template.countDocuments(filter);
 
