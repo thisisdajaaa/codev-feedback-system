@@ -10,7 +10,7 @@ export type SurveyProps = {
   totalRespondents?: number;
   primaryAction?: string;
   isOwnSurvey?: boolean;
-  onInvite?: (id:string) => void;
+  onInvite?: (surveyId: string) => void;
   onDelete?: () => void;
   onPrimaryAction?: () => void;
 };

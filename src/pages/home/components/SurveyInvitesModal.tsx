@@ -12,12 +12,6 @@ import { getUserAPI } from "@/api/users";
 
 import type { SurveyeeAddInfo, SurveyInvitesModalProps } from "../types";
 
-export type SurveyInviteState = {
-  allowAdd: boolean;
-  email: string;
-  surveyeeInfos: SurveyeeAddInfo[];
-};
-
 const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   const { open, templateId, setShowInviteDialog } = props;
   const [allowAdd, setAllowAdd] = useState<boolean>(false);

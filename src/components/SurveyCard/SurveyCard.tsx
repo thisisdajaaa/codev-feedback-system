@@ -6,9 +6,7 @@ import clsxm from "@/utils/clsxm";
 import { SurveyProps } from "./types";
 import { Button } from "../Button";
 
-const SurveyCard: FC<SurveyProps & { onInvite: (surveyId: string) => void }> = (
-  props
-) => {
+const SurveyCard: FC<SurveyProps> = (props) => {
   const {
     id,
     templateId,

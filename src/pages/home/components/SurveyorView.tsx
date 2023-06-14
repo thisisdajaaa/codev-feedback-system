@@ -19,7 +19,7 @@ import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { SurveyInvitesModal } from "./SurveyInvitesModal";
 import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
-import { SurveyInvitesModalProps } from "../types";
+import type { SurveyInvitesModalProps } from "../types";
 
 const SurveyorView: FC = () => {
   const router = useRouter();
@@ -142,7 +142,7 @@ const SurveyorView: FC = () => {
               description: survey.description,
               startDate: survey.dateFrom as string,
               endDate: survey.dateTo as string,
-              onInvite: onInvite,
+              onInvite,
             };
 
             const handlePrimaryAction = () => {
@@ -158,7 +158,7 @@ const SurveyorView: FC = () => {
               <SurveyCard
                 key={survey.id}
                 onPrimaryAction={handlePrimaryAction}
-                {...{ ...surveyData, onInvite }}
+                {...surveyData}
               />
             );
           })}
