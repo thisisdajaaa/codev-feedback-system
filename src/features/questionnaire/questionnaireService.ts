@@ -5,6 +5,7 @@ import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
+import { SurveyStatus } from "@/models/Survey/config";
 import Template from "@/models/Template";
 import type { IQuestion, ITemplate } from "@/models/Template/types";
 import User from "@/models/User";
@@ -306,7 +307,7 @@ export const QuestionnaireService = () => {
     };
 
     // Constructing initial query.
-    const query = Template.find();
+    const query = Template.find({ status: { $ne: SurveyStatus.DELETED } });
 
     const total = await Template.countDocuments(filter);
 
