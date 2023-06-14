@@ -7,6 +7,7 @@ import { SYSTEM_URL } from "@/constants/pageUrl";
 
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import DeleteModal from "@/components/Modal/DeleteModal";
 import { Pagination } from "@/components/Pagination";
 import { SearchBar } from "@/components/SearchBar";
 import { SurveyCard } from "@/components/SurveyCard";
@@ -14,7 +15,10 @@ import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { searchQuestionnaires } from "@/api/questionnaire";
+import {
+  searchQuestionnaires,
+  updateQuestionnaireStatusAPI,
+} from "@/api/questionnaire";
 import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { SurveyInvitesModal } from "./SurveyInvitesModal";
@@ -33,6 +37,9 @@ const SurveyorView: FC = () => {
   const [searchStr, setSearchStr] = useState<string>("");
   const [filterStr, setFilterStr] = useState<string>("");
   const [itemCount, setItemCount] = useState<number>(INITIAL_ITEM_COUNT);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [toDeleteId, setToDeleteId] = useState<string>("");
+  const [totalResults, setTotalResults] = useState<number>(INITIAL_ITEM_COUNT);
 
   const handleSearch = async (query: string, filter: string) => {
     setSearchStr(query);
@@ -49,10 +56,12 @@ const SurveyorView: FC = () => {
       success,
       data: response,
       count,
+      total,
     } = await searchQuestionnaires(queryParams);
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
       setItemCount(count || INITIAL_ITEM_COUNT);
+      setTotalResults(total || INITIAL_ITEM_COUNT);
     }
   };
 
@@ -71,17 +80,28 @@ const SurveyorView: FC = () => {
         success,
         data: response,
         count,
+        total,
       } = await searchQuestionnaires(queryParams);
 
       if (success) {
         setQuestionnaires(response as GetQuestionnaireResponse[]);
         setItemCount(count || INITIAL_ITEM_COUNT);
-
+        setTotalResults(total || INITIAL_ITEM_COUNT);
         setCurrentPage(page);
       }
     },
     [filterStr, searchStr]
   );
+  const deleteQuestionnaireHandler = async (id: string) => {
+    const { success } = await updateQuestionnaireStatusAPI(
+      SurveyStatus.DELETED,
+      id
+    );
+    if (success) {
+      handleLoad(currentPage);
+      setShowDeleteModal(false);
+    }
+  };
 
   useMount(() => {
     handleLoad(currentPage);
@@ -120,6 +140,7 @@ const SurveyorView: FC = () => {
           </Typography>
         </Button>
       </div>
+
       <SearchBar onSearch={handleSearch} />
 
       <div className="mx-auto mt-16 w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
@@ -153,11 +174,15 @@ const SurveyorView: FC = () => {
 
               router.push(SYSTEM_URL.RESPONSES);
             };
-
+            const handleDelete = () => {
+              setShowDeleteModal(true);
+              setToDeleteId(survey.id);
+            };
             return (
               <SurveyCard
                 key={survey.id}
                 onPrimaryAction={handlePrimaryAction}
+                onDelete={handleDelete}
                 {...surveyData}
               />
             );
@@ -166,7 +191,7 @@ const SurveyorView: FC = () => {
 
         <Pagination
           currentPage={currentPage}
-          totalCount={itemCount}
+          totalCount={totalResults}
           pageSize={itemCount}
           onPageChange={handleLoad}
         />
@@ -176,6 +201,14 @@ const SurveyorView: FC = () => {
           />
         )}
       </div>
+      <DeleteModal
+        open={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        handleDeleteFunction={() => deleteQuestionnaireHandler(toDeleteId)}
+        title="Are you sure you want to delete this survey/questionnaire?"
+        primaryLabel="Yes, I'm sure"
+        secondaryLabel="No, cancel"
+      />
     </>
   );
 };
