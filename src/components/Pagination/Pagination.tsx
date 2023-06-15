@@ -43,9 +43,9 @@ const Pagination: FC<PaginationProps> = (props) => {
     <div className="flex items-center justify-between xs:flex-col sm:flex-col md:flex-row">
       <div className="xs:mb-[0.625rem] sm:mb-[0.625rem] sm:mt-8 md:my-0">
         <p className="text-sm text-gray-500">
-          Showing <span className="font-medium">{totalCount}</span> to{" "}
+          Showing <span className="font-medium">{pageSize}</span> to{" "}
           <span className="font-medium">{pageSize}</span> of{" "}
-          <span className="font-medium">{pageSize}</span> results
+          <span className="font-medium">{totalCount}</span> results
         </p>
       </div>
 

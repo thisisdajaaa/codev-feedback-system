@@ -5,6 +5,7 @@ import ErrorHandler from "@/utils/errorHandler";
 
 import { StatusCodes } from "@/constants/statusCode";
 
+import { SurveyStatus } from "@/models/Survey/config";
 import Template from "@/models/Template";
 import type { IQuestion, ITemplate } from "@/models/Template/types";
 import User from "@/models/User";
@@ -303,6 +304,7 @@ export const QuestionnaireService = () => {
       createdBy: user._id,
       ...(title && { title: { $regex: title, $options: "i" } }),
       ...(status && { status }),
+      ...(!status && { status: { $ne: SurveyStatus.DELETED } }),
     };
 
     // Constructing initial query.
