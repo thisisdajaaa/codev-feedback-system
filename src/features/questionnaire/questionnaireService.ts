@@ -304,7 +304,7 @@ export const QuestionnaireService = () => {
       createdBy: user._id,
       ...(title && { title: { $regex: title, $options: "i" } }),
       ...(status && { status }),
-      ...{ status: { $ne: SurveyStatus.DELETED } },
+      ...(!status && { status: { $ne: SurveyStatus.DELETED } }),
     };
 
     // Constructing initial query.

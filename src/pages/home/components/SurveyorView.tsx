@@ -153,7 +153,7 @@ const SurveyorView: FC = () => {
           My Surveys
         </Typography>
 
-        <div className="gap-8 xs:columns-1 md:columns-2 lg:columns-3">
+        <div className="grid gap-8 xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {questionnaires.map((survey) => {
             const surveyData = {
               id: survey.id,
