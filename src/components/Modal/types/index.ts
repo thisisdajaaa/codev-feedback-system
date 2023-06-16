@@ -15,7 +15,7 @@ export type ModalProps = {
 export type DeleteModalProps = {
   open: boolean;
   handleClose: () => void;
-  handleDeleteFunction: () => void;
+  handleDelete: () => void;
   title: string;
   primaryLabel: string;
   secondaryLabel: string;

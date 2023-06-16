@@ -1,6 +1,13 @@
 import { useFormikContext } from "formik";
 import { debounce } from "lodash";
-import React, { FC, Fragment, ReactNode, useMemo, useRef } from "react";
+import React, {
+  FC,
+  Fragment,
+  ReactNode,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { noop } from "@/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -29,7 +36,11 @@ import type { IAddQuestionRequest } from "@/features/questionnaire/types";
 import type { QuestionnaireForm, QuestionProps } from "../types";
 
 const Question: FC<QuestionProps> = (props) => {
-  const { index, handleDeleteQuestion } = props;
+  const { index } = props;
+
+  const [pendingQuestionId, setPendingQuestionId] = useState<string | null>(
+    null
+  );
 
   const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
@@ -49,6 +60,8 @@ const Question: FC<QuestionProps> = (props) => {
   const debouncedHandleCallAddQuestion = useRef(
     debounce(async (request: IAddQuestionRequest["body"]) => {
       dispatch(actions.callSetServerErrorMessage(""));
+
+      setPendingQuestionId(request.id || null);
 
       const { success, data, message } = await addQuestionByTemplateIdAPI(
         activeTemplateId,
@@ -71,7 +84,8 @@ const Question: FC<QuestionProps> = (props) => {
       title: value,
     };
 
-    if (currentQuestion.id) request.id = currentQuestion.id;
+    if (pendingQuestionId) request.id = pendingQuestionId;
+    else if (currentQuestion.id) request.id = currentQuestion.id;
 
     debouncedHandleCallAddQuestion(request);
   };
@@ -81,7 +95,8 @@ const Question: FC<QuestionProps> = (props) => {
       isRequired: checked,
     };
 
-    if (currentQuestion.id) request.id = currentQuestion.id;
+    if (pendingQuestionId) request.id = pendingQuestionId;
+    else if (currentQuestion.id) request.id = currentQuestion.id;
 
     debouncedHandleCallAddQuestion(request);
   };
@@ -91,7 +106,8 @@ const Question: FC<QuestionProps> = (props) => {
       type: (item as Option).value,
     };
 
-    if (currentQuestion.id) request.id = currentQuestion.id;
+    if (pendingQuestionId) request.id = pendingQuestionId;
+    else if (currentQuestion.id) request.id = currentQuestion.id;
 
     debouncedHandleCallAddQuestion(request);
   };
@@ -175,7 +191,8 @@ const Question: FC<QuestionProps> = (props) => {
   const handleRemoveQuestion = async () => {
     if (!currentQuestion.id) return;
 
-    await handleDeleteQuestion(currentQuestion.id, index);
+    setFieldValue("toDeleteId", currentQuestion.id);
+    setFieldValue("toDeleteIndex", index);
   };
 
   return (

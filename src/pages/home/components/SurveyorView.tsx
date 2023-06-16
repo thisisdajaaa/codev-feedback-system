@@ -204,7 +204,7 @@ const SurveyorView: FC = () => {
       <DeleteModal
         open={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}
-        handleDeleteFunction={() => deleteQuestionnaireHandler(toDeleteId)}
+        handleDelete={() => deleteQuestionnaireHandler(toDeleteId)}
         title="Are you sure you want to delete this survey/questionnaire?"
         primaryLabel="Yes, I'm sure"
         secondaryLabel="No, cancel"
