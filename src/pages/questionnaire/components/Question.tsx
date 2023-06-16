@@ -64,7 +64,7 @@ const Question: FC<QuestionProps> = (props) => {
         dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
       setFieldValue(`questions.${index}.id`, data?.id);
     }, 500)
-  );
+  ).current;
 
   const handleInputChange = async (value: string) => {
     const request: IAddQuestionRequest["body"] = {
@@ -73,8 +73,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
-    debouncedHandleCallAddQuestion.current.cancel();
-    debouncedHandleCallAddQuestion.current(request);
+    debouncedHandleCallAddQuestion(request);
   };
 
   const handleCheckboxChange = async (checked: boolean) => {
@@ -84,8 +83,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
-    debouncedHandleCallAddQuestion.current.cancel();
-    debouncedHandleCallAddQuestion.current(request);
+    debouncedHandleCallAddQuestion(request);
   };
 
   const handleDropdownChange = async (item: Option | Option[]) => {
@@ -95,8 +93,7 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (currentQuestion.id) request.id = currentQuestion.id;
 
-    debouncedHandleCallAddQuestion.current.cancel();
-    debouncedHandleCallAddQuestion.current(request);
+    debouncedHandleCallAddQuestion(request);
   };
 
   const renderIcon = (item: string) => {
@@ -217,7 +214,8 @@ const Question: FC<QuestionProps> = (props) => {
       {isEditable && (
         <div
           className="mt-4 flex cursor-pointer justify-end text-2xl"
-          onClick={handleRemoveQuestion}>
+          onClick={handleRemoveQuestion}
+        >
           <Icon src="/assets/red-trash.svg" />
         </div>
       )}
