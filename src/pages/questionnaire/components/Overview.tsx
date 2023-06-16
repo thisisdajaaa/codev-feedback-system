@@ -60,7 +60,7 @@ const Overview: FC = () => {
     async (value: string | Date) => {
       const formattedValue = ["dateFrom", "dateTo"].includes(key)
         ? moment.utc(value).local().toISOString()
-        : value;
+        : String(value).trim();
 
       const request: ICreateQuestionnaireRequest["body"] = {
         [key]: formattedValue,
