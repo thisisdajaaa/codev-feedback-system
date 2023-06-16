@@ -14,6 +14,8 @@ export type QuestionnaireForm = {
   dateTo: Date | null;
   questions: Question[];
   status?: keyof typeof SurveyStatus;
+  toDeleteId?: string;
+  toDeleteIndex?: number;
 };
 
 export type Question = {
@@ -26,7 +28,6 @@ export type Question = {
 
 export type QuestionProps = {
   index: number;
-  handleDeleteQuestion: (questionId: string, index: number) => Promise<boolean>;
 };
 
 export type QuestionnaireProps = {

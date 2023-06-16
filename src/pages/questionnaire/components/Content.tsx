@@ -7,6 +7,7 @@ import { AlertBanner } from "@/components/AlertBanner";
 import { BackArrow } from "@/components/BackArrow";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import DeleteModal from "@/components/Modal/DeleteModal";
 import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
@@ -38,7 +39,7 @@ const Content: FC = () => {
   const { values, setFieldValue, submitForm, isSubmitting } =
     useFormikContext<QuestionnaireForm>();
 
-  const { questions, title, status } = values;
+  const { questions, title, status, toDeleteId, toDeleteIndex } = values;
 
   const isEditable = useMemo(
     () => !status || status === SurveyStatus.DRAFT,
@@ -59,9 +60,14 @@ const Content: FC = () => {
     setFieldValue("questions", [...questions, { ...newQuestion }]);
   };
 
-  const handleDeleteQuestion = async (questionId: string, index: number) => {
+  const handleCloseDelete = () => {
+    setFieldValue("toDeleteId", undefined);
+    setFieldValue("toDeleteIndex", undefined);
+  };
+
+  const handleDeleteQuestion = async () => {
     const request: IRemoveQuestionRequest["body"] = {
-      id: questionId,
+      id: String(toDeleteId),
     };
 
     const { success } = await removeQuestionByTemplateIdAPI(
@@ -69,12 +75,19 @@ const Content: FC = () => {
       request
     );
 
-    const filteredQuestions = questions.filter((_, key) => key !== index);
+    const filteredQuestions = questions.filter(
+      (_, key) => key !== toDeleteIndex
+    );
 
-    if (success) setFieldValue("questions", filteredQuestions);
+    if (success) {
+      setFieldValue("questions", filteredQuestions);
+      handleCloseDelete();
+    }
 
     return success;
   };
+
+  const showDeleteModal = !!toDeleteId || !!toDeleteIndex;
 
   const isPublishDisabled =
     !questionnaireFormSchema.isValidSync(values) || isBtnDisabled();
@@ -95,12 +108,17 @@ const Content: FC = () => {
       </div>
 
       {questions.map((_, index) => (
-        <Question
-          key={index}
-          index={index}
-          handleDeleteQuestion={handleDeleteQuestion}
-        />
+        <Question key={index} index={index} />
       ))}
+
+      <DeleteModal
+        open={showDeleteModal}
+        handleClose={handleCloseDelete}
+        handleDelete={handleDeleteQuestion}
+        title="Are you sure you want to delete this question?"
+        primaryLabel="Yes, I'm sure"
+        secondaryLabel="No, cancel"
+      />
 
       {isEditable && (
         <>
@@ -108,8 +126,7 @@ const Content: FC = () => {
             <Button
               className="px-2 sm:px-2"
               onClick={handleAddQuestion}
-              disabled={isBtnDisabled()}
-            >
+              disabled={isBtnDisabled()}>
               <div className="text-xl">
                 <Icon src="/assets/add.svg" />
               </div>
@@ -121,16 +138,14 @@ const Content: FC = () => {
               className="rounded-[0.938rem]"
               onClick={submitForm}
               isLoading={isSubmitting}
-              disabled={isPublishDisabled}
-            >
+              disabled={isPublishDisabled}>
               <Typography
                 variant="span"
                 size="text-lg"
                 lineHeight="leading-[1.688rem]"
                 textAlign="text-left"
                 color="text-white"
-                className="font-bold"
-              >
+                className="font-bold">
                 Publish
               </Typography>
             </Button>

@@ -9,7 +9,7 @@ import { Typography } from "../Typography";
 const DeleteModal: FC<DeleteModalProps> = ({
   open,
   handleClose,
-  handleDeleteFunction,
+  handleDelete,
   title = "Are you sure you want to delete this?",
   primaryLabel = "Confirm",
   secondaryLabel = "Cancel",
@@ -41,7 +41,7 @@ const DeleteModal: FC<DeleteModalProps> = ({
 
       <div className="flex items-center justify-center gap-[1.75rem]">
         <Button
-          onClick={handleDeleteFunction}
+          onClick={handleDelete}
           variant="warning"
           className="min-w-[6.875rem] text-[0.875rem] font-semibold"
         >

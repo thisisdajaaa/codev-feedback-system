@@ -154,7 +154,7 @@ const AdminView: FC = () => {
       <DeleteModal
         open={showRevokeModal}
         handleClose={() => setShowRevokeModal(false)}
-        handleDeleteFunction={() => handleRevoke(selectedUser)}
+        handleDelete={() => handleRevoke(selectedUser)}
         title="Are you sure you want to revoke this surveyor?"
         primaryLabel="Yes, I'm sure"
         secondaryLabel="No, cancel"

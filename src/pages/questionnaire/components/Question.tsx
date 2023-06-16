@@ -29,7 +29,7 @@ import type { IAddQuestionRequest } from "@/features/questionnaire/types";
 import type { QuestionnaireForm, QuestionProps } from "../types";
 
 const Question: FC<QuestionProps> = (props) => {
-  const { index, handleDeleteQuestion } = props;
+  const { index } = props;
 
   const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
@@ -175,7 +175,8 @@ const Question: FC<QuestionProps> = (props) => {
   const handleRemoveQuestion = async () => {
     if (!currentQuestion.id) return;
 
-    await handleDeleteQuestion(currentQuestion.id, index);
+    setFieldValue("toDeleteId", currentQuestion.id);
+    setFieldValue("toDeleteIndex", index);
   };
 
   return (
@@ -196,7 +197,7 @@ const Question: FC<QuestionProps> = (props) => {
           options={getTypeOptions}
           className="lg:w-[18.75rem]"
           handleDropdownChange={handleDropdownChange}
-          readOnly={!isEditable}
+          readOnly={!isEditable || !currentQuestion.id}
         />
       </div>
 
@@ -214,8 +215,7 @@ const Question: FC<QuestionProps> = (props) => {
       {isEditable && (
         <div
           className="mt-4 flex cursor-pointer justify-end text-2xl"
-          onClick={handleRemoveQuestion}
-        >
+          onClick={handleRemoveQuestion}>
           <Icon src="/assets/red-trash.svg" />
         </div>
       )}
