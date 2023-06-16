@@ -151,8 +151,7 @@ const Question: FC<QuestionProps> = (props) => {
           variant="p"
           size="text-xl"
           lineHeight="leading-[1.875rem]"
-          className="font-semibold"
-        >
+          className="font-semibold">
           Q{index + 1}. {currentQuestion.title}
         </Typography>
 

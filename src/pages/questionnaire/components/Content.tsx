@@ -66,10 +66,8 @@ const Content: FC = () => {
   };
 
   const handleDeleteQuestion = async () => {
-    if (!toDeleteId || toDeleteIndex) return;
-
     const request: IRemoveQuestionRequest["body"] = {
-      id: toDeleteId,
+      id: String(toDeleteId),
     };
 
     const { success } = await removeQuestionByTemplateIdAPI(
@@ -128,8 +126,7 @@ const Content: FC = () => {
             <Button
               className="px-2 sm:px-2"
               onClick={handleAddQuestion}
-              disabled={isBtnDisabled()}
-            >
+              disabled={isBtnDisabled()}>
               <div className="text-xl">
                 <Icon src="/assets/add.svg" />
               </div>
@@ -141,16 +138,14 @@ const Content: FC = () => {
               className="rounded-[0.938rem]"
               onClick={submitForm}
               isLoading={isSubmitting}
-              disabled={isPublishDisabled}
-            >
+              disabled={isPublishDisabled}>
               <Typography
                 variant="span"
                 size="text-lg"
                 lineHeight="leading-[1.688rem]"
                 textAlign="text-left"
                 color="text-white"
-                className="font-bold"
-              >
+                className="font-bold">
                 Publish
               </Typography>
             </Button>

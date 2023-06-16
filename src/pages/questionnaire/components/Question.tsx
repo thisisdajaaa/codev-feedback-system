@@ -1,13 +1,6 @@
 import { useFormikContext } from "formik";
 import { debounce } from "lodash";
-import React, {
-  FC,
-  Fragment,
-  ReactNode,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, Fragment, ReactNode, useMemo, useRef } from "react";
 
 import { noop } from "@/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -38,10 +31,6 @@ import type { QuestionnaireForm, QuestionProps } from "../types";
 const Question: FC<QuestionProps> = (props) => {
   const { index } = props;
 
-  const [pendingQuestionId, setPendingQuestionId] = useState<string | null>(
-    null
-  );
-
   const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
 
@@ -60,8 +49,6 @@ const Question: FC<QuestionProps> = (props) => {
   const debouncedHandleCallAddQuestion = useRef(
     debounce(async (request: IAddQuestionRequest["body"]) => {
       dispatch(actions.callSetServerErrorMessage(""));
-
-      setPendingQuestionId(request.id || null);
 
       const { success, data, message } = await addQuestionByTemplateIdAPI(
         activeTemplateId,
@@ -84,8 +71,7 @@ const Question: FC<QuestionProps> = (props) => {
       title: value,
     };
 
-    if (pendingQuestionId) request.id = pendingQuestionId;
-    else if (currentQuestion.id) request.id = currentQuestion.id;
+    if (currentQuestion.id) request.id = currentQuestion.id;
 
     debouncedHandleCallAddQuestion(request);
   };
@@ -95,8 +81,7 @@ const Question: FC<QuestionProps> = (props) => {
       isRequired: checked,
     };
 
-    if (pendingQuestionId) request.id = pendingQuestionId;
-    else if (currentQuestion.id) request.id = currentQuestion.id;
+    if (currentQuestion.id) request.id = currentQuestion.id;
 
     debouncedHandleCallAddQuestion(request);
   };
@@ -106,8 +91,7 @@ const Question: FC<QuestionProps> = (props) => {
       type: (item as Option).value,
     };
 
-    if (pendingQuestionId) request.id = pendingQuestionId;
-    else if (currentQuestion.id) request.id = currentQuestion.id;
+    if (currentQuestion.id) request.id = currentQuestion.id;
 
     debouncedHandleCallAddQuestion(request);
   };
@@ -213,7 +197,7 @@ const Question: FC<QuestionProps> = (props) => {
           options={getTypeOptions}
           className="lg:w-[18.75rem]"
           handleDropdownChange={handleDropdownChange}
-          readOnly={!isEditable}
+          readOnly={!isEditable || !currentQuestion.id}
         />
       </div>
 
@@ -231,8 +215,7 @@ const Question: FC<QuestionProps> = (props) => {
       {isEditable && (
         <div
           className="mt-4 flex cursor-pointer justify-end text-2xl"
-          onClick={handleRemoveQuestion}
-        >
+          onClick={handleRemoveQuestion}>
           <Icon src="/assets/red-trash.svg" />
         </div>
       )}

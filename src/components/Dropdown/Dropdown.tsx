@@ -96,8 +96,7 @@ const Dropdown: FC<DropdownProps> = (props) => {
             isOpen && "border-nero",
             !!errorMessage && "border-red-400",
             className
-          )}
-        >
+          )}>
           {formattedSelectedOptions.length > 0 ? (
             formattedSelectedOptions
           ) : (
@@ -127,8 +126,7 @@ const Dropdown: FC<DropdownProps> = (props) => {
                         variant="p"
                         size="text-sm"
                         color="text-gray-700"
-                        className="uppercase"
-                      >
+                        className="uppercase">
                         {groupOption.group}
                       </Typography>
                     </div>
@@ -147,8 +145,7 @@ const Dropdown: FC<DropdownProps> = (props) => {
                               "bg:white cursor-pointer py-2 pl-7 pr-[0.875rem]",
                               "hover:bg-aliceBlue active:bg-aliceBlue",
                               multiSelect && isSelectedOption && "bg-blue-100"
-                            )}
-                          >
+                            )}>
                             {multiSelect && (
                               <input
                                 type="checkbox"
@@ -179,8 +176,7 @@ const Dropdown: FC<DropdownProps> = (props) => {
                       "hover:bg-gray-100 active:bg-gray-200",
                       index % 2 === 0 ? "bg-gray-100" : "bg-white",
                       multiSelect && isSelectedOption && "bg-blue-100"
-                    )}
-                  >
+                    )}>
                     {multiSelect && (
                       <input
                         type="checkbox"
@@ -205,8 +201,7 @@ const Dropdown: FC<DropdownProps> = (props) => {
           lineHeight="leading-[1.063rem]"
           textAlign="text-left"
           color="text-red-400"
-          className="mt-[0.5rem] font-light"
-        >
+          className="mt-[0.5rem] font-light">
           {errorMessage}
         </Typography>
       )}
