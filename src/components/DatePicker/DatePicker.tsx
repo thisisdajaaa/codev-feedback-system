@@ -17,6 +17,7 @@ const DatePicker: FC<DatePickerProps> = (props) => {
         onChange={onChange}
         onBlur={onBlur}
         readOnly={readOnly}
+        minDate={new Date()}
         placeholderText="mm/dd/yyyy"
         className="w-full border-none bg-transparent p-0 focus:border-transparent focus:outline-none focus:ring-0"
         customInput={
