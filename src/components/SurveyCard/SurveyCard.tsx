@@ -40,8 +40,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
         isSurveyDraft &&
           "before:border-r-[0.063rem] before:border-gray-500 before:bg-white",
         isSurveyClosed && "before:bg-gray-500"
-      )}
-    >
+      )}>
       <div
         className={clsxm(
           "absolute -top-1 -right-1 min-w-[5rem] py-2.5 px-3.5 text-center text-white",
@@ -49,8 +48,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           isSurveyDraft &&
             "border-[0.063rem] border-gray-500 bg-white text-gray-500",
           isSurveyClosed && "bg-gray-500"
-        )}
-      >
+        )}>
         {surveyStatus}
       </div>
 
@@ -65,10 +63,15 @@ const SurveyCard: FC<SurveyProps> = (props) => {
         </p>
 
         <p className="mt-2 text-xs text-gray-500">Closing Date:</p>
-        <p className="text-xs">
-          {moment(startDate).format("MMMM DD, YYYY")} -{" "}
-          {moment(endDate).format("MMMM DD, YYYY")}
-        </p>
+
+        {startDate && endDate ? (
+          <p className="text-xs">
+            {moment(startDate).format("MMMM DD, YYYY")} -{" "}
+            {moment(endDate).format("MMMM DD, YYYY")}
+          </p>
+        ) : (
+          <p className="text-xs">--</p>
+        )}
 
         <p className="mt-2 text-xs text-gray-500">Survey Status:</p>
         <p className="text-xs">
@@ -81,8 +84,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
         className={clsxm(
           "flex flex-col gap-[0.938rem] md:flex-row md:justify-between",
           isSurveyClosed && "justify-end"
-        )}
-      >
+        )}>
         {isSurveyActive && onInvite && (
           <Button
             variant="primary"
@@ -90,8 +92,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
               surveyCardBtnClassNames,
               "border-solid border-gray-500 bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-500 active:bg-gray-100"
             )}
-            onClick={() => onInvite(templateId)}
-          >
+            onClick={() => onInvite(templateId)}>
             <span className="inline-block w-full text-center text-sm font-normal">
               Invite
             </span>
@@ -102,8 +103,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           <Button
             variant="warning"
             onClick={onDelete}
-            className={surveyCardBtnClassNames}
-          >
+            className={surveyCardBtnClassNames}>
             <span className="inline-block w-full text-center text-sm font-normal">
               Delete
             </span>
@@ -114,8 +114,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           <Button
             variant="primary"
             onClick={onPrimaryAction}
-            className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}
-          >
+            className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}>
             <span className="inline-block w-full text-center text-sm font-normal">
               {isSurveyActive ? "Answer" : "View"}
             </span>
@@ -126,8 +125,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           <Button
             variant="primary"
             onClick={onPrimaryAction}
-            className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}
-          >
+            className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}>
             <span className="inline-block w-full text-center text-sm font-normal">
               {isSurveyActive || isSurveyClosed ? "Responses" : "Edit"}
             </span>

@@ -45,7 +45,7 @@ const Question: FC<QuestionProps> = (props) => {
         return;
       }
     }, 500)
-  );
+  ).current;
 
   const renderFormField = useMemo(() => {
     const handleInputChange = async (value: string) => {
@@ -55,8 +55,7 @@ const Question: FC<QuestionProps> = (props) => {
         answer: value,
       };
 
-      debouncedHandleCallAnswerQuestion.current.cancel();
-      debouncedHandleCallAnswerQuestion.current(request);
+      debouncedHandleCallAnswerQuestion(request);
     };
 
     const handleRatingChange = async (value: number) => {
@@ -66,8 +65,7 @@ const Question: FC<QuestionProps> = (props) => {
         answer: String(value),
       };
 
-      debouncedHandleCallAnswerQuestion.current.cancel();
-      debouncedHandleCallAnswerQuestion.current(request);
+      debouncedHandleCallAnswerQuestion(request);
     };
 
     const handleRadioChange = async (item: Option) => {
@@ -77,8 +75,7 @@ const Question: FC<QuestionProps> = (props) => {
         answer: item.value || "",
       };
 
-      debouncedHandleCallAnswerQuestion.current.cancel();
-      debouncedHandleCallAnswerQuestion.current(request);
+      debouncedHandleCallAnswerQuestion(request);
     };
 
     const isEditable = status === SurveyStatus.ACTIVE;
@@ -138,7 +135,14 @@ const Question: FC<QuestionProps> = (props) => {
     ) : (
       <Fragment />
     );
-  }, [currentQuestion.id, currentQuestion.type, index, status, templateId]);
+  }, [
+    currentQuestion.id,
+    currentQuestion.type,
+    debouncedHandleCallAnswerQuestion,
+    index,
+    status,
+    templateId,
+  ]);
 
   return (
     <div className="rounded-lg bg-white px-7 pt-[0.813rem] pb-[4.5rem] shadow-md">
