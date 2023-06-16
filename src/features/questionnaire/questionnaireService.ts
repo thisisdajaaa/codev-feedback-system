@@ -290,18 +290,22 @@ export const QuestionnaireService = () => {
     const title = req.query.title as string;
     const status = req.query.status as string;
 
-    const user = await User.findOne({
-      $or: [{ email: createdBy }],
-    });
+    let createdById: string | null = null;
+    if (createdBy !== "all") {
+      const user = await User.findOne({
+        $or: [{ email: createdBy }],
+      });
 
-    if (!user)
-      throw new ErrorHandler(
-        USER_MESSAGES.ERROR.USER_NOT_FOUND,
-        StatusCodes.NOT_FOUND
-      );
+      if (!user)
+        throw new ErrorHandler(
+          USER_MESSAGES.ERROR.USER_NOT_FOUND,
+          StatusCodes.NOT_FOUND
+        );
+      createdById = user._id.toString();
+    }
 
     const filter = {
-      createdBy: user._id,
+      ...(createdBy !== "all" && { createdBy: createdById }),
       ...(title && { title: { $regex: title, $options: "i" } }),
       ...(status && { status }),
       ...(!status && { status: { $ne: SurveyStatus.DELETED } }),
