@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { throttle } from "lodash";
+import { debounce } from "lodash";
 import moment from "moment";
 import React, { FC, useMemo, useRef } from "react";
 
@@ -38,7 +38,7 @@ const Overview: FC = () => {
   });
 
   const debouncedHandleCallAddQuestionnaire = useRef(
-    throttle(async (request: ICreateQuestionnaireRequest["body"]) => {
+    debounce(async (request: ICreateQuestionnaireRequest["body"]) => {
       dispatch(actions.callSetServerErrorMessage(""));
 
       const { success, data, message } = await addQuestionnaireOverviewAPI(
