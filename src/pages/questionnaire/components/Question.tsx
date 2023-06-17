@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 import React, { FC, Fragment, ReactNode, useMemo, useRef } from "react";
 
 import { noop } from "@/utils/helpers";
@@ -47,7 +47,7 @@ const Question: FC<QuestionProps> = (props) => {
   );
 
   const debouncedHandleCallAddQuestion = useRef(
-    debounce(async (request: IAddQuestionRequest["body"]) => {
+    throttle(async (request: IAddQuestionRequest["body"]) => {
       dispatch(actions.callSetServerErrorMessage(""));
 
       const { success, data, message } = await addQuestionByTemplateIdAPI(
