@@ -39,12 +39,15 @@ const Pagination: FC<PaginationProps> = (props) => {
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === lastPage;
 
+  const fromCount = pageSize * (currentPage - 1) + 1;
+  const toCount = Math.min(pageSize * currentPage, totalCount);
+
   return (
     <div className="flex items-center justify-between xs:flex-col sm:flex-col md:flex-row">
       <div className="xs:mb-[0.625rem] sm:mb-[0.625rem] sm:mt-8 md:my-0">
         <p className="text-sm text-gray-500">
-          Showing <span className="font-medium">{pageSize}</span> to{" "}
-          <span className="font-medium">{pageSize}</span> of{" "}
+          Showing <span className="font-medium">{fromCount}</span> to{" "}
+          <span className="font-medium">{toCount}</span> of{" "}
           <span className="font-medium">{totalCount}</span> results
         </p>
       </div>
