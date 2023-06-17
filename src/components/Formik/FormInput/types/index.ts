@@ -5,4 +5,5 @@ type OmittedKeys = "value" | "onChange" | "onBlur";
 export type FormInputProps = Omit<InputProps, OmittedKeys> & {
   name: string;
   handleInputChange?: (value: string) => void;
+  handleInputBlur?: (value: string) => void;
 };
