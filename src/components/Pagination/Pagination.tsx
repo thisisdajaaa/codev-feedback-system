@@ -66,22 +66,19 @@ const Pagination: FC<PaginationProps> = (props) => {
           <Button
             onClick={csv.onClick}
             isLoading={csv.isLoading}
-            className="items-center gap-0"
-          >
+            className="items-center gap-0">
             <Typography
               variant="p"
               size="text-sm"
               color="text-white"
-              className="mr-1 hidden font-normal md:block"
-            >
+              className="mr-1 hidden font-normal md:block">
               Download
             </Typography>
             <Typography
               variant="p"
               size="text-sm"
               color="text-white"
-              className="mr-[0.025rem] font-normal md:mr-0"
-            >
+              className="mr-[0.025rem] font-normal md:mr-0">
               CSV
             </Typography>
             <div className="block md:hidden">
@@ -101,8 +98,7 @@ const Pagination: FC<PaginationProps> = (props) => {
                 isFirstPage
                   ? "cursor-not-allowed"
                   : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-              )}
-            >
+              )}>
               <span className="sr-only">Previous</span>
               <span className={isFirstPage ? "text-gray-300" : ""}>&lt;</span>
             </button>
@@ -113,8 +109,7 @@ const Pagination: FC<PaginationProps> = (props) => {
                 <button
                   key={i}
                   type="button"
-                  className="relative inline-flex min-w-[2.5rem] items-center border-y-[0.063rem] border-l-0 border-r-[0.063rem] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                >
+                  className="relative inline-flex min-w-[2.5rem] items-center border-y-[0.063rem] border-l-0 border-r-[0.063rem] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                   <li className="w-full text-center">&#8230;</li>
                 </button>
               );
@@ -129,14 +124,12 @@ const Pagination: FC<PaginationProps> = (props) => {
                   "relative inline-flex min-w-[2.5rem] items-center border-y-[0.063rem] border-l-0 border-r-[0.063rem] border-gray-500 px-3 py-2 text-gray-500 hover:bg-gray-50 focus:z-20 focus:outline-offset-0",
                   currentPage === pageNumber && "bg-gray-50",
                   pageNumber === lastPage && "border-r-0"
-                )}
-              >
+                )}>
                 <li
                   className={clsxm(
                     "w-full text-center",
                     currentPage === pageNumber ? "text-blue-500" : ""
-                  )}
-                >
+                  )}>
                   {pageNumber}
                 </li>
               </button>
@@ -152,8 +145,7 @@ const Pagination: FC<PaginationProps> = (props) => {
                 isLastPage
                   ? "cursor-not-allowed"
                   : "hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-              )}
-            >
+              )}>
               <span className="sr-only">Next</span>
               <span className={isLastPage ? "text-gray-300" : ""}>&gt;</span>
             </button>
