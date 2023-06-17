@@ -8,7 +8,7 @@ import { Input } from "@/components/Input";
 import type { FormInputProps } from "./types";
 
 const FormInput: FC<FormInputProps> = (props) => {
-  const { name, handleInputChange, ...rest } = props;
+  const { name, handleInputChange, handleInputBlur, ...rest } = props;
 
   const [field, meta, helpers] = useField(name);
 
@@ -30,9 +30,16 @@ const FormInput: FC<FormInputProps> = (props) => {
     [helpers, handleInputChange]
   );
 
-  const handleBlur = useCallback(() => {
-    helpers.setTouched(true);
-  }, [helpers]);
+  const handleBlur = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      const text = event.target.value;
+
+      helpers.setTouched(true);
+
+      if (handleInputBlur) handleInputBlur(text);
+    },
+    [helpers, handleInputBlur]
+  );
 
   return (
     <Input

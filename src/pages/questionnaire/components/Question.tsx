@@ -1,6 +1,13 @@
 import { useFormikContext } from "formik";
-import { debounce } from "lodash";
-import React, { FC, Fragment, ReactNode, useCallback, useMemo } from "react";
+import React, {
+  FC,
+  Fragment,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 
 import { noop } from "@/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -41,6 +48,16 @@ const Question: FC<QuestionProps> = (props) => {
 
   const currentQuestion = useMemo(() => questions[index], [index, questions]);
 
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
   const isEditable = useMemo(
     () => !status || status === SurveyStatus.DRAFT,
     [status]
@@ -66,45 +83,57 @@ const Question: FC<QuestionProps> = (props) => {
     setFieldValue(`questions.${index}.id`, data?.id);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleInputChange = useCallback(
-    debounce(async (value: string) => {
-      const request: IAddQuestionRequest["body"] = {
-        title: value,
-      };
+    (value: string) => {
+      if (timerRef.current) clearTimeout(timerRef.current);
 
-      if (currentQuestion.id) request.id = currentQuestion.id;
+      timerRef.current = setTimeout(async () => {
+        const request: IAddQuestionRequest["body"] = {
+          title: value,
+        };
 
-      await handleCallAddQuestion(request);
-    }, 500),
+        if (currentQuestion.id) request.id = currentQuestion.id;
+
+        await handleCallAddQuestion(request);
+      }, 500);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentQuestion.id]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCheckboxChange = useCallback(
-    debounce(async (checked: boolean) => {
-      const request: IAddQuestionRequest["body"] = {
-        isRequired: checked,
-      };
+    (checked: boolean) => {
+      if (timerRef.current) clearTimeout(timerRef.current);
 
-      if (currentQuestion.id) request.id = currentQuestion.id;
+      timerRef.current = setTimeout(async () => {
+        const request: IAddQuestionRequest["body"] = {
+          isRequired: checked,
+        };
 
-      await handleCallAddQuestion(request);
-    }, 500),
+        if (currentQuestion.id) request.id = currentQuestion.id;
+
+        await handleCallAddQuestion(request);
+      }, 500);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentQuestion.id]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleDropdownChange = useCallback(
-    debounce(async (item: Option | Option[]) => {
-      const request: IAddQuestionRequest["body"] = {
-        type: (item as Option).value,
-      };
+    (item: Option | Option[]) => {
+      if (timerRef.current) clearTimeout(timerRef.current);
 
-      if (currentQuestion.id) request.id = currentQuestion.id;
+      timerRef.current = setTimeout(async () => {
+        const request: IAddQuestionRequest["body"] = {
+          type: (item as Option).value,
+        };
 
-      await handleCallAddQuestion(request);
-    }, 500),
+        if (currentQuestion.id) request.id = currentQuestion.id;
+
+        await handleCallAddQuestion(request);
+      }, 500);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentQuestion.id]
   );
 
