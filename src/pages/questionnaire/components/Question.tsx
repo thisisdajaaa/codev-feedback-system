@@ -1,6 +1,6 @@
 import { useFormikContext } from "formik";
-import { throttle } from "lodash";
-import React, { FC, Fragment, ReactNode, useMemo, useRef } from "react";
+import { debounce } from "lodash";
+import React, { FC, Fragment, ReactNode, useCallback, useMemo } from "react";
 
 import { noop } from "@/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -46,55 +46,67 @@ const Question: FC<QuestionProps> = (props) => {
     [status]
   );
 
-  const debouncedHandleCallAddQuestion = useRef(
-    throttle(async (request: IAddQuestionRequest["body"]) => {
-      dispatch(actions.callSetServerErrorMessage(""));
+  const handleCallAddQuestion = async (
+    request: IAddQuestionRequest["body"]
+  ) => {
+    dispatch(actions.callSetServerErrorMessage(""));
 
-      const { success, data, message } = await addQuestionByTemplateIdAPI(
-        activeTemplateId,
-        request
-      );
+    const { success, data, message } = await addQuestionByTemplateIdAPI(
+      activeTemplateId,
+      request
+    );
 
-      if (!success && message) {
-        dispatch(actions.callSetServerErrorMessage(message));
-        return;
-      }
+    if (!success && message) {
+      dispatch(actions.callSetServerErrorMessage(message));
+      return;
+    }
 
-      if (activeTemplateId !== data?.templateId)
-        dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
-      setFieldValue(`questions.${index}.id`, data?.id);
-    }, 500)
-  ).current;
-
-  const handleInputChange = async (value: string) => {
-    const request: IAddQuestionRequest["body"] = {
-      title: value,
-    };
-
-    if (currentQuestion.id) request.id = currentQuestion.id;
-
-    debouncedHandleCallAddQuestion(request);
+    if (activeTemplateId !== data?.templateId)
+      dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
+    setFieldValue(`questions.${index}.id`, data?.id);
   };
 
-  const handleCheckboxChange = async (checked: boolean) => {
-    const request: IAddQuestionRequest["body"] = {
-      isRequired: checked,
-    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleInputChange = useCallback(
+    debounce(async (value: string) => {
+      const request: IAddQuestionRequest["body"] = {
+        title: value,
+      };
 
-    if (currentQuestion.id) request.id = currentQuestion.id;
+      if (currentQuestion.id) request.id = currentQuestion.id;
 
-    debouncedHandleCallAddQuestion(request);
-  };
+      await handleCallAddQuestion(request);
+    }, 500),
+    [currentQuestion.id]
+  );
 
-  const handleDropdownChange = async (item: Option | Option[]) => {
-    const request: IAddQuestionRequest["body"] = {
-      type: (item as Option).value,
-    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleCheckboxChange = useCallback(
+    debounce(async (checked: boolean) => {
+      const request: IAddQuestionRequest["body"] = {
+        isRequired: checked,
+      };
 
-    if (currentQuestion.id) request.id = currentQuestion.id;
+      if (currentQuestion.id) request.id = currentQuestion.id;
 
-    debouncedHandleCallAddQuestion(request);
-  };
+      await handleCallAddQuestion(request);
+    }, 500),
+    [currentQuestion.id]
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleDropdownChange = useCallback(
+    debounce(async (item: Option | Option[]) => {
+      const request: IAddQuestionRequest["body"] = {
+        type: (item as Option).value,
+      };
+
+      if (currentQuestion.id) request.id = currentQuestion.id;
+
+      await handleCallAddQuestion(request);
+    }, 500),
+    [currentQuestion.id]
+  );
 
   const renderIcon = (item: string) => {
     const mappedIcons = {
