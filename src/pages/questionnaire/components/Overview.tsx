@@ -97,7 +97,7 @@ const Overview: FC = () => {
         placeholder="Untitled Survey"
         variation={InputVariations.NoBorder}
         containerClassName="p-0 mb-[0.688rem]"
-        readOnly={!isEditable}
+        readOnly={!isEditable || isAddingQuestionnaire}
         inputClassName="text-[2rem] font-bold placeholder:font-bold p-0"
         handleInputChange={(value) => handleChange("title", value)}
       />
@@ -111,7 +111,7 @@ const Overview: FC = () => {
           name="description"
           placeholder="Enter your description here..."
           rows={3}
-          readOnly={!isEditable}
+          readOnly={!isEditable || isAddingQuestionnaire}
           handleInputChange={(value) => handleChange("description", value)}
         />
       </div>
@@ -129,7 +129,7 @@ const Overview: FC = () => {
 
             <FormDatePicker
               name="dateFrom"
-              readOnly={!isEditable}
+              readOnly={!isEditable || isAddingQuestionnaire}
               handleDateChange={(value) => handleChange("dateFrom", value)}
             />
           </div>
@@ -141,7 +141,7 @@ const Overview: FC = () => {
 
             <FormDatePicker
               name="dateTo"
-              readOnly={!isEditable}
+              readOnly={!isEditable || isAddingQuestionnaire}
               handleDateChange={(value) => handleChange("dateTo", value)}
             />
           </div>
