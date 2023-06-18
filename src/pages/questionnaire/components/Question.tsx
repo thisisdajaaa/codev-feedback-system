@@ -223,7 +223,7 @@ const Question: FC<QuestionProps> = (props) => {
           variation={InputVariations.Solid}
           containerClassName="max-w-[51.063rem]"
           handleInputChange={handleInputChange}
-          readOnly={!isEditable}
+          readOnly={!isEditable || isAddingQuestion}
         />
 
         <FormDropdown
@@ -232,7 +232,7 @@ const Question: FC<QuestionProps> = (props) => {
           options={getTypeOptions}
           className="lg:w-[18.75rem]"
           handleDropdownChange={handleDropdownChange}
-          readOnly={!isEditable || !currentQuestion.id}
+          readOnly={!isEditable || !currentQuestion.id || isAddingQuestion}
         />
       </div>
 
@@ -241,7 +241,7 @@ const Question: FC<QuestionProps> = (props) => {
           name={`questions.${index}.isRequired`}
           label="Required"
           handleCheckedChange={handleCheckboxChange}
-          readOnly={!isEditable}
+          readOnly={!isEditable || isAddingQuestion}
         />
       </div>
 
