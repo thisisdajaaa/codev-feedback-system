@@ -1,7 +1,7 @@
 import { useFormikContext } from "formik";
 import { debounce } from "lodash";
 import moment from "moment";
-import React, { FC, useMemo, useRef } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
@@ -28,6 +28,9 @@ const Overview: FC = () => {
     values: { status },
   } = useFormikContext<QuestionnaireForm>();
 
+  const [isAddingQuestionnaire, setIsAddingQuestionnaire] =
+    useState<boolean>(false);
+
   const isEditable = useMemo(
     () => !status || status === SurveyStatus.DRAFT,
     [status]
@@ -37,39 +40,55 @@ const Overview: FC = () => {
     dispatch(actions.callSetActiveTemplateId(""));
   });
 
-  const debouncedHandleCallAddQuestionnaire = useRef(
-    debounce(async (request: ICreateQuestionnaireRequest["body"]) => {
-      dispatch(actions.callSetServerErrorMessage(""));
+  const handleCallAddQuestionnaire = async (
+    request: ICreateQuestionnaireRequest["body"]
+  ) => {
+    dispatch(actions.callSetServerErrorMessage(""));
 
-      const { success, data, message } = await addQuestionnaireOverviewAPI(
-        request
-      );
+    const { success, data, message } = await addQuestionnaireOverviewAPI(
+      request
+    );
 
-      if (!success && message) {
-        dispatch(actions.callSetServerErrorMessage(message));
-        return;
-      }
+    if (!success && message) {
+      dispatch(actions.callSetServerErrorMessage(message));
+      setIsAddingQuestionnaire(false);
+      return;
+    }
 
-      if (activeTemplateId !== data?.id)
-        dispatch(actions.callSetActiveTemplateId(data?.id));
-    }, 500)
+    if (activeTemplateId !== data?.id)
+      dispatch(actions.callSetActiveTemplateId(data?.id));
+
+    setIsAddingQuestionnaire(false);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleChange = useCallback(
+    debounce(
+      async (
+        key: keyof ICreateQuestionnaireRequest["body"],
+        value: string | Date
+      ) => {
+        if (isAddingQuestionnaire) return;
+
+        setIsAddingQuestionnaire(true);
+
+        const formattedValue = ["dateFrom", "dateTo"].includes(key)
+          ? moment.utc(value).local().toISOString()
+          : String(value).trim();
+
+        const request: ICreateQuestionnaireRequest["body"] = {
+          [key]: formattedValue,
+        };
+
+        if (activeTemplateId) request.id = activeTemplateId;
+
+        handleCallAddQuestionnaire(request);
+      },
+      500
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isAddingQuestionnaire, activeTemplateId]
   );
-
-  const handleChange =
-    (key: keyof ICreateQuestionnaireRequest["body"]) =>
-    async (value: string | Date) => {
-      const formattedValue = ["dateFrom", "dateTo"].includes(key)
-        ? moment.utc(value).local().toISOString()
-        : String(value).trim();
-
-      const request: ICreateQuestionnaireRequest["body"] = {
-        [key]: formattedValue,
-      };
-
-      if (activeTemplateId) request.id = activeTemplateId;
-
-      debouncedHandleCallAddQuestionnaire.current(request);
-    };
 
   return (
     <div className="mt-12 rounded-lg border-t-8 border-zinc-500 bg-white px-8 py-[1.625rem] shadow-md">
@@ -80,7 +99,7 @@ const Overview: FC = () => {
         containerClassName="p-0 mb-[0.688rem]"
         readOnly={!isEditable}
         inputClassName="text-[2rem] font-bold placeholder:font-bold p-0"
-        handleInputChange={handleChange("title")}
+        handleInputChange={(value) => handleChange("title", value)}
       />
 
       <div className="mb-[1.063rem] flex flex-col gap-[0.375rem] md:flex-row">
@@ -93,7 +112,7 @@ const Overview: FC = () => {
           placeholder="Enter your description here..."
           rows={3}
           readOnly={!isEditable}
-          handleInputChange={handleChange("description")}
+          handleInputChange={(value) => handleChange("description", value)}
         />
       </div>
 
@@ -111,7 +130,7 @@ const Overview: FC = () => {
             <FormDatePicker
               name="dateFrom"
               readOnly={!isEditable}
-              handleDateChange={handleChange("dateFrom")}
+              handleDateChange={(value) => handleChange("dateFrom", value)}
             />
           </div>
 
@@ -123,7 +142,7 @@ const Overview: FC = () => {
             <FormDatePicker
               name="dateTo"
               readOnly={!isEditable}
-              handleDateChange={handleChange("dateTo")}
+              handleDateChange={(value) => handleChange("dateTo", value)}
             />
           </div>
         </div>
