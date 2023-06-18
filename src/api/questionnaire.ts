@@ -1,4 +1,4 @@
-import type { AxiosRequestHeaders } from "axios";
+import type { AxiosRequestHeaders, CancelToken } from "axios";
 import type { IncomingHttpHeaders } from "http";
 import type { GetServerSidePropsContext } from "next";
 
@@ -18,12 +18,14 @@ import type {
 } from "@/features/questionnaire/types";
 
 export const addQuestionnaireOverviewAPI = async (
-  data: ICreateQuestionnaireRequest["body"]
+  data: ICreateQuestionnaireRequest["body"],
+  cancelToken?: CancelToken
 ): Promise<ApiResponse<CreatedQuestionnaireResponse>> => {
   const response = await onParseResponse<CreatedQuestionnaireResponse>({
     method: "post",
     data,
     url: "/api/questionnaire",
+    cancelToken,
   });
 
   return response;
@@ -31,12 +33,14 @@ export const addQuestionnaireOverviewAPI = async (
 
 export const addQuestionByTemplateIdAPI = async (
   templateId: string,
-  data: IAddQuestionRequest["body"]
+  data: IAddQuestionRequest["body"],
+  cancelToken?: CancelToken
 ): Promise<ApiResponse<AddedQuestionResponse>> => {
   const response = await onParseResponse<AddedQuestionResponse>({
     method: "post",
     data,
     url: `/api/questionnaire/add-question?templateId=${templateId}`,
+    cancelToken,
   });
 
   return response;

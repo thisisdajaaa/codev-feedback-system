@@ -1,12 +1,12 @@
 import { useFormikContext } from "formik";
+import { debounce } from "lodash";
 import React, {
   FC,
   Fragment,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
-  useRef,
+  useState,
 } from "react";
 
 import { noop } from "@/utils/helpers";
@@ -46,17 +46,9 @@ const Question: FC<QuestionProps> = (props) => {
     setFieldValue,
   } = useFormikContext<QuestionnaireForm>();
 
+  const [isAddingQuestion, setIsAddingQuestion] = useState<boolean>(false);
+
   const currentQuestion = useMemo(() => questions[index], [index, questions]);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
 
   const isEditable = useMemo(
     () => !status || status === SurveyStatus.DRAFT,
@@ -75,66 +67,68 @@ const Question: FC<QuestionProps> = (props) => {
 
     if (!success && message) {
       dispatch(actions.callSetServerErrorMessage(message));
+      setIsAddingQuestion(false);
       return;
     }
 
     if (activeTemplateId !== data?.templateId)
       dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
+
     setFieldValue(`questions.${index}.id`, data?.id);
+    setIsAddingQuestion(false);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleInputChange = useCallback(
-    (value: string) => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+    debounce(async (value: string) => {
+      if (isAddingQuestion) return;
 
-      timerRef.current = setTimeout(async () => {
-        const request: IAddQuestionRequest["body"] = {
-          title: value,
-        };
+      setIsAddingQuestion(true);
 
-        if (currentQuestion.id) request.id = currentQuestion.id;
+      const request: IAddQuestionRequest["body"] = {
+        title: value,
+      };
 
-        await handleCallAddQuestion(request);
-      }, 500);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentQuestion.id]
+      if (currentQuestion.id) request.id = currentQuestion.id;
+
+      handleCallAddQuestion(request);
+    }, 500),
+    [currentQuestion.id, isAddingQuestion]
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCheckboxChange = useCallback(
-    (checked: boolean) => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+    debounce(async (checked: boolean) => {
+      if (isAddingQuestion) return;
 
-      timerRef.current = setTimeout(async () => {
-        const request: IAddQuestionRequest["body"] = {
-          isRequired: checked,
-        };
+      setIsAddingQuestion(true);
 
-        if (currentQuestion.id) request.id = currentQuestion.id;
+      const request: IAddQuestionRequest["body"] = {
+        isRequired: checked,
+      };
 
-        await handleCallAddQuestion(request);
-      }, 500);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentQuestion.id]
+      if (currentQuestion.id) request.id = currentQuestion.id;
+      handleCallAddQuestion(request);
+    }, 500),
+    [currentQuestion.id, isAddingQuestion]
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleDropdownChange = useCallback(
-    (item: Option | Option[]) => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+    debounce(async (item: Option | Option[]) => {
+      if (isAddingQuestion) return;
 
-      timerRef.current = setTimeout(async () => {
-        const request: IAddQuestionRequest["body"] = {
-          type: (item as Option).value,
-        };
+      setIsAddingQuestion(true);
 
-        if (currentQuestion.id) request.id = currentQuestion.id;
+      const request: IAddQuestionRequest["body"] = {
+        type: (item as Option).value,
+      };
 
-        await handleCallAddQuestion(request);
-      }, 500);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentQuestion.id]
+      if (currentQuestion.id) request.id = currentQuestion.id;
+
+      handleCallAddQuestion(request);
+    }, 500),
+    [currentQuestion.id, isAddingQuestion]
   );
 
   const renderIcon = (item: string) => {
