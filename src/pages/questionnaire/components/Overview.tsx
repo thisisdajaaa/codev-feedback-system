@@ -2,6 +2,7 @@ import { useFormikContext } from "formik";
 import { debounce } from "lodash";
 import moment from "moment";
 import React, { FC, useCallback, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
@@ -45,9 +46,12 @@ const Overview: FC = () => {
   ) => {
     dispatch(actions.callSetServerErrorMessage(""));
 
-    const { success, data, message } = await addQuestionnaireOverviewAPI(
-      request
-    );
+    const externalId = activeTemplateId || uuidv4();
+
+    const { success, message } = await addQuestionnaireOverviewAPI({
+      ...request,
+      externalId,
+    });
 
     if (!success && message) {
       dispatch(actions.callSetServerErrorMessage(message));
@@ -55,8 +59,8 @@ const Overview: FC = () => {
       return;
     }
 
-    if (activeTemplateId !== data?.id)
-      dispatch(actions.callSetActiveTemplateId(data?.id));
+    if (!activeTemplateId)
+      dispatch(actions.callSetActiveTemplateId(externalId));
 
     setIsAddingQuestionnaire(false);
   };
@@ -80,8 +84,6 @@ const Overview: FC = () => {
           [key]: formattedValue,
         };
 
-        if (activeTemplateId) request.id = activeTemplateId;
-
         handleCallAddQuestionnaire(request);
       },
       500
@@ -97,7 +99,7 @@ const Overview: FC = () => {
         placeholder="Untitled Survey"
         variation={InputVariations.NoBorder}
         containerClassName="p-0 mb-[0.688rem]"
-        readOnly={!isEditable || isAddingQuestionnaire}
+        readOnly={!isEditable}
         inputClassName="text-[2rem] font-bold placeholder:font-bold p-0"
         handleInputChange={(value) => handleChange("title", value)}
       />
@@ -111,7 +113,7 @@ const Overview: FC = () => {
           name="description"
           placeholder="Enter your description here..."
           rows={3}
-          readOnly={!isEditable || isAddingQuestionnaire}
+          readOnly={!isEditable}
           handleInputChange={(value) => handleChange("description", value)}
         />
       </div>
@@ -129,7 +131,7 @@ const Overview: FC = () => {
 
             <FormDatePicker
               name="dateFrom"
-              readOnly={!isEditable || isAddingQuestionnaire}
+              readOnly={!isEditable}
               handleDateChange={(value) => handleChange("dateFrom", value)}
             />
           </div>
@@ -141,7 +143,7 @@ const Overview: FC = () => {
 
             <FormDatePicker
               name="dateTo"
-              readOnly={!isEditable || isAddingQuestionnaire}
+              readOnly={!isEditable}
               handleDateChange={(value) => handleChange("dateTo", value)}
             />
           </div>

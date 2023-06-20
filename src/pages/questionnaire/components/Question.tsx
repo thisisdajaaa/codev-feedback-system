@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { noop } from "@/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -60,9 +61,11 @@ const Question: FC<QuestionProps> = (props) => {
   ) => {
     dispatch(actions.callSetServerErrorMessage(""));
 
+    const externalId = currentQuestion.id ?? uuidv4();
+
     const { success, data, message } = await addQuestionByTemplateIdAPI(
       activeTemplateId,
-      request
+      { ...request, externalId }
     );
 
     if (!success && message) {
@@ -74,7 +77,7 @@ const Question: FC<QuestionProps> = (props) => {
     if (activeTemplateId !== data?.templateId)
       dispatch(actions.callSetActiveTemplateId(String(data?.templateId)));
 
-    setFieldValue(`questions.${index}.id`, data?.id);
+    setFieldValue(`questions.${index}.id`, externalId);
     setIsAddingQuestion(false);
   };
 
@@ -232,7 +235,7 @@ const Question: FC<QuestionProps> = (props) => {
           options={getTypeOptions}
           className="lg:w-[18.75rem]"
           handleDropdownChange={handleDropdownChange}
-          readOnly={!isEditable || !currentQuestion.id || isAddingQuestion}
+          readOnly={!isEditable}
         />
       </div>
 
@@ -241,7 +244,7 @@ const Question: FC<QuestionProps> = (props) => {
           name={`questions.${index}.isRequired`}
           label="Required"
           handleCheckedChange={handleCheckboxChange}
-          readOnly={!isEditable || isAddingQuestion}
+          readOnly={!isEditable}
         />
       </div>
 

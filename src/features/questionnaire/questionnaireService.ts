@@ -36,24 +36,27 @@ export const QuestionnaireService = () => {
       updatedBy: req.user._id,
     };
 
-    let isExist = false;
     let dbTemplate = {} as ITemplate;
 
-    if (newTemplate.id) {
-      isExist = true;
-      dbTemplate = (await Template.findOneAndUpdate(
-        { _id: newTemplate.id },
-        newTemplate,
-        { new: true }
-      )) as ITemplate;
-    }
+    // look for a template with the provided externalId
+    const existingTemplate = await Template.findOne({
+      externalId: newTemplate.externalId,
+    });
 
-    if (!isExist) {
+    if (existingTemplate) {
+      // if found, update it
+      dbTemplate = (await Template.findOneAndUpdate(
+        { externalId: newTemplate.externalId },
+        newTemplate,
+        { new: true, lean: true }
+      )) as ITemplate;
+    } else {
+      // if not found, create a new template
       dbTemplate = (await Template.create(newTemplate)) as ITemplate;
     }
 
     const {
-      id,
+      _id,
       title,
       department,
       dateFrom,
@@ -66,7 +69,7 @@ export const QuestionnaireService = () => {
     } = dbTemplate;
 
     const formattedResponse: CreatedQuestionnaireResponse = {
-      id,
+      id: _id.toString(),
       title,
       department,
       dateFrom,
@@ -96,10 +99,19 @@ export const QuestionnaireService = () => {
       ...req.body,
     };
 
-    const template = (await Template.findOne({ _id: templateId })) as ITemplate;
+    const template = (await Template.findOne({
+      externalId: templateId,
+    })) as ITemplate;
+
+    if (!template) {
+      throw new ErrorHandler(
+        QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+    }
 
     const item = template.questions?.find(
-      (x) => x.id?.toString() === newQuestion.id
+      (x) => x.externalId === newQuestion.externalId // Use externalId instead of id here
     );
 
     if (item) {
@@ -112,8 +124,8 @@ export const QuestionnaireService = () => {
 
     const { id, questions } = template;
 
-    const addedQuestion = questions?.find(({ id, title }) =>
-      req.body.id ? id === req.body.id : title === req.body.title
+    const addedQuestion = questions?.find(
+      ({ externalId }) => externalId === req.body.externalId
     );
 
     const formattedQuestion: PickedQuestion = {
@@ -125,7 +137,7 @@ export const QuestionnaireService = () => {
     };
 
     const formattedResponse: AddedQuestionResponse = {
-      templateId: id,
+      templateId: template?.externalId || id,
       ...formattedQuestion,
     };
 
@@ -141,10 +153,19 @@ export const QuestionnaireService = () => {
       ...req.body,
     };
 
-    const template = (await Template.findOne({ _id: templateId })) as ITemplate;
+    const template = (await Template.findOne({
+      externalId: templateId,
+    })) as ITemplate;
+
+    if (!template) {
+      throw new ErrorHandler(
+        QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
+        StatusCodes.NOT_FOUND
+      );
+    }
 
     template.questions = template.questions?.filter(
-      (x) => x.id?.toString() !== reqQuestion.id
+      (x) => x.externalId !== reqQuestion.id
     );
 
     await template.save();
@@ -185,11 +206,11 @@ export const QuestionnaireService = () => {
     let found = false;
     try {
       const template = (await Template.findOne({
-        _id: templateId,
+        externalId: templateId,
       })) as ITemplate;
       found =
         template &&
-        Boolean(template?.questions?.some((x) => x.id === questionId));
+        Boolean(template?.questions?.some((x) => x.externalId === questionId));
     } catch {
       found = false;
     }
@@ -257,7 +278,7 @@ export const QuestionnaireService = () => {
     }
 
     const {
-      id: templateId,
+      _id: templateId,
       title,
       description,
       dateFrom,
@@ -265,10 +286,11 @@ export const QuestionnaireService = () => {
       department,
       questions,
       status,
+      externalId,
     } = template;
 
     const formattedResponse: CreatedQuestionnaireResponse = {
-      id: templateId,
+      id: templateId.toString(),
       title,
       description,
       dateFrom,
@@ -276,6 +298,7 @@ export const QuestionnaireService = () => {
       department,
       questions,
       status,
+      externalId,
     };
 
     return formattedResponse;

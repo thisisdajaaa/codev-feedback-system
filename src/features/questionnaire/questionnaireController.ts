@@ -111,15 +111,6 @@ export const QuestionnaireController = () => {
       res: NextApiResponse<ApiResponse<AddedQuestionResponse>>,
       _next: NextHandler
     ) => {
-      const { templateId } = req.query;
-
-      if (!(await isTemplateExist(templateId as string))) {
-        throw new ErrorHandler(
-          QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
-          StatusCodes.NOT_FOUND
-        );
-      }
-
       const template = await addQuestion(req);
 
       const data: AddedQuestionResponse = { ...template };
@@ -140,13 +131,6 @@ export const QuestionnaireController = () => {
     ) => {
       const { templateId } = req.query;
       const { id } = req.body;
-
-      if (!(await isTemplateExist(templateId as string))) {
-        throw new ErrorHandler(
-          QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
-          StatusCodes.NOT_FOUND
-        );
-      }
 
       if (
         !(await isQuestionExistInTemplate(templateId as string, id as string))

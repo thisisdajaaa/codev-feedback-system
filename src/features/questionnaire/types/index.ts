@@ -14,13 +14,14 @@ export type PickedTemplateDetails =
   | "updatedBy"
   | "dateFrom"
   | "dateTo"
-  | "status";
+  | "status"
+  | "externalId";
 
 export type PickedTemplate = Pick<ITemplate, PickedTemplateDetails>;
 
 export type PickedQuestion = Pick<
   IQuestion & { id?: string },
-  "id" | "title" | "type" | "options" | "isRequired"
+  "id" | "title" | "type" | "options" | "isRequired" | "externalId"
 >;
 
 export type CreatedQuestionnaireResponse = PickedTemplate & { id: string };

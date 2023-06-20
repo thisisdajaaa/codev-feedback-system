@@ -6,9 +6,11 @@ export interface IQuestion extends Document {
   type?: string;
   options?: string;
   isRequired?: boolean;
+  externalId?: string;
 }
 
 export interface ITemplate extends Document {
+  externalId?: string;
   title?: string;
   description?: string;
   department?: string;
