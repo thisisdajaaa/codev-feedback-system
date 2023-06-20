@@ -2,6 +2,7 @@ import { useFormikContext } from "formik";
 import { debounce } from "lodash";
 import moment from "moment";
 import React, { FC, useCallback, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
 
@@ -45,9 +46,12 @@ const Overview: FC = () => {
   ) => {
     dispatch(actions.callSetServerErrorMessage(""));
 
-    const { success, data, message } = await addQuestionnaireOverviewAPI(
-      request
-    );
+    const externalId = activeTemplateId || uuidv4();
+
+    const { success, message } = await addQuestionnaireOverviewAPI({
+      ...request,
+      externalId,
+    });
 
     if (!success && message) {
       dispatch(actions.callSetServerErrorMessage(message));
@@ -55,8 +59,8 @@ const Overview: FC = () => {
       return;
     }
 
-    if (activeTemplateId !== data?.id)
-      dispatch(actions.callSetActiveTemplateId(data?.id));
+    if (!activeTemplateId)
+      dispatch(actions.callSetActiveTemplateId(externalId));
 
     setIsAddingQuestionnaire(false);
   };
@@ -79,8 +83,6 @@ const Overview: FC = () => {
         const request: ICreateQuestionnaireRequest["body"] = {
           [key]: formattedValue,
         };
-
-        if (activeTemplateId) request.id = activeTemplateId;
 
         handleCallAddQuestionnaire(request);
       },

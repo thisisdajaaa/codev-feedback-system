@@ -5,6 +5,9 @@ import { SurveyStatus, surveyStatusList } from "../Survey/config";
 
 export const QuestionSchema = new Schema<IQuestion>(
   {
+    externalId: {
+      type: String,
+    },
     title: {
       type: String,
     },
@@ -27,6 +30,9 @@ export const QuestionSchema = new Schema<IQuestion>(
 
 export const TemplateSchema = new Schema<ITemplate>(
   {
+    externalId: {
+      type: String,
+    },
     title: {
       type: String,
     },

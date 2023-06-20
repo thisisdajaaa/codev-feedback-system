@@ -46,7 +46,7 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
   }, [dispatch, id, router]);
 
   useMount(() => {
-    dispatch(actions.callSetActiveTemplateId(String(id)));
+    dispatch(actions.callSetActiveTemplateId(String(items.data?.externalId)));
   });
 
   const formattedResponse: QuestionnaireForm = useMemo(() => {

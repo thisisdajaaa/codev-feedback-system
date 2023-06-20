@@ -8,6 +8,7 @@ import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 const questionSchema = yup.object().shape({
   id: yup.string(),
   title: yup.string().required(),
+  externalId: yup.string(),
   type: yup.object().shape({
     label: yup.mixed(),
     value: yup
