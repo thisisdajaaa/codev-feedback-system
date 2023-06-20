@@ -87,8 +87,8 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
     };
 
     const mappedQuestions: Question[] =
-      data?.questions?.map(({ isRequired, title, type, _id }) => ({
-        id: _id,
+      data?.questions?.map(({ isRequired, title, type, externalId }) => ({
+        id: externalId,
         isRequired: isRequired || false,
         options: [],
         title: title || "",

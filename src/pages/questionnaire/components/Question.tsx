@@ -235,7 +235,7 @@ const Question: FC<QuestionProps> = (props) => {
           options={getTypeOptions}
           className="lg:w-[18.75rem]"
           handleDropdownChange={handleDropdownChange}
-          readOnly={!isEditable || !currentQuestion.id || isAddingQuestion}
+          readOnly={!isEditable}
         />
       </div>
 
@@ -244,7 +244,7 @@ const Question: FC<QuestionProps> = (props) => {
           name={`questions.${index}.isRequired`}
           label="Required"
           handleCheckedChange={handleCheckboxChange}
-          readOnly={!isEditable || isAddingQuestion}
+          readOnly={!isEditable}
         />
       </div>
 
