@@ -226,7 +226,7 @@ const Question: FC<QuestionProps> = (props) => {
           variation={InputVariations.Solid}
           containerClassName="max-w-[51.063rem]"
           handleInputChange={handleInputChange}
-          readOnly={!isEditable || isAddingQuestion}
+          readOnly={!isEditable}
         />
 
         <FormDropdown
