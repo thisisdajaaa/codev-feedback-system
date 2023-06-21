@@ -1,6 +1,9 @@
+import { NextPage } from "next";
 import { useRouter } from "next/router";
-import React, { FC, useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
+import { downloadCSV } from "@/utils/files";
+import { withAuth } from "@/utils/withAuth";
 import { useMount } from "@/hooks";
 
 import { SYSTEM_URL } from "@/constants/pageUrl";
@@ -9,7 +12,6 @@ import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import DeleteModal from "@/components/Modal/DeleteModal";
 import { Pagination } from "@/components/Pagination";
-import { SearchBar } from "@/components/SearchBar";
 import { SurveyCard } from "@/components/SurveyCard";
 import { Typography } from "@/components/Typography";
 
@@ -21,11 +23,11 @@ import {
 } from "@/api/questionnaire";
 import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
-import { SurveyInvitesModal } from "./SurveyInvitesModal";
-import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
-import type { SurveyInvitesModalProps } from "../types";
+import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "./config";
+import { SurveyInvitesModal } from "../home/components/SurveyInvitesModal";
+import { SurveyInvitesModalProps } from "../home/types";
 
-const SurveyorView: FC = () => {
+const Surveys: NextPage = () => {
   const router = useRouter();
   const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   const [currentTemplateId, setCurrentTemplateId] = useState<string>("");
@@ -34,61 +36,44 @@ const SurveyorView: FC = () => {
   const [questionnaires, setQuestionnaires] = useState<
     GetQuestionnaireResponse[]
   >([]);
-  const [searchStr, setSearchStr] = useState<string>("");
-  const [filterStr, setFilterStr] = useState<string>("");
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [toDeleteId, setToDeleteId] = useState<string>("");
   const [totalResults, setTotalResults] = useState<number>(INITIAL_ITEM_COUNT);
+  const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
 
-  const handleSearch = async (query: string, filter: string) => {
-    setSearchStr(query);
-    setFilterStr(filter);
+  const handleLoad = useCallback(async (page: number) => {
+    setCurrentPage(page);
 
     const queryParams = {
-      page: currentPage,
+      page,
       limit: PAGE_SIZE,
-      title: query,
-      status: filter,
     };
 
     const {
       success,
       data: response,
+
       total,
     } = await searchQuestionnaires(queryParams);
+
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
 
       setTotalResults(total || INITIAL_ITEM_COUNT);
+      setCurrentPage(page);
     }
+  }, []);
+  const surveyInvitesModalProps: SurveyInvitesModalProps = {
+    open: true,
+    templateId: "",
+    setShowInviteDialog,
+  };
+  const onInvite = (templateId: string) => {
+    setCurrentTemplateId(templateId);
+    setShowInviteDialog(true);
   };
 
-  const handleLoad = useCallback(
-    async (page: number) => {
-      setCurrentPage(page);
-
-      const queryParams = {
-        page,
-        limit: PAGE_SIZE,
-        title: searchStr,
-        status: filterStr,
-      };
-
-      const {
-        success,
-        data: response,
-        total,
-      } = await searchQuestionnaires(queryParams);
-
-      if (success) {
-        setQuestionnaires(response as GetQuestionnaireResponse[]);
-        setTotalResults(total || INITIAL_ITEM_COUNT);
-        setCurrentPage(page);
-      }
-    },
-    [filterStr, searchStr]
-  );
   const deleteQuestionnaireHandler = async (id: string) => {
     const { success } = await updateQuestionnaireStatusAPI(
       SurveyStatus.DELETED,
@@ -99,20 +84,27 @@ const SurveyorView: FC = () => {
       setShowDeleteModal(false);
     }
   };
+  const handleDownloadCSV = useCallback(async () => {
+    setIsCSVLoading(true);
 
+    const { success, data } = await searchQuestionnaires();
+
+    if (success && data)
+      downloadCSV<GetQuestionnaireResponse[]>(data, "surveyList");
+
+    setIsCSVLoading(false);
+  }, []);
   useMount(() => {
     handleLoad(currentPage);
   });
 
-  const surveyInvitesModalProps: SurveyInvitesModalProps = {
-    open: true,
-    templateId: "",
-    setShowInviteDialog,
-  };
-  const onInvite = (templateId: string) => {
-    setCurrentTemplateId(templateId);
-    setShowInviteDialog(true);
-  };
+  const csvProps = useMemo(
+    () => ({
+      onClick: handleDownloadCSV,
+      isLoading: isCSVLoading,
+    }),
+    [handleDownloadCSV, isCSVLoading]
+  );
 
   return (
     <>
@@ -138,8 +130,6 @@ const SurveyorView: FC = () => {
         </Button>
       </div>
 
-      <SearchBar onSearch={handleSearch} />
-
       <div className="mx-auto mt-16 w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
         <Typography
           variant="h2"
@@ -147,7 +137,7 @@ const SurveyorView: FC = () => {
           size="text-lg"
           className="mb-[1.188rem] px-2 font-semibold sm:px-0"
         >
-          My Surveys
+          Surveys
         </Typography>
 
         <div className="grid gap-8 xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -191,6 +181,7 @@ const SurveyorView: FC = () => {
           totalCount={totalResults}
           pageSize={PAGE_SIZE}
           onPageChange={handleLoad}
+          csv={csvProps}
         />
         {showInviteDialog && (
           <SurveyInvitesModal
@@ -210,4 +201,4 @@ const SurveyorView: FC = () => {
   );
 };
 
-export { SurveyorView };
+export default withAuth(Surveys);
