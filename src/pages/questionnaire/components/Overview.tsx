@@ -4,7 +4,12 @@ import moment from "moment";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useMount,
+  useUpdateEffect,
+} from "@/hooks";
 
 import { FormDatePicker } from "@/components/Formik/FormDatePicker";
 import { FormInput } from "@/components/Formik/FormInput";
@@ -17,6 +22,7 @@ import { SurveyStatus } from "@/models/Survey/config";
 import { actions, selectors } from "@/redux/questionnaire";
 
 import { addQuestionnaireOverviewAPI } from "@/api/questionnaire";
+import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
 import type { ICreateQuestionnaireRequest } from "@/features/questionnaire/types";
 
 import type { QuestionnaireForm } from "../types";
@@ -26,7 +32,8 @@ const Overview: FC = () => {
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
 
   const {
-    values: { status },
+    values: { status, dateTo, dateFrom },
+    setFieldError,
   } = useFormikContext<QuestionnaireForm>();
 
   const [isAddingQuestionnaire, setIsAddingQuestionnaire] =
@@ -40,6 +47,21 @@ const Overview: FC = () => {
   useMount(() => {
     dispatch(actions.callSetActiveTemplateId(""));
   });
+
+  const isInvalidDateTo = useMemo(() => {
+    return dateTo && moment(dateTo).isBefore(moment(dateFrom));
+  }, [dateTo, dateFrom]);
+
+  useUpdateEffect(() => {
+    setFieldError("dateTo", "");
+
+    if (isInvalidDateTo) {
+      setFieldError(
+        "dateTo",
+        QUESTIONNAIRE_MESSAGES.ERROR.INCORRECT_DATE_RANGE
+      );
+    }
+  }, [isInvalidDateTo]);
 
   const handleCallAddQuestionnaire = async (
     request: ICreateQuestionnaireRequest["body"]
@@ -72,7 +94,10 @@ const Overview: FC = () => {
         key: keyof ICreateQuestionnaireRequest["body"],
         value: string | Date
       ) => {
-        if (isAddingQuestionnaire) return;
+        const isInvalidDateTo =
+          key === "dateTo" && moment(value).isBefore(moment(dateFrom));
+
+        if (isAddingQuestionnaire || isInvalidDateTo) return;
 
         setIsAddingQuestionnaire(true);
 
@@ -89,7 +114,7 @@ const Overview: FC = () => {
       500
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isAddingQuestionnaire, activeTemplateId]
+    [isAddingQuestionnaire, dateFrom, activeTemplateId]
   );
 
   return (
