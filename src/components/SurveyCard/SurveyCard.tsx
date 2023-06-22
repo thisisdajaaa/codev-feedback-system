@@ -27,7 +27,8 @@ const SurveyCard: FC<SurveyProps> = (props) => {
   const isSurveyDraft = surveyStatus.toUpperCase() === "DRAFT";
   const isSurveyClosed = surveyStatus.toUpperCase() === "FINISHED";
 
-  const surveyStatusPercentage = Math.floor(responses * totalRespondents) / 100;
+  const _surveyStatusPercentage =
+    Math.floor(responses * totalRespondents) / 100;
 
   const surveyCardBtnClassNames =
     "h-[1.375rem] min-w-[5.375rem] rounded-md py-4 px-8";
@@ -73,11 +74,14 @@ const SurveyCard: FC<SurveyProps> = (props) => {
           <p className="text-xs">--</p>
         )}
 
-        <p className="mt-2 text-xs text-gray-500">Survey Status:</p>
+        {/**
+         * TODO: Uncomment once survey status calculation has been added
+         */}
+        {/* <p className="mt-2 text-xs text-gray-500">Survey Status:</p>
         <p className="text-xs">
           {surveyStatusPercentage}% - {responses} of {totalRespondents}{" "}
           participants
-        </p>
+        </p> */}
       </div>
 
       <div
