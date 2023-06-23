@@ -34,7 +34,8 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
   const handleSubmit = useCallback(async () => {
     const { success, message } = await updateQuestionnaireStatusAPI(
       SurveyStatus.ACTIVE,
-      String(id)
+      items.data?.externalId || String(id),
+      true
     );
 
     if (!success && message) {
@@ -43,7 +44,7 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
     }
 
     router.push(SYSTEM_URL.HOME);
-  }, [dispatch, id, router]);
+  }, [dispatch, id, items.data?.externalId, router]);
 
   useMount(() => {
     dispatch(actions.callSetActiveTemplateId(String(items.data?.externalId)));

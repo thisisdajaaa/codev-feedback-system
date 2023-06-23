@@ -85,9 +85,12 @@ export const QuestionnaireService = () => {
   };
 
   const setTemplateStatus = async (req: NextApiRequest): Promise<void> => {
-    const { templateId, status } = req.query;
+    const { templateId, status, publish } = req.query;
 
-    await Template.findOneAndUpdate({ _id: templateId }, { status: status });
+    const formattedId =
+      publish === "true" ? { externalId: templateId } : { _id: templateId };
+
+    await Template.findOneAndUpdate({ ...formattedId }, { status: status });
   };
 
   const addQuestion = async (

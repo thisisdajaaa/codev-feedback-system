@@ -16,6 +16,6 @@ const handler = nextConnect<
 
 const { handleUpdateDueQuestionnaires } = CronController();
 
-handler.post(mongoHandler(handleUpdateDueQuestionnaires));
+handler.get(mongoHandler(handleUpdateDueQuestionnaires));
 
 export default handler;

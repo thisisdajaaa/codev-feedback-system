@@ -95,7 +95,8 @@ const SurveyorView: FC = () => {
   const deleteQuestionnaireHandler = async (id: string) => {
     const { success } = await updateQuestionnaireStatusAPI(
       SurveyStatus.DELETED,
-      id
+      id,
+      false
     );
     if (success) {
       handleLoad(currentPage);

@@ -27,7 +27,8 @@ const Questionnaire: NextPage = () => {
   const handleSubmit = useCallback(async () => {
     const { success, message } = await updateQuestionnaireStatusAPI(
       SurveyStatus.ACTIVE,
-      activeTemplateId
+      activeTemplateId,
+      true
     );
 
     if (!success && message) {
