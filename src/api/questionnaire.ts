@@ -81,11 +81,12 @@ export const getQuestionnaireByIdAPI = async (
 
 export const updateQuestionnaireStatusAPI = async (
   status: keyof typeof SurveyStatus,
-  templateId: string
+  templateId: string,
+  publish: boolean
 ): Promise<ApiResponse<unknown>> => {
   const response = await onParseResponse<unknown>({
     method: "post",
-    url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}`,
+    url: `/api/questionnaire/set-status?status=${status}&templateId=${templateId}&publish=${publish}`,
   });
   return response;
 };

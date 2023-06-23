@@ -70,20 +70,22 @@ export const QuestionnaireController = () => {
 
   const handleQuestionnaireStatus = catchAsyncErrors(
     async (req: NextApiRequest, res: NextApiResponse, _next: NextHandler) => {
-      const { templateId, status } = req.query;
+      const { templateId, status, publish } = req.query;
 
       if (!Object.values(SurveyStatus).includes(status as SurveyStatus)) {
         throw new ErrorHandler("Invalid status", StatusCodes.BAD_REQUEST);
       }
 
-      if (!(await isTemplateExist(templateId as string))) {
+      const isTemplateValid = await isTemplateExist(templateId as string);
+
+      if (!isTemplateValid && publish !== "true") {
         throw new ErrorHandler(
           QUESTIONNAIRE_MESSAGES.ERROR.TEMPLATE_NOT_FOUND,
           StatusCodes.NOT_FOUND
         );
       }
 
-      if (status === SurveyStatus.ACTIVE) {
+      if (status === SurveyStatus.ACTIVE && publish !== "true") {
         const { isValid, message } = await validateTemplate(
           templateId as string
         );
