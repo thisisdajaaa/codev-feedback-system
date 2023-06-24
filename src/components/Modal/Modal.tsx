@@ -37,7 +37,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
   }, [open]);
 
   const handleClickOutside = useCallback(() => {
-    handleClose();
+    if (handleClose) handleClose();
   }, [handleClose]);
 
   useOnClickOutsideElement(ref, handleClickOutside);
@@ -57,12 +57,13 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
           <div
             ref={ref}
             className={clsx(
-              "w-1/ flex max-h-[90vh] transform flex-col rounded-lg bg-white transition-all duration-300 ease-out",
+              "w-1/ flex max-h-[90vh] transform flex-col rounded-3xl bg-white transition-all duration-300 ease-out",
               scaleClass,
               sizes,
               className
-            )}>
-            <div className="flex flex-shrink-0 items-center justify-between rounded-tl-lg rounded-tr-lg bg-white px-[1.375rem] pt-4 pb-[0.688rem]">
+            )}
+          >
+            <div className="flex flex-shrink-0 items-center justify-between rounded-tl-3xl rounded-tr-3xl bg-white px-[1.375rem] pt-4 pb-[0.688rem]">
               {typeof title === "string" ? (
                 <Typography preset="heading2">{title}</Typography>
               ) : (
@@ -79,7 +80,8 @@ const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
                 "modal-scrollbar flex-grow px-[1.375rem] py-[1.813rem]",
                 scrollable && "overflow-y-auto",
                 contentClassName
-              )}>
+              )}
+            >
               {children}
             </div>
           </div>

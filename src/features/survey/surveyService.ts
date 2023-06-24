@@ -676,6 +676,6 @@ export const SurveyService = () => {
     setSurveyStatus,
     validateSurvey,
     getSurveyById,
-    getInvitedByTemplateId
+    getInvitedByTemplateId,
   };
 };

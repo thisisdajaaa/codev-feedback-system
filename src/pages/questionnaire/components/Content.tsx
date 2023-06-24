@@ -1,9 +1,8 @@
 import { useFormikContext } from "formik";
 import React, { FC, useMemo } from "react";
 
-import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
+import { useAppSelector } from "@/hooks";
 
-import { AlertBanner } from "@/components/AlertBanner";
 import { BackArrow } from "@/components/BackArrow";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
@@ -12,7 +11,7 @@ import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { actions, selectors } from "@/redux/questionnaire";
+import { selectors } from "@/redux/questionnaire";
 
 import { removeQuestionByTemplateIdAPI } from "@/api/questionnaire";
 import type { IRemoveQuestionRequest } from "@/features/questionnaire/types";
@@ -24,17 +23,7 @@ import type { QuestionnaireForm } from "../types";
 import { questionnaireFormSchema } from "../validations/questionnaireFormSchema";
 
 const Content: FC = () => {
-  const dispatch = useAppDispatch();
   const activeTemplateId = useAppSelector(selectors.activeTemplateId);
-  const serverErrorMessage = useAppSelector(selectors.serverErrorMessage);
-
-  useMount(() => {
-    onClearServerErrorMessage();
-  });
-
-  const onClearServerErrorMessage = () => {
-    dispatch(actions.callSetServerErrorMessage(""));
-  };
 
   const { values, setFieldValue, submitForm, isSubmitting } =
     useFormikContext<QuestionnaireForm>();
@@ -51,7 +40,7 @@ const Content: FC = () => {
       ({ title, type }) => !title || !type
     );
 
-    return hasInvalidQuestions || !title || !!serverErrorMessage;
+    return hasInvalidQuestions || !title;
   };
 
   const handleAddQuestion = () => {
@@ -94,13 +83,6 @@ const Content: FC = () => {
 
   return (
     <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">
-      <AlertBanner
-        open={!!serverErrorMessage}
-        message={serverErrorMessage}
-        type="error"
-        handleClose={onClearServerErrorMessage}
-      />
-
       <div>
         <BackArrow />
 
@@ -126,7 +108,8 @@ const Content: FC = () => {
             <Button
               className="px-2 sm:px-2"
               onClick={handleAddQuestion}
-              disabled={isBtnDisabled()}>
+              disabled={isBtnDisabled()}
+            >
               <div className="text-xl">
                 <Icon src="/assets/add.svg" />
               </div>
@@ -138,14 +121,16 @@ const Content: FC = () => {
               className="rounded-[0.938rem]"
               onClick={submitForm}
               isLoading={isSubmitting}
-              disabled={isPublishDisabled}>
+              disabled={isPublishDisabled}
+            >
               <Typography
                 variant="span"
                 size="text-lg"
                 lineHeight="leading-[1.688rem]"
                 textAlign="text-left"
                 color="text-white"
-                className="font-bold">
+                className="font-bold"
+              >
                 Publish
               </Typography>
             </Button>

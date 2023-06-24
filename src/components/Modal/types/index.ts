@@ -8,14 +8,14 @@ export type ModalProps = {
   size?: ModalSizes;
   className?: string;
   scrollable?: boolean;
-  handleClose: () => void;
+  handleClose?: () => void;
   contentClassName?: string;
 };
 
 export type DeleteModalProps = {
   open: boolean;
-  handleClose: () => void;
-  handleDelete: () => void;
+  handleClose?: () => void;
+  handleDelete?: () => void;
   title: string;
   primaryLabel: string;
   secondaryLabel: string;
