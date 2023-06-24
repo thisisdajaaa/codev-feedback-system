@@ -1,10 +1,11 @@
 import { FormikContext, useFormik } from "formik";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 
-import { useUpdateEffect } from "@/hooks";
+import { useAppDispatch, useUpdateEffect } from "@/hooks";
 
-import { AlertBanner } from "@/components/AlertBanner";
 import { Modal } from "@/components/Modal";
+
+import { actions } from "@/redux/utils";
 
 import { sendSurveyorInvitationAPI } from "@/api/auth";
 import type { ISendSurveyorInvitationRequest } from "@/features/auth/types";
@@ -18,18 +19,10 @@ const InviteForm: FC<InviteFormProps> = ({
   handleClose,
   handleRefetch,
 }) => {
-  const [serverErrorMesage, setServerErrorMessage] = useState<
-    string | undefined
-  >(undefined);
-
-  useUpdateEffect(() => {
-    setServerErrorMessage(undefined);
-  }, [open]);
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (values: InviteFormSchema) => {
     const { email, departments } = values;
-
-    setServerErrorMessage(undefined);
 
     const request: ISendSurveyorInvitationRequest["body"] = {
       surveyorDetails: [
@@ -42,12 +35,33 @@ const InviteForm: FC<InviteFormProps> = ({
 
     const { success, message } = await sendSurveyorInvitationAPI(request);
 
-    if (!success) setServerErrorMessage(message);
+    if (!success && message) {
+      formikBag.resetForm();
+      handleClose();
+
+      dispatch(
+        actions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+
+      return;
+    }
 
     if (success) {
       formikBag.resetForm();
       handleRefetch();
       handleClose();
+
+      dispatch(
+        actions.callShowToast({
+          open: true,
+          type: "success",
+          message: "Successfully invited surveyor!",
+        })
+      );
     }
   };
 
@@ -73,13 +87,6 @@ const InviteForm: FC<InviteFormProps> = ({
       className="min-h-[25rem]"
     >
       <FormikContext.Provider value={formikBag}>
-        <AlertBanner
-          open={!!serverErrorMesage}
-          message={serverErrorMesage}
-          className="mb-4"
-          type="error"
-          handleClose={() => setServerErrorMessage(undefined)}
-        />
         <InviteContent />
       </FormikContext.Provider>
     </Modal>

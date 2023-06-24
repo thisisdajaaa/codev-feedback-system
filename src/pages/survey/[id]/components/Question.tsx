@@ -16,7 +16,7 @@ import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { actions } from "@/redux/surveys";
+import { actions } from "@/redux/utils";
 
 import { answerSurveyQuestionAPI } from "@/api/surveys";
 import type { IAnswerSurveyRequest } from "@/features/survey/types";
@@ -36,12 +36,16 @@ const Question: FC<QuestionProps> = (props) => {
 
   const debouncedHandleCallAnswerQuestion = useRef(
     debounce(async (request: IAnswerSurveyRequest["body"]) => {
-      dispatch(actions.callSetServerErrorMessage(""));
-
       const { success, message } = await answerSurveyQuestionAPI(request);
 
       if (!success && message) {
-        dispatch(actions.callSetServerErrorMessage(message));
+        dispatch(
+          actions.callShowToast({
+            open: true,
+            type: "error",
+            message,
+          })
+        );
         return;
       }
     }, 500)
@@ -151,7 +155,8 @@ const Question: FC<QuestionProps> = (props) => {
           variant="p"
           size="text-xl"
           lineHeight="leading-[1.875rem]"
-          className="font-semibold">
+          className="font-semibold"
+        >
           Q{index + 1}. {currentQuestion.title}
         </Typography>
 

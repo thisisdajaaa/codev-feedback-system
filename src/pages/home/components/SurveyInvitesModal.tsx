@@ -1,11 +1,15 @@
 import React, { FC, useEffect, useState } from "react";
 
+import { useAppDispatch } from "@/hooks";
+
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { Input } from "@/components/Input";
 import { InputVariations } from "@/components/Input/config";
 import { Modal } from "@/components/Modal";
 import { Typography } from "@/components/Typography";
+
+import { actions } from "@/redux/utils";
 
 import { getInvitedByTemplateIdAPI, sendSurveyInvitesAPI } from "@/api/surveys";
 import { getUserAPI } from "@/api/users";
@@ -14,6 +18,9 @@ import type { SurveyeeAddInfo, SurveyInvitesModalProps } from "../types";
 
 const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   const { open, templateId, setShowInviteDialog } = props;
+
+  const dispatch = useAppDispatch();
+
   const [allowAdd, setAllowAdd] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [surveyees, setSurveyees] = useState<SurveyeeAddInfo[]>([]);
@@ -60,12 +67,33 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
   }, [email, surveyees]);
 
   const handleSendInvites = async () => {
-    const result = await sendSurveyInvitesAPI(
+    const { success, message } = await sendSurveyInvitesAPI(
       templateId,
       surveyees.map((x) => x.email)
     );
-    if (result.success) {
+
+    if (!success && message) {
       setShowInviteDialog(false);
+
+      dispatch(
+        actions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+    }
+
+    if (success) {
+      setShowInviteDialog(false);
+
+      dispatch(
+        actions.callShowToast({
+          open: true,
+          type: "success",
+          message: "Successfully sent invite!",
+        })
+      );
     }
   };
 
@@ -95,7 +123,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
       className="max-h-[40rem] min-h-[25rem] bg-gray-100"
     >
       <div className="flex flex-col px-7 pt-8 pb-[1.813rem]">
-        <div className="mb-[0.688rem] flex gap-20 rounded-2xl bg-white px-[0.938rem] py-5">
+        <div className="mb-[0.688rem] flex items-center gap-20 rounded-2xl bg-white px-[0.938rem] py-5">
           <div className="flex w-16 gap-[0.688rem]">
             <Typography
               variant="h4"
@@ -134,7 +162,7 @@ const SurveyInvitesModal: FC<SurveyInvitesModalProps> = (props) => {
           </div>
         </div>
         {surveyees.length > 0 && (
-          <div className="flex gap-6 rounded-2xl bg-white px-5 py-[1.125rem]">
+          <div className="flex items-center gap-6 rounded-2xl  bg-white px-5 py-[1.125rem]">
             <div className="flex w-28 flex-col gap-[0.688rem]">
               <Typography
                 variant="h4"

@@ -10,7 +10,7 @@ import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { actions } from "@/redux/surveys";
+import { actions } from "@/redux/utils";
 
 import { createSurveyAPI } from "@/api/surveys";
 import { ICreateSurveyRequest } from "@/features/survey/types";
@@ -28,12 +28,17 @@ const Overview: FC<OverviewProps> = (props) => {
 
   const debouncedHandleCallCreateSurvey = useRef(
     debounce(async (request: ICreateSurveyRequest["body"]) => {
-      dispatch(actions.callSetServerErrorMessage(""));
-
       const { success, message } = await createSurveyAPI(request);
 
       if (!success && message) {
-        dispatch(actions.callSetServerErrorMessage(message));
+        dispatch(
+          actions.callShowToast({
+            open: true,
+            type: "error",
+            message,
+          })
+        );
+
         return;
       }
     }, 500)

@@ -16,6 +16,7 @@ import { Typography } from "@/components/Typography";
 import { SurveyStatus } from "@/models/Survey/config";
 
 import { actions } from "@/redux/questionnaire";
+import { actions as utilsActions } from "@/redux/utils";
 
 import {
   getQuestionnaireByIdAPI,
@@ -39,9 +40,24 @@ const EditQuestionnairePage: NextPage<QuestionnaireProps> = ({ items }) => {
     );
 
     if (!success && message) {
-      dispatch(actions.callSetServerErrorMessage(message));
+      dispatch(
+        utilsActions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+
       return;
     }
+
+    dispatch(
+      utilsActions.callShowToast({
+        open: true,
+        type: "success",
+        message: "Successfully published questionnaire!",
+      })
+    );
 
     router.push(SYSTEM_URL.HOME);
   }, [dispatch, id, items.data?.externalId, router]);

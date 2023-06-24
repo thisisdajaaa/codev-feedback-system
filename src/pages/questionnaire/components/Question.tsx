@@ -30,6 +30,7 @@ import { Typography } from "@/components/Typography";
 import { SurveyStatus } from "@/models/Survey/config";
 
 import { actions, selectors } from "@/redux/questionnaire";
+import { actions as utilsActions } from "@/redux/utils";
 
 import { addQuestionByTemplateIdAPI } from "@/api/questionnaire";
 import type { IAddQuestionRequest } from "@/features/questionnaire/types";
@@ -59,8 +60,6 @@ const Question: FC<QuestionProps> = (props) => {
   const handleCallAddQuestion = async (
     request: IAddQuestionRequest["body"]
   ) => {
-    dispatch(actions.callSetServerErrorMessage(""));
-
     const externalId = currentQuestion.id ?? uuidv4();
 
     const { success, data, message } = await addQuestionByTemplateIdAPI(
@@ -69,7 +68,14 @@ const Question: FC<QuestionProps> = (props) => {
     );
 
     if (!success && message) {
-      dispatch(actions.callSetServerErrorMessage(message));
+      dispatch(
+        utilsActions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+
       setIsAddingQuestion(false);
       return;
     }
@@ -253,7 +259,8 @@ const Question: FC<QuestionProps> = (props) => {
       {isEditable && (
         <div
           className="mt-4 flex cursor-pointer justify-end text-2xl"
-          onClick={handleRemoveQuestion}>
+          onClick={handleRemoveQuestion}
+        >
           <Icon src="/assets/red-trash.svg" />
         </div>
       )}

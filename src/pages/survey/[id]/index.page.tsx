@@ -4,19 +4,18 @@ import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 
 import { withAuth } from "@/utils/withAuth";
-import { useAppDispatch, useAppSelector, useMount } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 
 import { SYSTEM_URL } from "@/constants/pageUrl";
 import { QuestionType } from "@/constants/questionType";
 
-import { AlertBanner } from "@/components/AlertBanner";
 import { BackArrow } from "@/components/BackArrow";
 import { Button } from "@/components/Button";
 import { Typography } from "@/components/Typography";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { actions, selectors } from "@/redux/surveys";
+import { actions as utilsActions } from "@/redux/utils";
 
 import { getSurveyByIdAPI, updateSurveyStatusAPI } from "@/api/surveys";
 import type { SurveyByIdResponse } from "@/features/survey/types";
@@ -29,17 +28,8 @@ import { surveyFormSchema } from "./validations/surveyFormSchema";
 const Survey: NextPage<SurveyProps> = ({ items: { data } }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const serverErrorMessage = useAppSelector(selectors.serverErrorMessage);
 
   const { id } = router.query;
-
-  useMount(() => {
-    onClearServerErrorMessage();
-  });
-
-  const onClearServerErrorMessage = () => {
-    dispatch(actions.callSetServerErrorMessage(""));
-  };
 
   const initialValues: SurveyQuestionnaireForm = useMemo(() => {
     const flatTypes = ["Text-Input", "Text-Area", "Rating"];
@@ -84,9 +74,24 @@ const Survey: NextPage<SurveyProps> = ({ items: { data } }) => {
     );
 
     if (!success && message) {
-      dispatch(actions.callSetServerErrorMessage(message));
+      dispatch(
+        utilsActions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+
       return;
     }
+
+    dispatch(
+      utilsActions.callShowToast({
+        open: true,
+        type: "success",
+        message: "Successfully submitted survey!",
+      })
+    );
 
     router.push(SYSTEM_URL.HOME);
   };
@@ -102,19 +107,11 @@ const Survey: NextPage<SurveyProps> = ({ items: { data } }) => {
 
   const isEditable = formikBag.values.status === SurveyStatus.ACTIVE;
 
-  const isBtnDisabled =
-    !!serverErrorMessage || !surveyFormSchema.isValidSync(formikBag.values);
+  const isBtnDisabled = !surveyFormSchema.isValidSync(formikBag.values);
 
   return (
     <FormikContext.Provider value={formikBag}>
       <div className="mx-auto flex max-w-screen-2xl flex-col gap-10 py-2 px-[2rem] sm:py-[1.125rem]">
-        <AlertBanner
-          open={!!serverErrorMessage}
-          message={serverErrorMessage}
-          type="error"
-          handleClose={onClearServerErrorMessage}
-        />
-
         <div>
           <BackArrow />
 

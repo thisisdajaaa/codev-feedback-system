@@ -10,7 +10,8 @@ import { SYSTEM_URL } from "@/constants/pageUrl";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
-import { actions, selectors } from "@/redux/questionnaire";
+import { selectors } from "@/redux/questionnaire";
+import { actions } from "@/redux/utils";
 
 import { updateQuestionnaireStatusAPI } from "@/api/questionnaire";
 
@@ -32,9 +33,24 @@ const Questionnaire: NextPage = () => {
     );
 
     if (!success && message) {
-      dispatch(actions.callSetServerErrorMessage(message));
+      dispatch(
+        actions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+
       return;
     }
+
+    dispatch(
+      actions.callShowToast({
+        open: true,
+        type: "success",
+        message: "Successfully published questionnaire!",
+      })
+    );
 
     router.push(SYSTEM_URL.HOME);
   }, [activeTemplateId, dispatch, router]);

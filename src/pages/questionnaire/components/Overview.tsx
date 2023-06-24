@@ -20,6 +20,7 @@ import { Typography } from "@/components/Typography";
 import { SurveyStatus } from "@/models/Survey/config";
 
 import { actions, selectors } from "@/redux/questionnaire";
+import { actions as utilsActions } from "@/redux/utils";
 
 import { addQuestionnaireOverviewAPI } from "@/api/questionnaire";
 import { QUESTIONNAIRE_MESSAGES } from "@/features/questionnaire/config";
@@ -66,8 +67,6 @@ const Overview: FC = () => {
   const handleCallAddQuestionnaire = async (
     request: ICreateQuestionnaireRequest["body"]
   ) => {
-    dispatch(actions.callSetServerErrorMessage(""));
-
     const externalId = activeTemplateId || uuidv4();
 
     const { success, message } = await addQuestionnaireOverviewAPI({
@@ -76,7 +75,14 @@ const Overview: FC = () => {
     });
 
     if (!success && message) {
-      dispatch(actions.callSetServerErrorMessage(message));
+      dispatch(
+        utilsActions.callShowToast({
+          open: true,
+          type: "error",
+          message,
+        })
+      );
+
       setIsAddingQuestionnaire(false);
       return;
     }
