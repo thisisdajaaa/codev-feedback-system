@@ -41,7 +41,11 @@ export default withAuth(Responses);
 export const getServerSideProps: GetServerSideProps<ResponsesProps> = async (
   context
 ) => {
-  const queryParams = { page: INITIAL_PAGE, limit: PAGE_SIZE };
+  const queryParams = {
+    page: INITIAL_PAGE,
+    limit: PAGE_SIZE,
+    isResponses: true,
+  };
 
   const response = await searchQuestionnaires(queryParams, context);
 

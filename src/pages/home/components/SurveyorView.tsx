@@ -36,7 +36,6 @@ const SurveyorView: FC = () => {
   >([]);
   const [searchStr, setSearchStr] = useState<string>("");
   const [filterStr, setFilterStr] = useState<string>("");
-  const [itemCount, setItemCount] = useState<number>(INITIAL_ITEM_COUNT);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [toDeleteId, setToDeleteId] = useState<string>("");
   const [totalResults, setTotalResults] = useState<number>(INITIAL_ITEM_COUNT);
@@ -55,12 +54,10 @@ const SurveyorView: FC = () => {
     const {
       success,
       data: response,
-      count,
       total,
     } = await searchQuestionnaires(queryParams);
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
-      setItemCount(count || INITIAL_ITEM_COUNT);
       setTotalResults(total || INITIAL_ITEM_COUNT);
     }
   };
@@ -79,19 +76,18 @@ const SurveyorView: FC = () => {
       const {
         success,
         data: response,
-        count,
         total,
       } = await searchQuestionnaires(queryParams);
 
       if (success) {
         setQuestionnaires(response as GetQuestionnaireResponse[]);
-        setItemCount(count || INITIAL_ITEM_COUNT);
         setTotalResults(total || INITIAL_ITEM_COUNT);
         setCurrentPage(page);
       }
     },
     [filterStr, searchStr]
   );
+
   const deleteQuestionnaireHandler = async (id: string) => {
     const { success } = await updateQuestionnaireStatusAPI(
       SurveyStatus.DELETED,
@@ -113,6 +109,7 @@ const SurveyorView: FC = () => {
     templateId: "",
     setShowInviteDialog,
   };
+
   const onInvite = (templateId: string) => {
     setCurrentTemplateId(templateId);
     setShowInviteDialog(true);
@@ -123,8 +120,7 @@ const SurveyorView: FC = () => {
       <div className="mt-7 mb-[1.688rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => router.push(SYSTEM_URL.ADD_QUESTIONNAIRE)}
-          className="flex gap-0"
-        >
+          className="flex gap-0">
           <div className="text-[1.313rem]">
             <Icon src="/assets/add.svg" />
           </div>
@@ -135,8 +131,7 @@ const SurveyorView: FC = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold"
-          >
+            className="font-semibold">
             Survey
           </Typography>
         </Button>
@@ -149,8 +144,7 @@ const SurveyorView: FC = () => {
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
-        >
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
           My Surveys
         </Typography>
 
@@ -193,9 +187,10 @@ const SurveyorView: FC = () => {
         <Pagination
           currentPage={currentPage}
           totalCount={totalResults}
-          pageSize={itemCount}
+          pageSize={PAGE_SIZE}
           onPageChange={handleLoad}
         />
+
         {showInviteDialog && (
           <SurveyInvitesModal
             {...{ ...surveyInvitesModalProps, templateId: currentTemplateId }}

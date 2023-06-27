@@ -24,9 +24,6 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
-  const [pageCount, setPageCount] = useState<number>(
-    items.count || INITIAL_TOTAL
-  );
 
   const handlePageChange = useCallback(
     async (page: number) => {
@@ -34,14 +31,13 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
       setIsListLoading(true);
 
-      const queryParams = { page, limit: PAGE_SIZE };
+      const queryParams = { page, limit: PAGE_SIZE, isResponses: true };
 
-      const { success, data, count } = await searchQuestionnaires(queryParams);
+      const { success, data } = await searchQuestionnaires(queryParams);
 
       if (success) setSurveyList(data || []);
 
       setCurrentPage(page);
-      setPageCount(count || PAGE_SIZE);
 
       setIsListLoading(false);
     },
@@ -70,8 +66,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
           className={clsx(
             "px-4 capitalize",
             id === selectedSurvey ? "font-semibold" : "font-normal"
-          )}
-        >
+          )}>
           {title}
         </Typography>
       );
@@ -91,15 +86,13 @@ const SurveyList: FC<SurveyListProps> = (props) => {
             "mx-[1.125rem] rounded-[0.938rem] px-[1.125rem] py-[0.438rem]",
             "hidden sm:inline",
             mappedStatus[status as keyof typeof SurveyStatus]
-          )}
-        >
+          )}>
           <Typography
             variant="p"
             size="text-sm"
             lineHeight="leading-[1.5rem]"
             color="text-white"
-            className="font-normal uppercase"
-          >
+            className="font-normal uppercase">
             {status}
           </Typography>
         </div>
@@ -141,7 +134,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
       <Pagination
         currentPage={currentPage}
         totalCount={items.total || INITIAL_TOTAL}
-        pageSize={pageCount}
+        pageSize={PAGE_SIZE}
         onPageChange={handlePageChange}
         csv={csvProps}
       />
