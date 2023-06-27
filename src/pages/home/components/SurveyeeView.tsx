@@ -56,12 +56,11 @@ const SurveyeeView: FC = () => {
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
-        >
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
           Surveys / Questionnaire
         </Typography>
 
-        <div className="gap-8 xs:columns-1 md:columns-2 lg:columns-3">
+        <div className="grid gap-8 xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {surveys.map((survey) => {
             const surveyData = {
               id: survey.id,
