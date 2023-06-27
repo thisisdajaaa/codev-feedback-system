@@ -161,14 +161,9 @@ const SurveyorView: FC = () => {
               onInvite,
             };
 
-            const handlePrimaryAction = () => {
-              if (survey.status === SurveyStatus.DRAFT) {
-                router.push(`${SYSTEM_URL.QUESTIONNAIRE}/${survey.id}`);
-                return;
-              }
+            const handlePrimaryAction = () =>
+              router.push(`${SYSTEM_URL.QUESTIONNAIRE}/${survey.id}`);
 
-              router.push(SYSTEM_URL.RESPONSES);
-            };
             const handleDelete = () => {
               setShowDeleteModal(true);
               setToDeleteId(survey.id);

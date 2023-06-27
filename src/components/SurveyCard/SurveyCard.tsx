@@ -131,7 +131,7 @@ const SurveyCard: FC<SurveyProps> = (props) => {
             onClick={onPrimaryAction}
             className={clsxm(surveyCardBtnClassNames, "md:ml-auto")}>
             <span className="inline-block w-full text-center text-sm font-normal">
-              {isSurveyActive || isSurveyClosed ? "Responses" : "Edit"}
+              {isSurveyActive || isSurveyClosed ? "View" : "Edit"}
             </span>
           </Button>
         )}
