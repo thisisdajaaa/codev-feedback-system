@@ -19,7 +19,6 @@ const SurveyeeView: FC = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
   const [surveys, setSurveys] = useState<SurveysResponse>([]);
-  const [itemCount, setItemCount] = useState<number>(INITIAL_ITEM_COUNT);
   const [totalCount, setTotalCount] = useState<number>(INITIAL_ITEM_COUNT);
 
   const handleLoad = useCallback(async (page: number) => {
@@ -33,13 +32,11 @@ const SurveyeeView: FC = () => {
     const {
       success,
       data: response,
-      count,
       total,
     } = await getSurveyListAPI(queryParams);
 
     if (success) {
       setSurveys(response as SurveysResponse);
-      setItemCount(count || INITIAL_ITEM_COUNT);
       setTotalCount(total || INITIAL_ITEM_COUNT);
       setCurrentPage(page);
     }
@@ -90,7 +87,7 @@ const SurveyeeView: FC = () => {
         <Pagination
           currentPage={currentPage}
           totalCount={totalCount}
-          pageSize={itemCount}
+          pageSize={PAGE_SIZE}
           onPageChange={handleLoad}
         />
       </div>

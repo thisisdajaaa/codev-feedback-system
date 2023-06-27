@@ -315,6 +315,7 @@ export const QuestionnaireService = () => {
     const createdBy = (req.query.createdBy as string) || req.user.email;
     const title = req.query.title as string;
     const status = req.query.status as string;
+    const isResponses = (req.query.isResponses as string) === "true";
 
     let createdById: string | null = null;
     if (createdBy !== "all") {
@@ -335,6 +336,10 @@ export const QuestionnaireService = () => {
       ...(title && { title: { $regex: title, $options: "i" } }),
       ...(status && { status }),
       ...(!status && { status: { $ne: SurveyStatus.DELETED } }),
+      ...(isResponses &&
+        !status && {
+          status: { $nin: [SurveyStatus.DRAFT, SurveyStatus.DELETED] },
+        }),
     };
 
     // Constructing initial query.
