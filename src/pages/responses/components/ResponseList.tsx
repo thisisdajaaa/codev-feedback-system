@@ -25,20 +25,20 @@ const ResponseList: FC<ResponseListProps> = (props) => {
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
+  const [pageCount, setPageCount] = useState<number>(PAGE_SIZE);
   const [total, setTotal] = useState<number>(INITIAL_TOTAL);
 
   const handleFetchData = useCallback(
     async (queryParam: Record<string, unknown>) => {
       setIsListLoading(true);
 
-      const { success, data, total } = await getAnsweredSurveysByTemplateAPI(
-        selectedSurvey,
-        queryParam
-      );
+      const { success, data, total, count } =
+        await getAnsweredSurveysByTemplateAPI(selectedSurvey, queryParam);
 
       if (success) {
         setAnswerList(data || []);
         setTotal(total || INITIAL_TOTAL);
+        setPageCount(count || PAGE_SIZE);
 
         if (queryParam?.page) setCurrentPage(+queryParam?.page);
       }
@@ -155,7 +155,8 @@ const ResponseList: FC<ResponseListProps> = (props) => {
       <Pagination
         currentPage={currentPage}
         totalCount={total}
-        pageSize={PAGE_SIZE}
+        pageSize={pageCount}
+        defaultPageSize={PAGE_SIZE}
         onPageChange={handlePageChange}
         csv={csvProps}
       />
