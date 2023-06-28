@@ -24,6 +24,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
+  const [pageCount, setPageCount] = useState<number>(items.count || PAGE_SIZE);
 
   const handlePageChange = useCallback(
     async (page: number) => {
@@ -33,11 +34,12 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
       const queryParams = { page, limit: PAGE_SIZE, isResponses: true };
 
-      const { success, data } = await searchQuestionnaires(queryParams);
+      const { success, data, count } = await searchQuestionnaires(queryParams);
 
       if (success) setSurveyList(data || []);
 
       setCurrentPage(page);
+      setPageCount(count || PAGE_SIZE);
 
       setIsListLoading(false);
     },
@@ -134,7 +136,8 @@ const SurveyList: FC<SurveyListProps> = (props) => {
       <Pagination
         currentPage={currentPage}
         totalCount={items.total || INITIAL_TOTAL}
-        pageSize={PAGE_SIZE}
+        defaultPageSize={PAGE_SIZE}
+        pageSize={pageCount}
         onPageChange={handlePageChange}
         csv={csvProps}
       />

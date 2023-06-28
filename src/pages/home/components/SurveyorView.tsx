@@ -38,6 +38,7 @@ const SurveyorView: FC = () => {
   const [filterStr, setFilterStr] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [toDeleteId, setToDeleteId] = useState<string>("");
+  const [itemCount, setItemCount] = useState<number>(PAGE_SIZE);
   const [totalResults, setTotalResults] = useState<number>(INITIAL_ITEM_COUNT);
 
   const handleSearch = async (query: string, filter: string) => {
@@ -55,10 +56,12 @@ const SurveyorView: FC = () => {
       success,
       data: response,
       total,
+      count,
     } = await searchQuestionnaires(queryParams);
     if (success) {
       setQuestionnaires(response as GetQuestionnaireResponse[]);
       setTotalResults(total || INITIAL_ITEM_COUNT);
+      setItemCount(count || PAGE_SIZE);
     }
   };
 
@@ -77,11 +80,13 @@ const SurveyorView: FC = () => {
         success,
         data: response,
         total,
+        count,
       } = await searchQuestionnaires(queryParams);
 
       if (success) {
         setQuestionnaires(response as GetQuestionnaireResponse[]);
         setTotalResults(total || INITIAL_ITEM_COUNT);
+        setItemCount(count || PAGE_SIZE);
         setCurrentPage(page);
       }
     },
@@ -182,7 +187,8 @@ const SurveyorView: FC = () => {
         <Pagination
           currentPage={currentPage}
           totalCount={totalResults}
-          pageSize={PAGE_SIZE}
+          defaultPageSize={PAGE_SIZE}
+          pageSize={itemCount}
           onPageChange={handleLoad}
         />
 

@@ -16,6 +16,7 @@ const Pagination: FC<PaginationProps> = (props) => {
     siblingCount = 1,
     currentPage,
     pageSize,
+    defaultPageSize,
     csv,
   } = props;
 
@@ -29,7 +30,7 @@ const Pagination: FC<PaginationProps> = (props) => {
     currentPage: currentPageFixed,
     totalCount,
     siblingCount,
-    pageSize,
+    pageSize: defaultPageSize,
   });
 
   // adjust onPageChange function accordingly
