@@ -83,8 +83,7 @@ const EmployeeList: FC = () => {
           className={clsx(
             "px-4",
             isAnonymous && value === "Anonymous" && "italic"
-          )}
-        >
+          )}>
           {value}
         </Typography>
       );

@@ -119,8 +119,7 @@ const SurveyCardList: FC = () => {
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
-        >
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
           Surveys
         </Typography>
 

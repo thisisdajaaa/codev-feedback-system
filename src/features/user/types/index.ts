@@ -13,9 +13,6 @@ export type SingleUserListResponse = Pick<IUser, PickedUserDetails> & {
   email: string;
   role: string;
 };
-
 export type UserResponse = SingleUserResponse[];
-
 export type UserListResponse = SingleUserListResponse[];
-
 export type GetUsersResponse = Omit<ApiResponse<UserResponse>, "success">;

@@ -20,7 +20,12 @@
     },
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/pages/surveys/index.page.txs"
+  ],
   "exclude": ["node_modules"],
   "typeRoots": ["./src/types/globals"],
   "moduleResolution": ["node_modules", ".next", "node"]
