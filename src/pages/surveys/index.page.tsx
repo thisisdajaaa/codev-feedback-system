@@ -17,11 +17,12 @@ const Surveys: NextPage = () => {
   const router = useRouter();
 
   return (
-    <>
-      <div className="mt-7 mb-[1.688rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0 md:mr-4 lg:mr-4">
+    <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
+      <div className="mb-[1.125rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => router.push(SYSTEM_URL.ADD_QUESTIONNAIRE)}
-          className="flex gap-0">
+          className="flex gap-0"
+        >
           <div className="text-[1.313rem]">
             <Icon src="/assets/add.svg" />
           </div>
@@ -32,18 +33,18 @@ const Surveys: NextPage = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold">
+            className="font-semibold"
+          >
             Survey
           </Typography>
         </Button>
       </div>
-      <div className="flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
-        <Fragment>
-          <SurveyCardList />
-          <EmployeeList />
-        </Fragment>
-      </div>
-    </>
+
+      <Fragment>
+        <SurveyCardList />
+        <EmployeeList />
+      </Fragment>
+    </div>
   );
 };
 

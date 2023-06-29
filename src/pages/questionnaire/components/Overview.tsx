@@ -35,6 +35,7 @@ const Overview: FC = () => {
   const {
     values: { status, dateTo, dateFrom },
     setFieldError,
+    setFieldTouched,
   } = useFormikContext<QuestionnaireForm>();
 
   const [isAddingQuestionnaire, setIsAddingQuestionnaire] =
@@ -57,12 +58,14 @@ const Overview: FC = () => {
     setFieldError("dateTo", "");
 
     if (isInvalidDateTo) {
+      setFieldTouched("dateTo");
+
       setFieldError(
         "dateTo",
         QUESTIONNAIRE_MESSAGES.ERROR.INCORRECT_DATE_RANGE
       );
     }
-  }, [isInvalidDateTo]);
+  }, [isInvalidDateTo, dateTo, dateFrom]);
 
   const handleCallAddQuestionnaire = async (
     request: ICreateQuestionnaireRequest["body"]

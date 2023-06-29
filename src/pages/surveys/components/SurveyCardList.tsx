@@ -11,7 +11,7 @@ import { Pagination } from "@/components/Pagination";
 import { SurveyCard } from "@/components/SurveyCard";
 import { Typography } from "@/components/Typography";
 import { SurveyInvitesModal } from "@/pages/home/components/SurveyInvitesModal";
-import { SurveyInvitesModalProps } from "@/pages/home/types";
+import type { SurveyInvitesModalProps } from "@/pages/home/types";
 
 import { SurveyStatus } from "@/models/Survey/config";
 
@@ -19,7 +19,7 @@ import {
   searchQuestionnaires,
   updateQuestionnaireStatusAPI,
 } from "@/api/questionnaire";
-import { GetQuestionnaireResponse } from "@/features/questionnaire/types";
+import type { GetQuestionnaireResponse } from "@/features/questionnaire/types";
 
 import { INITIAL_ITEM_COUNT, INITIAL_PAGE, PAGE_SIZE } from "../config";
 
@@ -39,6 +39,7 @@ const SurveyCardList: FC = () => {
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [itemCount, setItemCount] = useState<number>(PAGE_SIZE);
   const [createdBy, setCreatedBy] = useState<string>("");
+
   const handleLoad = useCallback(
     async (page: number) => {
       setCurrentPage(page);
@@ -70,11 +71,13 @@ const SurveyCardList: FC = () => {
     },
     [createdBy, isAdmin, isSurveyor]
   );
+
   const surveyInvitesModalProps: SurveyInvitesModalProps = {
     open: true,
     templateId: "",
     setShowInviteDialog,
   };
+
   const onInvite = (templateId: string) => {
     setCurrentTemplateId(templateId);
     setShowInviteDialog(true);
@@ -91,6 +94,7 @@ const SurveyCardList: FC = () => {
       setShowDeleteModal(false);
     }
   };
+
   const handleDownloadCSV = useCallback(async () => {
     setIsCSVLoading(true);
 
@@ -101,6 +105,7 @@ const SurveyCardList: FC = () => {
 
     setIsCSVLoading(false);
   }, []);
+
   useMount(() => {
     handleLoad(currentPage);
   });
@@ -112,14 +117,16 @@ const SurveyCardList: FC = () => {
     }),
     [handleDownloadCSV, isCSVLoading]
   );
+
   return (
     <>
-      <div className="mx-auto w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
+      <div className="bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
         <Typography
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
+        >
           Surveys
         </Typography>
 
@@ -144,10 +151,12 @@ const SurveyCardList: FC = () => {
 
               router.push(SYSTEM_URL.RESPONSES);
             };
+
             const handleDelete = () => {
               setShowDeleteModal(true);
               setToDeleteId(survey.id);
             };
+
             return (
               <SurveyCard
                 key={survey.id}
@@ -167,12 +176,14 @@ const SurveyCardList: FC = () => {
           onPageChange={handleLoad}
           csv={csvProps}
         />
+
         {showInviteDialog && (
           <SurveyInvitesModal
             {...{ ...surveyInvitesModalProps, templateId: currentTemplateId }}
           />
         )}
       </div>
+
       <DeleteModal
         open={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}

@@ -7,10 +7,10 @@ import { Pagination } from "@/components/Pagination";
 import { Table } from "@/components/Table";
 import { TableVariations } from "@/components/Table/config";
 import { Typography } from "@/components/Typography";
-import { TailwindTextAlign } from "@/components/Typography/types";
+import type { TailwindTextAlign } from "@/components/Typography/types";
 
 import { getUserListAPI } from "@/api/users";
-import { UserListResponse, UserResponse } from "@/features/user/types";
+import type { UserListResponse, UserResponse } from "@/features/user/types";
 
 import { INITIAL_ITEM_COUNT, INITIAL_PAGE, TABLE_PAGE_SIZE } from "../config";
 
@@ -21,6 +21,7 @@ const EmployeeList: FC = () => {
   const [itemCount, setItemCount] = useState<number>(TABLE_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
+
   const fetchUsers = useCallback(
     async (queryParam: Record<string, unknown>) => {
       setIsListLoading(true);
@@ -36,6 +37,7 @@ const EmployeeList: FC = () => {
         setUserList(response as UserListResponse);
         setItemCount(count || TABLE_PAGE_SIZE);
         setTotal(total || INITIAL_ITEM_COUNT);
+
         if (queryParam?.page) setCurrentPage(+queryParam?.page);
       }
 
@@ -43,19 +45,23 @@ const EmployeeList: FC = () => {
     },
     []
   );
+
   useEffect(() => {
     const queryParams = { page: INITIAL_PAGE, limit: TABLE_PAGE_SIZE };
     fetchUsers(queryParams);
   }, [fetchUsers]);
+
   const handlePageChange = useCallback(
     async (page: number) => {
       if (page === currentPage) return;
-      //setCurrentPage(page);
+
       const queryParams = { page, limit: TABLE_PAGE_SIZE };
+
       fetchUsers(queryParams);
     },
     [currentPage, fetchUsers]
   );
+
   const handleDownloadCSV = useCallback(async () => {
     setIsCSVLoading(true);
     true;
@@ -83,7 +89,8 @@ const EmployeeList: FC = () => {
           className={clsx(
             "px-4",
             isAnonymous && value === "Anonymous" && "italic"
-          )}>
+          )}
+        >
           {value}
         </Typography>
       );
