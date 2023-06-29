@@ -20,6 +20,10 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
 
   const mockFilter = [
     {
+      label: "ALL SURVEY",
+      value: "",
+    },
+    {
       label: "ACTIVE SURVEY",
       value: "ACTIVE",
     },
@@ -66,8 +70,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
 
       <Button
         onClick={handleSubmit}
-        className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[0.625rem]"
-      >
+        className="rounded-r rounded-tl-none rounded-bl-none px-2 py-[0.625rem]">
         <Icon src="/assets/search.svg" />
       </Button>
     </div>
