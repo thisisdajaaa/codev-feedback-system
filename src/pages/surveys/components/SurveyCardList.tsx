@@ -112,7 +112,7 @@ const SurveyCardList: FC = () => {
   );
   return (
     <>
-      <div className="mx-auto mt-16 w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
+      <div className="mx-auto w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
         <Typography
           variant="h2"
           color="text-gray-600"

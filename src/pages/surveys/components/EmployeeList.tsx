@@ -125,7 +125,7 @@ const EmployeeList: FC = () => {
   return (
     <div className="mt-[1.219rem] flex flex-col gap-[0.875rem]">
       <Table
-        title="Responses"
+        title="Employees"
         data={tableData}
         columns={tableColumns}
         variation={TableVariations.Secondary}

@@ -39,7 +39,7 @@ const Surveys: NextPage = () => {
           </Typography>
         </Button>
       </div>
-      <div className="m-auto flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
+      <div className="flex max-w-screen-2xl flex-col py-2 sm:py-[1.125rem] sm:px-[2rem]">
         <Fragment>
           <SurveyCardList />
           <EmployeeList />
