@@ -21,13 +21,14 @@ export const UserController = () => {
       res: NextApiResponse<ApiResponse<UserResponse>>,
       _next: NextHandler
     ) => {
-      const { count, pagination, data } = await getUsers(req);
+      const { count, pagination, data, total } = await getUsers(req);
 
       return res.status(StatusCodes.OK).json({
         success: true,
         count,
         pagination,
         data,
+        total,
         message: USER_MESSAGES.SUCCESS.ALL_USERS,
       });
     }
