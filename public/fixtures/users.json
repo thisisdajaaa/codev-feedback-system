@@ -1,7 +1,7 @@
 [
   {
     "_id": "5d7a514b5d2c12c7449be049",
-    "email": "admin@codev.com",
+    "email": "justinh@codev.com",
     "department": "Admin Department",
     "isVerified": true,
     "role": "ADMIN"
