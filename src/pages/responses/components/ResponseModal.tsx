@@ -109,44 +109,54 @@ const ResponseModal: FC<ResponseModalProps> = (props) => {
           </div>
 
           <div className="flex flex-col gap-[0.688rem] rounded-2xl bg-white px-5 py-[1.125rem]">
-            {userData?.surveyAnswers?.map((surveyAnswer, index) => (
-              <div
-                key={index}
-                className="flex w-full rounded-2xl border border-auroMetalSaurus">
-                <div className="flex items-center rounded-tl-2xl rounded-bl-2xl border-r border-auroMetalSaurus bg-gray-200 px-4 py-2">
-                  <Typography
-                    variant="h3"
-                    color="text-gray-700"
-                    size="text-lg"
-                    lineHeight="leading-[1.688rem]"
-                    className="font-semibold">
-                    Q{index + 1}
-                  </Typography>
-                </div>
-                <div className="flex w-full flex-col">
-                  <div className="rounded-tr-2xl border-b border-auroMetalSaurus bg-gray-200 px-[0.563rem] py-[0.313rem]">
-                    <Typography
-                      variant="h3"
-                      color="text-gray-700"
-                      size="text-base"
-                      lineHeight="leading-[1.5rem]"
-                      className="font-semibold">
-                      {surveyAnswer.title}
-                    </Typography>
-                  </div>
-
-                  <div className="px-[0.563rem] py-[0.313rem]">
+            {userData?.surveyAnswers.length ? (
+              userData?.surveyAnswers?.map((surveyAnswer, index) => (
+                <div
+                  key={index}
+                  className="flex w-full rounded-2xl border border-auroMetalSaurus">
+                  <div className="flex items-center rounded-tl-2xl rounded-bl-2xl border-r border-auroMetalSaurus bg-gray-200 px-4 py-2">
                     <Typography
                       variant="h3"
                       color="text-gray-700"
                       size="text-lg"
-                      lineHeight="leading-[1.688rem]">
-                      {surveyAnswer.answer}
+                      lineHeight="leading-[1.688rem]"
+                      className="font-semibold">
+                      Q{index + 1}
                     </Typography>
                   </div>
+                  <div className="flex w-full flex-col">
+                    <div className="rounded-tr-2xl border-b border-auroMetalSaurus bg-gray-200 px-[0.563rem] py-[0.313rem]">
+                      <Typography
+                        variant="h3"
+                        color="text-gray-700"
+                        size="text-base"
+                        lineHeight="leading-[1.5rem]"
+                        className="font-semibold">
+                        {surveyAnswer.title}
+                      </Typography>
+                    </div>
+
+                    <div className="px-[0.563rem] py-[0.313rem]">
+                      <Typography
+                        variant="h3"
+                        color="text-gray-700"
+                        size="text-lg"
+                        lineHeight="leading-[1.688rem]">
+                        {surveyAnswer.answer}
+                      </Typography>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <Typography
+                variant="h3"
+                color="text-gray-700"
+                size="text-lg"
+                lineHeight="leading-[1.688rem]">
+                Yet to answer the survey.
+              </Typography>
+            )}
           </div>
         </div>
       )}

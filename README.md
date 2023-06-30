@@ -76,8 +76,8 @@ MONGODB_URI=mongodb://root:root@localhost:27017/codev-feedback-system?authSource
 MONGO_INITDB_ROOT_USERNAME=root
 MONGO_INITDB_ROOT_PASSWORD=root
 
-GOOGLE_CLIENT_ID=589144237254-5qu9tndfb4m194ks1tov8mq5d3es4q9r.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=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
+GOOGLE_CLIENT_ID=test
+GOOGLE_CLIENT_SECRET=test
 
 SMPT_HOST=smpt.gmail.com
 SMTP_SERVICE=gmail

@@ -16,6 +16,7 @@ const Pagination: FC<PaginationProps> = (props) => {
     siblingCount = 1,
     currentPage,
     pageSize,
+    defaultPageSize,
     csv,
   } = props;
 
@@ -29,7 +30,7 @@ const Pagination: FC<PaginationProps> = (props) => {
     currentPage: currentPageFixed,
     totalCount,
     siblingCount,
-    pageSize,
+    pageSize: defaultPageSize,
   });
 
   // adjust onPageChange function accordingly
@@ -46,12 +47,16 @@ const Pagination: FC<PaginationProps> = (props) => {
   const isFirstPage = currentPageFixed === 1;
   const isLastPage = currentPageFixed === lastPage;
 
+  const fromCount =
+    totalCount !== 0 ? defaultPageSize * (currentPage - 1) + 1 : 0;
+
+  const toCount = Math.min(defaultPageSize * currentPage, totalCount);
   return (
     <div className="flex items-center justify-between xs:flex-col sm:flex-col md:flex-row">
       <div className="xs:mb-[0.625rem] sm:mb-[0.625rem] sm:mt-8 md:my-0">
         <p className="text-sm text-gray-500">
-          Showing <span className="font-medium">{pageSize}</span> to{" "}
-          <span className="font-medium">{pageSize}</span> of{" "}
+          Showing <span className="font-medium">{fromCount}</span> to{" "}
+          <span className="font-medium">{toCount}</span> of{" "}
           <span className="font-medium">{totalCount}</span> results
         </p>
       </div>

@@ -12,4 +12,5 @@ export const SYSTEM_URL = {
   QUESTIONNAIRE: "/questionnaire",
   ADD_QUESTIONNAIRE: "/questionnaire",
   EDIT_QUESTIONNAIRE: "/questionnaire/[id]",
+  SURVEYS: "/surveys",
 };

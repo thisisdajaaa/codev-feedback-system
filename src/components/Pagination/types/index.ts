@@ -4,6 +4,7 @@ export type PaginationProps = {
   siblingCount?: number;
   currentPage: number;
   pageSize: number;
+  defaultPageSize: number;
   csv?: CSVProps;
 };
 

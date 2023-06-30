@@ -20,6 +20,10 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
 
   const mockFilter = [
     {
+      label: "ALL SURVEY",
+      value: "",
+    },
+    {
       label: "ACTIVE SURVEY",
       value: "ACTIVE",
     },
@@ -59,7 +63,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       <input
         type="text"
         placeholder="Search for Survey"
-        className="w-full border border-gray-400 text-sm placeholder-slate-400 shadow-md focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full border border-gray-400 text-sm placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         value={query}
         onChange={handleInputChange}
       />

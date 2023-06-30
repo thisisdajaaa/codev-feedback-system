@@ -76,6 +76,18 @@ const Navbar: FC = () => {
             </li>
           )}
 
+          {isAdmin && (
+            <li
+              onClick={() => router.push(SYSTEM_URL.SURVEYS)}
+              className={clsxm(
+                "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
+                pathname === SYSTEM_URL.SURVEYS && "bg-gray-100"
+              )}
+            >
+              <Typography preset="heading2">Surveys</Typography>
+            </li>
+          )}
+
           {(isAdmin || isSurveyor) && (
             <li
               onClick={() => router.push(SYSTEM_URL.MY_SURVEYS)}
