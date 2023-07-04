@@ -4,6 +4,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { downloadCSV } from "@/utils/files";
 
 import { Pagination } from "@/components/Pagination";
+import { SearchBar } from "@/components/SearchBar";
 import { Table } from "@/components/Table";
 import { Typography } from "@/components/Typography";
 
@@ -25,14 +26,22 @@ const SurveyList: FC<SurveyListProps> = (props) => {
   const [isCSVLoading, setIsCSVLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(INITIAL_PAGE);
   const [pageCount, setPageCount] = useState<number>(items.count || PAGE_SIZE);
-
+  const [total, setTotal] = useState<number>(items.total || INITIAL_TOTAL);
+  const [searchStr, setSearchStr] = useState<string>("");
+  const [filterStr, setFilterStr] = useState<string>("");
   const handlePageChange = useCallback(
     async (page: number) => {
       if (page === currentPage) return;
 
       setIsListLoading(true);
 
-      const queryParams = { page, limit: PAGE_SIZE, isResponses: true };
+      const queryParams = {
+        page,
+        limit: PAGE_SIZE,
+        isResponses: true,
+        title: searchStr,
+        status: filterStr,
+      };
 
       const { success, data, count } = await searchQuestionnaires(queryParams);
 
@@ -43,7 +52,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
       setIsListLoading(false);
     },
-    [currentPage]
+    [currentPage, filterStr, searchStr]
   );
 
   const handleDownloadCSV = useCallback(async () => {
@@ -68,7 +77,8 @@ const SurveyList: FC<SurveyListProps> = (props) => {
           className={clsx(
             "px-4 capitalize",
             id === selectedSurvey ? "font-semibold" : "font-normal"
-          )}>
+          )}
+        >
           {title}
         </Typography>
       );
@@ -88,13 +98,15 @@ const SurveyList: FC<SurveyListProps> = (props) => {
             "mx-[1.125rem] rounded-[0.938rem] px-[1.125rem] py-[0.438rem]",
             "hidden sm:inline",
             mappedStatus[status as keyof typeof SurveyStatus]
-          )}>
+          )}
+        >
           <Typography
             variant="p"
             size="text-sm"
             lineHeight="leading-[1.5rem]"
             color="text-white"
-            className="font-normal uppercase">
+            className="font-normal uppercase"
+          >
             {status}
           </Typography>
         </div>
@@ -122,9 +134,37 @@ const SurveyList: FC<SurveyListProps> = (props) => {
     }),
     [handleDownloadCSV, isCSVLoading]
   );
+  const handleSearch = async (query: string, filter: string) => {
+    setIsListLoading(true);
 
+    setSearchStr(query);
+    setFilterStr(filter);
+
+    const queryParams = {
+      page: currentPage,
+      limit: PAGE_SIZE,
+      title: query,
+      status: filter,
+      isResponses: true,
+    };
+
+    const { success, data, count, total } = await searchQuestionnaires(
+      queryParams
+    );
+    if (success) {
+      setSurveyList(data || []);
+      setCurrentPage(currentPage);
+      setPageCount(count || PAGE_SIZE);
+      setTotal(total || INITIAL_TOTAL);
+      // setQuestionnaires(response as GetQuestionnaireResponse[]);
+      // setTotalResults(total || INITIAL_ITEM_COUNT);
+      // setItemCount(count || PAGE_SIZE);
+      setIsListLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col gap-[0.875rem] md:mt-[3.563rem]">
+      <SearchBar onSearch={handleSearch} showDraft={false} />
       <Table
         title="Survey List"
         data={tableData}
@@ -135,7 +175,7 @@ const SurveyList: FC<SurveyListProps> = (props) => {
 
       <Pagination
         currentPage={currentPage}
-        totalCount={items.total || INITIAL_TOTAL}
+        totalCount={total || INITIAL_TOTAL}
         defaultPageSize={PAGE_SIZE}
         pageSize={pageCount}
         onPageChange={handlePageChange}

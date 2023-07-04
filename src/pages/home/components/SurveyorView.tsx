@@ -125,7 +125,8 @@ const SurveyorView: FC = () => {
       <div className="mt-7 mb-[1.688rem] flex justify-end px-[1.125rem] sm:mb-[2.438rem] sm:px-0">
         <Button
           onClick={() => router.push(SYSTEM_URL.ADD_QUESTIONNAIRE)}
-          className="flex gap-0">
+          className="flex gap-0"
+        >
           <div className="text-[1.313rem]">
             <Icon src="/assets/add.svg" />
           </div>
@@ -136,20 +137,22 @@ const SurveyorView: FC = () => {
             lineHeight="leading-[1.688rem]"
             textAlign="text-left"
             color="text-white"
-            className="font-semibold">
+            className="font-semibold"
+          >
             Survey
           </Typography>
         </Button>
       </div>
 
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} showDraft={true} />
 
       <div className="mx-auto mt-8 w-full max-w-screen-2xl bg-white pt-[1.063rem] pb-[3.375rem] shadow-md sm:rounded-2xl sm:px-6">
         <Typography
           variant="h2"
           color="text-gray-600"
           size="text-lg"
-          className="mb-[1.188rem] px-2 font-semibold sm:px-0">
+          className="mb-[1.188rem] px-2 font-semibold sm:px-0"
+        >
           My Surveys
         </Typography>
 
