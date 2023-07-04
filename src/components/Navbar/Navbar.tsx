@@ -185,24 +185,30 @@ const Navbar: FC = () => {
               >
                 Home
               </li>
-              <li
-                onClick={() => handleRoute(SYSTEM_URL.RESPONSES)}
-                className={`${
-                  pathname === SYSTEM_URL.RESPONSES &&
-                  "rounded bg-blue-500 text-white"
-                } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
-              >
-                Responses
-              </li>
-              <li
-                onClick={() => handleRoute(SYSTEM_URL.SURVEYS)}
-                className={`${
-                  pathname === SYSTEM_URL.SURVEYS &&
-                  "rounded bg-blue-500 text-white"
-                } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
-              >
-                My Surveys
-              </li>
+
+              {isSurveyor && (
+                <li
+                  onClick={() => handleRoute(SYSTEM_URL.RESPONSES)}
+                  className={`${
+                    pathname === SYSTEM_URL.RESPONSES &&
+                    "rounded bg-blue-500 text-white"
+                  } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
+                >
+                  Responses
+                </li>
+              )}
+
+              {(isAdmin || !isSurveyor) && (
+                <li
+                  onClick={() => handleRoute(SYSTEM_URL.MY_SURVEYS)}
+                  className={`${
+                    pathname === SYSTEM_URL.MY_SURVEYS &&
+                    "rounded bg-blue-500 text-white"
+                  } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
+                >
+                  My Surveys
+                </li>
+              )}
             </ul>
           </div>
         </div>
