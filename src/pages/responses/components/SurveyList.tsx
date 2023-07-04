@@ -156,9 +156,6 @@ const SurveyList: FC<SurveyListProps> = (props) => {
       setCurrentPage(currentPage);
       setPageCount(count || PAGE_SIZE);
       setTotal(total || INITIAL_TOTAL);
-      // setQuestionnaires(response as GetQuestionnaireResponse[]);
-      // setTotalResults(total || INITIAL_ITEM_COUNT);
-      // setItemCount(count || PAGE_SIZE);
       setIsListLoading(false);
     }
   };
