@@ -40,6 +40,8 @@ const Navbar: FC = () => {
     setIsNavOpen((prev) => !prev);
   };
 
+  const handleRoute = (route: string) => router.push(route);
+
   return (
     <nav className="fixed z-10 flex h-[4.5rem] w-full justify-between bg-white px-6 shadow-md">
       <div className="flex items-center">
@@ -53,9 +55,9 @@ const Navbar: FC = () => {
           Feedback System
         </h1>
 
-        <ul className="ml-[3.625rem] flex hidden h-full sm:visible">
+        <ul className="ml-[3.625rem] hidden h-full sm:visible sm:flex">
           <li
-            onClick={() => router.push(SYSTEM_URL.HOME)}
+            onClick={() => handleRoute(SYSTEM_URL.HOME)}
             className={clsxm(
               "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
               pathname === SYSTEM_URL.HOME && "bg-gray-100"
@@ -66,7 +68,7 @@ const Navbar: FC = () => {
 
           {isSurveyor && (
             <li
-              onClick={() => router.push(SYSTEM_URL.RESPONSES)}
+              onClick={() => handleRoute(SYSTEM_URL.RESPONSES)}
               className={clsxm(
                 "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
                 pathname === SYSTEM_URL.RESPONSES && "bg-gray-100"
@@ -78,7 +80,7 @@ const Navbar: FC = () => {
 
           {isAdmin && (
             <li
-              onClick={() => router.push(SYSTEM_URL.SURVEYS)}
+              onClick={() => handleRoute(SYSTEM_URL.SURVEYS)}
               className={clsxm(
                 "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
                 pathname === SYSTEM_URL.SURVEYS && "bg-gray-100"
@@ -90,7 +92,7 @@ const Navbar: FC = () => {
 
           {(isAdmin || isSurveyor) && (
             <li
-              onClick={() => router.push(SYSTEM_URL.MY_SURVEYS)}
+              onClick={() => handleRoute(SYSTEM_URL.MY_SURVEYS)}
               className={clsxm(
                 "flex cursor-pointer items-center px-8 py-[1.313rem] transition-all hover:bg-gray-100",
                 pathname === SYSTEM_URL.MY_SURVEYS && "bg-gray-100"
@@ -139,7 +141,7 @@ const Navbar: FC = () => {
                 {navLinks.map((nav, index) => (
                   <li
                     key={index}
-                    onClick={() => router.push(nav.url)}
+                    onClick={() => handleRoute(nav.url)}
                     className="p-4 text-gray-600 hover:bg-gray-100 active:bg-gray-100"
                   >
                     {nav.label}
@@ -173,14 +175,32 @@ const Navbar: FC = () => {
       {isNavOpen && (
         <div className="absolute top-[5rem] left-2 z-20 w-[96%] rounded-lg border bg-white">
           <div className="p-2">
-            <ul className="">
-              <li className="rounded bg-blue-500 p-[0.3em] pl-4 text-[1rem] font-light text-white">
+            <ul>
+              <li
+                onClick={() => handleRoute(SYSTEM_URL.HOME)}
+                className={`${
+                  pathname === SYSTEM_URL.HOME &&
+                  "rounded bg-blue-500 text-white"
+                } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
+              >
                 Home
               </li>
-              <li className="p-[0.3em] pl-4 text-[1rem] font-light">
+              <li
+                onClick={() => handleRoute(SYSTEM_URL.RESPONSES)}
+                className={`${
+                  pathname === SYSTEM_URL.RESPONSES &&
+                  "rounded bg-blue-500 text-white"
+                } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
+              >
                 Responses
               </li>
-              <li className="p-[0.3em] pl-4 text-[1rem] font-light">
+              <li
+                onClick={() => handleRoute(SYSTEM_URL.SURVEYS)}
+                className={`${
+                  pathname === SYSTEM_URL.SURVEYS &&
+                  "rounded bg-blue-500 text-white"
+                } cursor-pointer p-[0.3em] pl-4 text-[1rem] font-light`}
+              >
                 My Surveys
               </li>
             </ul>
