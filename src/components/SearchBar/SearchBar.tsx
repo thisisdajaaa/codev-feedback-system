@@ -6,7 +6,7 @@ import { Dropdown } from "../Dropdown";
 import type { Option } from "../Dropdown/types";
 import { Icon } from "../Icon";
 
-const SearchBar = ({ onSearch }: SearchBarProps) => {
+const SearchBar = ({ onSearch, showDraft }: SearchBarProps) => {
   const [query, setQuery] = useState<string>("");
   const [filter, setFilter] = useState<string>("");
 
@@ -18,7 +18,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
     onSearch(query, filter);
   };
 
-  const mockFilter = [
+  let mockFilter = [
     {
       label: "ALL SURVEY",
       value: "",
@@ -36,6 +36,22 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       value: "FINISHED",
     },
   ];
+  if (showDraft === false) {
+    mockFilter = [
+      {
+        label: "ALL SURVEY",
+        value: "",
+      },
+      {
+        label: "ACTIVE SURVEY",
+        value: "ACTIVE",
+      },
+      {
+        label: "FINISHED SURVEY",
+        value: "FINISHED",
+      },
+    ];
+  }
 
   const [selectedOption, setSelectedOption] = useState<
     Option | Option[] | null

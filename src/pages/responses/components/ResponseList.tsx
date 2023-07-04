@@ -93,7 +93,8 @@ const ResponseList: FC<ResponseListProps> = (props) => {
             "px-4",
             selectedUser === id && "font-semibold",
             isAnonymous && value === "Anonymous" && "italic"
-          )}>
+          )}
+        >
           {value}
         </Typography>
       );
@@ -108,7 +109,7 @@ const ResponseList: FC<ResponseListProps> = (props) => {
 
         return {
           id: String(answeredBy?.id) || "",
-          item: renderCellItem(id, index + 1, "text-center"),
+          no: renderCellItem(id, index + 1, "text-center"),
           visibility: renderCellItem(
             id,
             txtVisibility,
@@ -123,8 +124,8 @@ const ResponseList: FC<ResponseListProps> = (props) => {
     );
 
     const tableColumns = [
-      { key: "item", title: "Item", style: "w-[6.688rem]" },
-      { key: "visibility", title: "Visiblity", style: "w-[8rem]" },
+      { key: "no", title: "No", style: "w-[6.688rem]" },
+      { key: "visibility", title: "Visibility", style: "w-[8rem]" },
       { key: "name", title: "Name", style: "w-[25.125rem]" },
       { key: "email", title: "Email Address", style: "w-[25.125rem]" },
       { key: "timestamp", title: "Timestamp", style: "w-[15.5rem]" },
