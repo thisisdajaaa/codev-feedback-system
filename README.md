@@ -63,32 +63,6 @@ You can create a .env file by copying the provided .env.example file:
 cp .env.example .env
 ```
 
-Next, open the .env file and set the values for your environment:
-
-```bash
-NEXT_PUBLIC_SHOW_LOGGER=false
-NEXT_AUTH_SECRET=codev-feedback-system
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-MONGODB_DOCKER_URI=mongodb://root:root@mongo:27017/codev-feedback-system?authSource=admin&retryWrites=true&w=majority
-MONGODB_URI=mongodb://root:root@localhost:27017/codev-feedback-system?authSource=admin&retryWrites=true&w=majority
-
-MONGO_INITDB_ROOT_USERNAME=root
-MONGO_INITDB_ROOT_PASSWORD=root
-
-GOOGLE_CLIENT_ID=test
-GOOGLE_CLIENT_SECRET=test
-
-SMPT_HOST=smpt.gmail.com
-SMTP_SERVICE=gmail
-SMTP_PORT=465
-SMTP_USER=your_email
-SMTP_PASSWORD=your_gmail_app_password
-SMTP_ADMIN_EMAIL=your_email
-SMTP_FROM=Codev Feedback System
-SMTP_FROM_EMAIL=your_email
-```
-
 ### Running the Project with Docker
 
 This project is configured to run in a Docker container. To start the application, use Docker Compose:
